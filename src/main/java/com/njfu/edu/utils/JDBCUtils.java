@@ -1,72 +1,52 @@
 package com.njfu.edu.utils;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
+import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ResourceBundle;
 
 public class JDBCUtils {
 
-    private static String driver;
-    private static String url;
-    private static String username;
-    private static String password;
+    private static DataSource dataSource = null;
 
-    /**
-     * 获取所连接的数据库信息
-     */
-    static {
-        ResourceBundle bundle = ResourceBundle.getBundle("jdbc");
-        driver = bundle.getString("jdbc.driver");
-        url = bundle.getString("jdbc.url");
-        username = bundle.getString("jdbc.username");
-        password = bundle.getString("jdbc.password");
+    static{
+        dataSource = new ComboPooledDataSource("mysqlapp");
     }
 
-    /**
-     * 连接数据库
-     * @return
-     */
+    //从连接池中获取连接
     public static Connection getConnection(){
-        Connection connection = null;
-
         try {
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url,username,password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return connection;
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();        }
+        return null;
     }
 
-    /**
-     * 关闭数据库
-     * @param connection
-     * @param ps
-     * @param resultSet
-     */
-    public static void Release(Connection connection, PreparedStatement ps, ResultSet resultSet){
-
-        if (resultSet != null) {
+    //释放连接回连接池
+    public static void release(Connection conn, Statement stmt, ResultSet rs) {
+        if (rs != null) {
             try {
-                resultSet.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+                rs.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            rs = null;
         }
-
-        if (ps != null){
+        if (stmt != null) {
             try {
-                ps.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+                stmt.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            stmt = null;
         }
-
-        if (connection != null){
+        if (conn != null) {
             try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            conn = null;
         }
     }
 }
