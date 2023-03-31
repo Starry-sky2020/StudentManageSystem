@@ -1,6 +1,6 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.UserDao;
+import com.njfu.edu.dao.impl.UserDaoImpl;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.UserSubmitService;
@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class UserSubmitServiceImpl implements UserSubmitService {
 
 //    private ReadFile readFile = new ReadFile();
-    private UserDao userDao = new UserDao();
+    private UserDaoImpl userDaoImpl = new UserDaoImpl();
     private SubmitResult submitResult = new SubmitResult();
     /**
      * 用户注册服务
@@ -22,7 +22,7 @@ public class UserSubmitServiceImpl implements UserSubmitService {
      */
     @Override
     public SubmitResult userSubmit(Map<String, String> map) throws IOException {
-        List<User> userList = userDao.selectUserMessage();
+        List<User> userList = userDaoImpl.selectUserMessage();
 
         //正则验证用户名是否合法
         String regName = "^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)";
@@ -56,7 +56,7 @@ public class UserSubmitServiceImpl implements UserSubmitService {
             }
         }
 
-        userDao.insertUser(map.get("username"),map.get("password"));
+        userDaoImpl.insertUser(map.get("username"),map.get("password"));
 
         submitResult.setResult(true);
         submitResult.setMessage("用户注册成功");

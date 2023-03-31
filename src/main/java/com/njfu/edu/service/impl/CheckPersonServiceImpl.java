@@ -1,7 +1,7 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.ManagerDao;
-import com.njfu.edu.dao.UserDao;
+import com.njfu.edu.dao.impl.ManagerDaoImpl;
+import com.njfu.edu.dao.impl.UserDaoImpl;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.CheckPersonService;
@@ -12,14 +12,14 @@ import java.util.Map;
 
 public class CheckPersonServiceImpl implements CheckPersonService {
 
-    private ManagerDao managerDao = new ManagerDao();
-    private UserDao userDao = new UserDao();
+    private ManagerDaoImpl managerDaoImpl = new ManagerDaoImpl();
+    private UserDaoImpl userDaoImpl = new UserDaoImpl();
     /**
      * 用户登录信息验证
      * @throws IOException
      */
     public Boolean UserLoginView(Map<String,String> map) throws IOException {
-        List<User> userList = userDao.selectUserMessage();
+        List<User> userList = userDaoImpl.selectUserMessage();
         for (int i = 0; i < userList.size(); i++){
             if (userList.get(i).getUsername().equals(map.get("username"))){
                 if (userList.get(i).getPassword().equals(map.get("password"))){
@@ -35,7 +35,7 @@ public class CheckPersonServiceImpl implements CheckPersonService {
      * @throws IOException
      */
     public Boolean ManagerLoginView(Map<String,String> map) throws IOException {
-        List<Manager> managerList = managerDao.selectManagerMessage();
+        List<Manager> managerList = managerDaoImpl.selectManagerMessage();
         for (int i = 0; i < managerList.size(); i++){
             if (managerList.get(i).getManager_name().equals(map.get("managername"))){
                 if (managerList.get(i).getPassword().equals(map.get("password"))){

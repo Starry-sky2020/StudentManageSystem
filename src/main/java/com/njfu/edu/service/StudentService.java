@@ -4,9 +4,10 @@ import com.njfu.edu.pojo.ImportResult;
 import com.njfu.edu.pojo.Student;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
-public interface ManageStudentService {
+public interface StudentService {
 
     String SORT_BY_ID = "1";
     String SORT_BY_AGE = "2";
@@ -24,11 +25,11 @@ public interface ManageStudentService {
      */
     Student selectStudetById(String id) throws IOException;
 
-    /**
-     * 修改学生信息
-     */
-    void UpdateStudentById(String id, String name, Integer age, Boolean sex, String school, String address)
-            throws IOException;
+//    /**
+//     * 修改学生信息
+//     */
+//    void UpdateStudentById(Student student)
+//            throws IOException;
 
     /**
      * 根据学号进行排序
@@ -56,4 +57,10 @@ public interface ManageStudentService {
      * 退出学生系统
      */
     void BackwardSystem();
+
+    /**
+     * 更改学生信息
+     * @return
+     */
+    boolean changeStudentInfo(Student student) throws ParseException;
 }

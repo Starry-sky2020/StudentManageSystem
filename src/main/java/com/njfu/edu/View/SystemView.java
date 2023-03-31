@@ -3,6 +3,7 @@ package com.njfu.edu.View;
 import com.njfu.edu.pojo.Manager;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Map;
 
 public interface SystemView {
@@ -45,7 +46,7 @@ public interface SystemView {
      * @param choice
      * @throws IOException
      */
-    void ManageStudentMessage(int choice) throws IOException;
+    void ManageStudentMessage(int choice) throws IOException, ParseException;
 
     /**
      * 用户注册

@@ -1,7 +1,7 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.ManagerDao;
-import com.njfu.edu.dao.UserDao;
+import com.njfu.edu.dao.impl.ManagerDaoImpl;
+import com.njfu.edu.dao.impl.UserDaoImpl;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
@@ -14,17 +14,17 @@ import java.util.regex.Pattern;
 
 public class ManageUserServiceImpl implements ManageUserService {
 
-    private UserDao userDao = new UserDao();
-    private ManagerDao managerDao = new ManagerDao();
+    private UserDaoImpl userDaoImpl = new UserDaoImpl();
+    private ManagerDaoImpl managerDaoImpl = new ManagerDaoImpl();
 
     @Override
     public List<User> selectAllUser() throws IOException {
-        return userDao.selectUserMessage();
+        return userDaoImpl.selectUserMessage();
     }
 
     @Override
     public void deleteUserById(String id) throws IOException {
-       userDao.deleteUserById(id);
+       userDaoImpl.deleteUserById(id);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ManageUserServiceImpl implements ManageUserService {
             return submitResult;
         }
 
-        List<Manager> managerList = managerDao.selectManagerMessage();
+        List<Manager> managerList = managerDaoImpl.selectManagerMessage();
         for (int i = 0; i < managerList.size(); i++){
             if (manager.getManager_name().equals(managerList.get(i).getManager_name())){
                 submitResult.setResult(false);
@@ -65,7 +65,7 @@ public class ManageUserServiceImpl implements ManageUserService {
         submitResult.setResult(true);
         submitResult.setMessage("创建管理员成功");
         submitResult.setCode(SubmitResult.ERROR_CODE_4);
-        managerDao.insertManager(manager);
+        managerDaoImpl.insertManager(manager);
 
         return submitResult;
     }

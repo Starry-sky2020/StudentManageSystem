@@ -12,6 +12,8 @@ import com.njfu.edu.View.SystemView;
 import com.njfu.edu.controller.ManageUserMessageController;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -160,7 +162,7 @@ public class SystemViewImpl implements SystemView {
     }
 
     @Override
-    public void ManageStudentMessage(int choice) throws IOException {
+    public void ManageStudentMessage(int choice) throws IOException, ParseException {
         while(true){
             if (choice == 1){
                 List<Student> studentList = manageStudentController.selectAllStudent();
@@ -188,12 +190,18 @@ public class SystemViewImpl implements SystemView {
                 System.out.print("地址：");
                 String address = scanner.nextLine();
 
-                Boolean f = false;
+                int f = 0;
                 if (sex.equals("男")){
-                    f = true;
+                    f = 1;
                 }
-
-                manageStudentController.UpdateStudentById(id,name,Integer.valueOf(age),f,school,address);
+                Student student = new Student();
+                student.setStudent_id(id);
+                student.setStudent_name(name);
+                student.setAge(Integer.valueOf(age));
+                student.setSex(f);
+                student.setSchool(school);
+                student.setAddress(address);
+                manageStudentController.UpdateStudentById(student);
             } else if (choice == 4) {
                 System.out.println("请输入要删除的学生信息:");
                 Scanner scanner = new Scanner(System.in);
@@ -232,12 +240,17 @@ public class SystemViewImpl implements SystemView {
                 System.out.print("地址：");
                 String address = scanner.nextLine();
 
-                Boolean f = false;
+                int f = 0;
                 if (sex.equals("男")){
-                    f = true;
+                    f = 1;
                 }
 
                 Student student = new Student(id, name, Integer.valueOf(age), f, school, address);
+                try {
+                    student.setUpdateTime(Tools.getCurrentSystemDate());
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
                 manageStudentController.InsertStudentMessage(student);
             } else if (choice == 10) {
                 manageStudentController.BackwardSystem();

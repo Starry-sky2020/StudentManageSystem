@@ -1,24 +1,23 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.StudentDao;
+import com.njfu.edu.dao.impl.StudentDaoImpl;
 import com.njfu.edu.pojo.CheckStudentFormatResult;
 import com.njfu.edu.pojo.ImportResult;
+import com.njfu.edu.pojo.OperationLog;
 import com.njfu.edu.pojo.Student;
-import com.njfu.edu.service.ManageStudentService;
+import com.njfu.edu.service.StudentService;
+import com.njfu.edu.utils.Tools;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.*;
 
-public class ManageStudentServiceImpl implements ManageStudentService {
-//    private ReadFile readFile = new ReadFile();
-    private StudentDao studentDao = new StudentDao();
+public class StudentServiceImpl implements StudentService {
+
+    private StudentDaoImpl studentDao = new StudentDaoImpl();
     private List<Student> studentList;
-    public ManageStudentServiceImpl() {
-        try {
-            studentList = studentDao.selectStudentMessage();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public StudentServiceImpl() {
+        studentList = studentDao.selectStudentMessage();
     }
 
     /**
@@ -47,35 +46,30 @@ public class ManageStudentServiceImpl implements ManageStudentService {
         return null;
     }
 
-    /**
-     * 更新学生信息
-     * @param id
-     * @param name
-     * @param age
-     * @param sex
-     * @param school
-     * @param address
-     * @throws IOException
-     */
-    @Override
-    public void UpdateStudentById(String id, String name, Integer age, Boolean sex, String school, String address)
-            throws IOException {
-        Student student = selectStudetById(id);
-        DeleteStudentById(id);
-
-        if (name != null)
-            student.setStudent_name(name);
-        if (age != null)
-            student.setAge(age);
-        if (sex != null)
-            student.setSex(sex);
-        if (school != null)
-            student.setSchool(school);
-        if (address != null)
-            student.setAddress(address);
-
-        InsertStudentMessage(student);
-    }
+//    /**
+//     * 更新学生信息
+//     * @param stu
+//     * @throws IOException
+//     */
+//    @Override
+//    public void UpdateStudentById(Student stu)
+//            throws IOException {
+//        Student student = selectStudetById(stu.getStudent_id());
+//        DeleteStudentById(stu.getStudent_id());
+//
+//        if (stu.getStudent_name() != null)
+//            student.setStudent_name(student.getStudent_name());
+//        if (stu.getAge() != null)
+//            student.setAge(stu.getAge());
+//        if (stu.getSex() != null)
+//            student.setSex(stu.getSex());
+//        if (stu.getSchool() != null)
+//            student.setSchool(stu.getSchool());
+//        if (stu.getAddress() != null)
+//            student.setAddress(stu.getAddress());
+//
+//        InsertStudentMessage(student);
+//    }
 
 
     /**
@@ -106,11 +100,9 @@ public class ManageStudentServiceImpl implements ManageStudentService {
             comparator = new Comparator<Student>() {
                 @Override
                 public int compare(Student o1, Student o2) {
-                    int tmp = 1;
-                    if (o1.isSex() && !o2.isSex())
+                    int tmp = -1;
+                    if (o1.getSex() > o2.getSex())
                         tmp = 1;
-                    if (!o1.isSex() && o2.isSex())
-                        tmp = -1;
                     return tmp;
                 }
             };
@@ -212,5 +204,29 @@ public class ManageStudentServiceImpl implements ManageStudentService {
     @Override
     public void BackwardSystem() {
         System.exit(0);
+    }
+
+    @Override
+    public boolean changeStudentInfo(Student student) throws ParseException {
+        // 1:检查该学号的学生是否存在、查不到直接报错
+        Student stu = null;
+        try {
+            stu = selectStudetById(String.valueOf(student.getStudent_id()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 2:更新学生信息
+        studentDao.updateStudentMessage(student);
+        // 3:添加日志记录
+        OperationLog operationLog = new OperationLog();
+        operationLog.setOperationMsg("运行正常");
+        operationLog.setDeleteFlag(1);
+        operationLog.setUserId(Integer.valueOf(student.getStudent_id()));
+        operationLog.setInfo("学生信息更新");
+        operationLog.setUpdateTime(Tools.getCurrentSystemDate());
+        // 4：返回操作成功
+
+        // 如果上面的操作有异常，回滚。
+        return true;
     }
 }

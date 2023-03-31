@@ -1,9 +1,8 @@
 package com.njfu.edu.utils;
 
-import com.njfu.edu.pojo.Manager;
-import com.njfu.edu.pojo.Student;
-import com.njfu.edu.pojo.User;
 import org.junit.Test;
+
+import java.sql.SQLException;
 
 public class CRUDUtilsTest {
 
@@ -21,8 +20,7 @@ public class CRUDUtilsTest {
     }
 
     @Test
-    public void testquery(){
-        CRUDUtils<Object> objectCRUDUtils = new CRUDUtils<>();
-        System.out.println(objectCRUDUtils.query(User.class, "select * from lessontraining.user"));
+    public void testquery() throws SQLException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+
     }
 }

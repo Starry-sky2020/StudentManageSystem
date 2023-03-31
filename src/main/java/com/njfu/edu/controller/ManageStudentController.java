@@ -2,14 +2,15 @@ package com.njfu.edu.controller;
 
 import com.njfu.edu.pojo.ImportResult;
 import com.njfu.edu.pojo.Student;
-import com.njfu.edu.service.impl.ManageStudentServiceImpl;
+import com.njfu.edu.service.impl.StudentServiceImpl;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.*;
 
 public class ManageStudentController {
 
-    private ManageStudentServiceImpl manageStudentService = new ManageStudentServiceImpl();
+    private StudentServiceImpl manageStudentService = new StudentServiceImpl();
 
     /**
      * 查询所有学生
@@ -32,17 +33,12 @@ public class ManageStudentController {
 
     /**
      * 更新学生信息
-     * @param id
-     * @param name
-     * @param age
-     * @param sex
-     * @param school
-     * @param address
+     * @param student
      * @throws IOException
      */
-    public void UpdateStudentById(String id, String name, Integer age, Boolean sex, String school, String address)
-            throws IOException {
-        manageStudentService.UpdateStudentById(id,name,age,sex,school,address);
+    public void UpdateStudentById(Student student)
+            throws IOException, ParseException {
+        manageStudentService.changeStudentInfo(student);
     }
 
     /**
