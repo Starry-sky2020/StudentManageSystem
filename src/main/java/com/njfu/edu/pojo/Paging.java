@@ -11,13 +11,13 @@ public class Paging<T> {
     //记录总条数
     private long recordTotal;
     //每页最大记录条数
-    private Integer pageSize;
+    private Integer pageSize = 5;
     //总页数
     private Integer pageTotal;
     //开始记录条数
     private Integer startNum;
     //当前页数
-    private Integer pageNum;
+    private Integer pageNum = 1;
     //分页的页面数据
     private List<T> list;
     //参数

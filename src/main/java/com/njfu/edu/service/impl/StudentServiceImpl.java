@@ -1,24 +1,19 @@
 package com.njfu.edu.service.impl;
 
 import com.njfu.edu.dao.impl.StudentDaoImpl;
-import com.njfu.edu.pojo.CheckStudentFormatResult;
-import com.njfu.edu.pojo.ImportResult;
-import com.njfu.edu.pojo.OperationLog;
-import com.njfu.edu.pojo.Student;
+import com.njfu.edu.pojo.*;
 import com.njfu.edu.service.StudentService;
+import com.njfu.edu.utils.CRUDUtils;
 import com.njfu.edu.utils.Tools;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.*;
 
 public class StudentServiceImpl implements StudentService {
 
     private StudentDaoImpl studentDao = new StudentDaoImpl();
-    private List<Student> studentList;
-    public StudentServiceImpl() {
-        studentList = studentDao.selectStudentMessage();
-    }
 
     /**
      * 查询所有学生
@@ -26,50 +21,29 @@ public class StudentServiceImpl implements StudentService {
      * @throws IOException
      */
     @Override
+    public List<Student> selectAllStudent(Paging paging) throws IOException {
+        return studentDao.selectStudentMessage(paging);
+    }
+
+    @Override
     public List<Student> selectAllStudent() throws IOException {
         return studentDao.selectStudentMessage();
     }
 
+    public long selectItems(Paging paging) throws SQLException {
+        return studentDao.selectItems(paging);
+    }
+
     /**
      * 根据学号查询学生信息
-     * @param id
+     * @param paging
      * @return
      * @throws IOException
      */
     @Override
-    public Student selectStudetById(String id) throws IOException {
-        for (int i = 0; i < studentList.size(); i++){
-            if (studentList.get(i).getStudent_id().equals(id)){
-                return studentList.get(i);
-            }
-        }
-        return null;
+    public Student selectStudetById(Paging paging) throws IOException {
+        return studentDao.selectStudentMessage(paging).get(0);
     }
-
-//    /**
-//     * 更新学生信息
-//     * @param stu
-//     * @throws IOException
-//     */
-//    @Override
-//    public void UpdateStudentById(Student stu)
-//            throws IOException {
-//        Student student = selectStudetById(stu.getStudent_id());
-//        DeleteStudentById(stu.getStudent_id());
-//
-//        if (stu.getStudent_name() != null)
-//            student.setStudent_name(student.getStudent_name());
-//        if (stu.getAge() != null)
-//            student.setAge(stu.getAge());
-//        if (stu.getSex() != null)
-//            student.setSex(stu.getSex());
-//        if (stu.getSchool() != null)
-//            student.setSchool(stu.getSchool());
-//        if (stu.getAddress() != null)
-//            student.setAddress(stu.getAddress());
-//
-//        InsertStudentMessage(student);
-//    }
 
 
     /**
@@ -79,38 +53,91 @@ public class StudentServiceImpl implements StudentService {
      * @throws IOException
      */
     @Override
-    public List<Student> SortByStudetId(String key) throws IOException {
-        Comparator<Student> comparator = null;
+    public List<Student> SortByStudetId(Paging paging) throws IOException {
+        return studentDao.selectStudentMessage(paging);
+    }
 
-        if (SORT_BY_ID.equals(key)){
-            comparator = new Comparator<Student>() {
-                @Override
-                public int compare(Student o1, Student o2) {
-                    return o1.getStudent_id().compareTo(o2.getStudent_id());
+    /**
+     * 检查导入的学生信息格式
+     * @param filePath
+     * @return
+     */
+    public CheckStudentFormatResult checkStudentFormat(String filePath) {
+        CheckStudentFormatResult result = new CheckStudentFormatResult();
+
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(filePath));
+            String line = bufferedReader.readLine();
+
+            while(line != null){
+                line = bufferedReader.readLine();
+                if(line != null){
+                    // 判断检查
+                    String[] data = line.split(" ");
+                    if(data.length != 6){
+                        result.getFailData().add(line);
+                        result.getFailCode().add(CheckStudentFormatResult.CODE_1);
+                        continue;
+                    }
+                    if(!Tools.checkString(data[0])){
+                        result.getFailData().add(line);
+                        result.getFailCode().add(CheckStudentFormatResult.CODE_2);
+                        continue;
+                    }
+                    if(!Tools.checkInt(data[2])){
+                        result.getFailData().add(line);
+                        result.getFailCode().add(CheckStudentFormatResult.CODE_3);
+                        continue;
+                    }
+                    //获取全部数据
+                    Paging<Student> paging = new Paging<>();
+                    List<Student> list = new ArrayList<>();
+                    long items = studentDao.selectItems(new Paging());
+                    paging.setRecordTotal(items);
+
+                    for (int i = 1; i <= paging.getPageTotal(); i++){
+                        paging.setPageNum(i);
+                        list.addAll(studentDao.selectStudentMessage(paging));
+                    }
+                    //检查重复的数据
+                    if (checkRepeatData(list, data[0])){
+                        result.getExistData().add(line);
+                        result.getFailCode().add(CheckStudentFormatResult.CODE_4);
+                        continue;
+                    }
+
+                    result.getSuccessData().add(line);
                 }
-            };
-        } else if (SORT_BY_AGE.equals(key)) {
-            comparator = new Comparator<Student>() {
-                @Override
-                public int compare(Student o1, Student o2) {
-                    return o1.getAge() - o2.getAge();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // 关闭资源
+            if(bufferedReader != null){
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            };
-        } else if (SORT_BY_SEX.equals(key)) {
-            comparator = new Comparator<Student>() {
-                @Override
-                public int compare(Student o1, Student o2) {
-                    int tmp = -1;
-                    if (o1.getSex() > o2.getSex())
-                        tmp = 1;
-                    return tmp;
-                }
-            };
+            }
         }
 
-        Collections.sort(studentList,comparator);
+        if(result.getFailData().size() == 0 && result.getExistData().size() == 0){
+            result.setResult(true);
+            result.setMessage("检查成功");
+        }
+        return result;
+    }
 
-        return studentList;
+    public Boolean checkRepeatData(List<Student> list, String id){
+
+        for (int i = 0; i < list.size(); i++)
+            if (list.get(i).getStudent_id().equals(id))
+                return true;
+        return false;
     }
 
     /**
@@ -141,7 +168,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         //文件内容格式检查
-        CheckStudentFormatResult checkStudentFormatResult = studentDao.checkStudentFormat(path);
+        CheckStudentFormatResult checkStudentFormatResult = checkStudentFormat(path);
         if (checkStudentFormatResult.getFailCode().size() != 0){
             importResult.setResult(false);
             importResult.setCode(ImportResult.CODE_3);
@@ -156,7 +183,11 @@ public class StudentServiceImpl implements StudentService {
              * selectStudetById查询系统文件内的学生
              * 检验导入的学生是否已经存在在系统文件
              */
-            if (selectStudetById(data.get(i).getStudent_id()) == null){
+            Paging<Student> paging = new Paging<>();
+            Map<String,Object> map = new HashMap<>();
+            map.put("student_id",data.get(i).getStudent_id());
+            paging.setMap(map);
+            if (selectStudetById(paging) == null){
                 importResult.getSuccessData().add(data.get(i));
             } else {
                 importResult.getExistData().add(data.get(i));
@@ -211,7 +242,11 @@ public class StudentServiceImpl implements StudentService {
         // 1:检查该学号的学生是否存在、查不到直接报错
         Student stu = null;
         try {
-            stu = selectStudetById(String.valueOf(student.getStudent_id()));
+            Paging paging = new Paging();
+            Map<String,Object> map = new HashMap<>();
+            map.put("student_id",String.valueOf(student.getStudent_id()));
+            paging.setMap(map);
+            stu = selectStudetById(paging);
         } catch (IOException e) {
             e.printStackTrace();
         }

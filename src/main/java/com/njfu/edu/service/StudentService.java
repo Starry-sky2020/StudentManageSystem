@@ -1,6 +1,7 @@
 package com.njfu.edu.service;
 
 import com.njfu.edu.pojo.ImportResult;
+import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
 
 import java.io.IOException;
@@ -9,32 +10,31 @@ import java.util.List;
 
 public interface StudentService {
 
-    String SORT_BY_ID = "1";
-    String SORT_BY_AGE = "2";
-    String SORT_BY_SEX = "3";
+    /**
+     * 查询所有学生信息
+     * 采用分页
+     * @return
+     */
+    List<Student> selectAllStudent(Paging paging) throws IOException;
+
     /**
      * 查询所有学生信息
      * @return
+     * @throws IOException
      */
     List<Student> selectAllStudent() throws IOException;
 
     /**
      * 根据学生学号查询学生信息
-     * @param id
      * @return
      */
-    Student selectStudetById(String id) throws IOException;
+    Student selectStudetById(Paging paging) throws IOException;
 
-//    /**
-//     * 修改学生信息
-//     */
-//    void UpdateStudentById(Student student)
-//            throws IOException;
 
     /**
      * 根据学号进行排序
      */
-    List<Student> SortByStudetId(String key) throws IOException;
+    List<Student> SortByStudetId(Paging paging) throws IOException;
 
     /**
      * 导入学生信息

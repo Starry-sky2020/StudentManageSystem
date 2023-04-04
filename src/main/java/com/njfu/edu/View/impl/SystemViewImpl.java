@@ -1,18 +1,15 @@
 package com.njfu.edu.View.impl;
 
 import com.njfu.edu.controller.CheckPersonController;
-import com.njfu.edu.controller.ManageStudentController;
+import com.njfu.edu.controller.StudentController;
 import com.njfu.edu.controller.UserSubmitController;
-import com.njfu.edu.pojo.ImportResult;
-import com.njfu.edu.pojo.Manager;
-import com.njfu.edu.pojo.Student;
-import com.njfu.edu.pojo.User;
+import com.njfu.edu.pojo.*;
 import com.njfu.edu.utils.Tools;
 import com.njfu.edu.View.SystemView;
 import com.njfu.edu.controller.ManageUserMessageController;
 
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +18,7 @@ import java.util.Scanner;
 
 public class SystemViewImpl implements SystemView {
 
-    private ManageStudentController manageStudentController = new ManageStudentController();
+    private StudentController studentController = new StudentController();
     private ManageUserMessageController manageUserMessageController = new ManageUserMessageController();
     private CheckPersonController personController = new CheckPersonController();
     private UserSubmitController submitController = new UserSubmitController();
@@ -150,7 +147,7 @@ public class SystemViewImpl implements SystemView {
             str = scanner.nextLine();
             if (!Tools.checkInt(str))
                 System.out.println("请输入数字");
-            else if (!Tools.compareString(str,"1") || Tools.compareString(str,"10")){
+            else if (Integer.valueOf(str) < 0 || Integer.valueOf(str) > 10){
                 System.out.println("请输入1-10的数字");
             } else {
                 choice = Integer.valueOf(str);
@@ -162,17 +159,33 @@ public class SystemViewImpl implements SystemView {
     }
 
     @Override
-    public void ManageStudentMessage(int choice) throws IOException, ParseException {
+    public void ManageStudentMessage(int choice) throws IOException, ParseException, SQLException {
         while(true){
             if (choice == 1){
-                List<Student> studentList = manageStudentController.selectAllStudent();
+                Paging<Student> paging = new Paging<>();
+                System.out.println("请输入查询页数");
+                Scanner scanner = new Scanner(System.in);
+                String s = scanner.nextLine();
+//                Map<String,Object> map = new HashMap<>();
+//                map.put("age",22);
+//                map.put("name","李");
+//                paging.setMap(map);
+                int pageNum = Integer.valueOf(s);
+                long l = studentController.selectItems(paging);
+                paging.setRecordTotal(l);
+                paging.setPageNum(pageNum);
+                List<Student> studentList = studentController.selectAllStudent(paging);
                 for (Student student : studentList)
                     System.out.println(student);
             } else if (choice == 2) {
                 System.out.println("请输入要查询学生的学号");
                 Scanner scanner = new Scanner(System.in);
                 String id = scanner.nextLine();
-                Student student = manageStudentController.selectStudetById(id);
+                Paging<Student> paging = new Paging<>();
+                Map<String,Object> map = new HashMap<>();
+                map.put("student_id",id);
+                paging.setMap(map);
+                Student student = studentController.selectStudetById(paging);
                 System.out.println(student);
             } else if (choice == 3) {
                 System.out.println("请输入要修改的学生信息:");
@@ -201,28 +214,40 @@ public class SystemViewImpl implements SystemView {
                 student.setSex(f);
                 student.setSchool(school);
                 student.setAddress(address);
-                manageStudentController.UpdateStudentById(student);
+                studentController.UpdateStudentById(student);
             } else if (choice == 4) {
                 System.out.println("请输入要删除的学生信息:");
                 Scanner scanner = new Scanner(System.in);
                 System.out.print("学号：");
                 String id = scanner.nextLine();
-                manageStudentController.DeleteStudentById(id);
+                studentController.DeleteStudentById(id);
             } else if (choice == 5) {
-                List<Student> studentList = manageStudentController.SortByStudetId("1");
+                Paging<Student> paging = new Paging<>();
+                Map<String,Object> map = new HashMap<>();
+                map.put("key","1");
+                paging.setMap(map);
+                List<Student> studentList = studentController.SortByStudetId(paging);
                 System.out.println(studentList);
             } else if (choice == 6) {
-                List<Student> studentList = manageStudentController.SortByStudetId("2");
+                Paging<Student> paging = new Paging<>();
+                Map<String,Object> map = new HashMap<>();
+                map.put("key","2");
+                paging.setMap(map);
+                List<Student> studentList = studentController.SortByStudetId(paging);
                 System.out.println(studentList);
             } else if (choice == 7) {
-                List<Student> studentList = manageStudentController.SortByStudetId("3");
+                Paging<Student> paging = new Paging<>();
+                Map<String,Object> map = new HashMap<>();
+                map.put("key","3");
+                paging.setMap(map);
+                List<Student> studentList = studentController.SortByStudetId(paging);
                 System.out.println(studentList);
             } else if (choice == 8) {
                 System.out.println("导入数据文件的路径:");
 //                Scanner scanner = new Scanner(System.in);
 //                String path = scanner.nextLine();
                 //测试 写死路径
-                ImportResult importResult = manageStudentController.ImportStudentMessage("src/main/resources/test.txt");
+                ImportResult importResult = studentController.ImportStudentMessage("src/main/resources/test.txt");
                 System.out.println(importResult);
             } else if (choice == 9) {
                 System.out.println("请输入要插入的学生信息:");
@@ -251,9 +276,9 @@ public class SystemViewImpl implements SystemView {
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
-                manageStudentController.InsertStudentMessage(student);
+                studentController.InsertStudentMessage(student);
             } else if (choice == 10) {
-                manageStudentController.BackwardSystem();
+                studentController.BackwardSystem();
             }
 
             System.out.println("请输入选择：");

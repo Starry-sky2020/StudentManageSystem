@@ -1,7 +1,5 @@
 package com.njfu.edu.utils;
 
-import jdk.nashorn.internal.scripts.JD;
-
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,10 +8,11 @@ import java.util.List;
 
 public class CRUDUtils<T> {
 
-    public static<T> long selectItems(Class<T> tClass, String sql, Object... params) throws SQLException {
+    public static<T> long selectItems(String sql, Object... params) throws SQLException {
         Connection connection = JDBCUtils.getConnection();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
+        long value = 0;
 
         try {
             preparedStatement = connection.prepareStatement(sql);
@@ -23,16 +22,15 @@ public class CRUDUtils<T> {
             }
             resultSet = preparedStatement.executeQuery();
             connection.commit();
+            if(resultSet.next()){
+                value = (long) resultSet.getObject(1);
+            }
         } catch (SQLException e) {
             if (connection != null)
                     connection.rollback();
-            throw new RuntimeException(e);
+            e.printStackTrace();
         } finally {
             JDBCUtils.release(connection,preparedStatement,resultSet);
-        }
-        long value = 0;
-        if(resultSet.next()){
-            value = (long) resultSet.getObject(1);
         }
 
         return value;

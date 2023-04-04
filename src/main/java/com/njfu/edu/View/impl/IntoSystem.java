@@ -7,6 +7,7 @@ import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.controller.ManageUserMessageController;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Map;
 
@@ -51,6 +52,8 @@ public class IntoSystem {
                     throw new RuntimeException(e);
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             }
             else if (identity == 2){
@@ -71,6 +74,8 @@ public class IntoSystem {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             }

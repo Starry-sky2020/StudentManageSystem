@@ -1,34 +1,41 @@
 package com.njfu.edu.controller;
 
 import com.njfu.edu.pojo.ImportResult;
+import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
 import com.njfu.edu.service.impl.StudentServiceImpl;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.*;
 
-public class ManageStudentController {
+public class StudentController {
 
-    private StudentServiceImpl manageStudentService = new StudentServiceImpl();
+    private StudentServiceImpl studentService = new StudentServiceImpl();
 
     /**
      * 查询所有学生
+     * @param paging
      * @return
      * @throws IOException
      */
-    public List<Student> selectAllStudent() throws IOException {
-        return manageStudentService.selectAllStudent();
+    public List<Student> selectAllStudent(Paging paging) throws IOException {
+        return studentService.selectAllStudent(paging);
+    }
+
+    public long selectItems(Paging paging) throws SQLException {
+        return studentService.selectItems(paging);
     }
 
     /**
      * 根据学号查询学生信息
-     * @param id
+     * @param paging
      * @return
      * @throws IOException
      */
-    public Student selectStudetById(String id) throws IOException {
-       return manageStudentService.selectStudetById(id);
+    public Student selectStudetById(Paging paging) throws IOException {
+       return studentService.selectStudetById(paging);
     }
 
     /**
@@ -38,7 +45,7 @@ public class ManageStudentController {
      */
     public void UpdateStudentById(Student student)
             throws IOException, ParseException {
-        manageStudentService.changeStudentInfo(student);
+        studentService.changeStudentInfo(student);
     }
 
     /**
@@ -47,8 +54,8 @@ public class ManageStudentController {
      * @return
      * @throws IOException
      */
-    public List<Student> SortByStudetId(String key) throws IOException {
-       return manageStudentService.SortByStudetId(key);
+    public List<Student> SortByStudetId(Paging paging) throws IOException {
+       return studentService.SortByStudetId(paging);
     }
 
     /**
@@ -58,7 +65,7 @@ public class ManageStudentController {
      * @throws IOException
      */
     public ImportResult ImportStudentMessage(String path) throws IOException {
-        return manageStudentService.ImportStudentMessage(path);
+        return studentService.ImportStudentMessage(path);
     }
 
     /**
@@ -69,7 +76,7 @@ public class ManageStudentController {
      * @throws IOException
      */
     public void InsertStudentMessage(Student student) throws IOException {
-        manageStudentService.InsertStudentMessage(student);
+        studentService.InsertStudentMessage(student);
     }
 
     /**
@@ -79,13 +86,13 @@ public class ManageStudentController {
      * @throws IOException
      */
     public void DeleteStudentById(String id) throws IOException {
-       manageStudentService.DeleteStudentById(id);
+       studentService.DeleteStudentById(id);
     }
 
     /**
      * 退出系统
      */
     public void BackwardSystem() {
-        manageStudentService.BackwardSystem();
+        studentService.BackwardSystem();
     }
 }
