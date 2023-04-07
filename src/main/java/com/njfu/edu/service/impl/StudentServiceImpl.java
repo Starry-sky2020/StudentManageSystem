@@ -1,12 +1,16 @@
 package com.njfu.edu.service.impl;
 
+import com.njfu.edu.Main;
+import com.njfu.edu.dao.LogDao;
+import com.njfu.edu.dao.impl.LogDaoImpl;
 import com.njfu.edu.dao.impl.StudentDaoImpl;
 import com.njfu.edu.pojo.*;
 import com.njfu.edu.service.StudentService;
-import com.njfu.edu.utils.CRUDUtils;
+import com.njfu.edu.utils.JDBCUtils;
 import com.njfu.edu.utils.Tools;
 
 import java.io.*;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.*;
@@ -17,21 +21,66 @@ public class StudentServiceImpl implements StudentService {
 
     /**
      * 查询所有学生
+     * 分页查询
      * @return
      * @throws IOException
      */
     @Override
-    public List<Student> selectAllStudent(Paging paging) throws IOException {
-        return studentDao.selectStudentMessage(paging);
-    }
+    public void selectAllStudent(Paging paging) throws IOException{
+        Connection connection = JDBCUtils.getConnection();
+        LogDao logDao = new LogDaoImpl();
+        OperationLog operationLog = new OperationLog();
 
-    @Override
-    public List<Student> selectAllStudent() throws IOException {
-        return studentDao.selectStudentMessage();
-    }
+        boolean autoCommit = false;
+        boolean res = false;
+        try {
+            autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
 
-    public long selectItems(Paging paging) throws SQLException {
-        return studentDao.selectItems(paging);
+            long items = studentDao.selectItems(connection, paging);
+            paging.setRecordTotal(items);
+
+            List<Student> students = studentDao.selectStudentMessage(connection, paging);
+            paging.setList(students);
+
+            operationLog.setOperationMsg("分页查询学生信息");
+            operationLog.setDeleteFlag(1);
+            //管理员和用户都具有管理学生的功能，判断执行对象是谁
+            if (Main.is_manager) operationLog.setUserId(Main.managerId);
+            if (Main.is_user) operationLog.setUserId(Main.userId);
+            operationLog.setInfo("无");
+            operationLog.setUpdateTime(Tools.getCurrentSystemDate());
+
+            logDao.insert(connection, operationLog);
+
+            res = true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                e.printStackTrace();
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (res){
+                try {
+                    connection.commit();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                connection.setAutoCommit(autoCommit);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            JDBCUtils.connRelease(connection);
+        }
     }
 
     /**
@@ -42,7 +91,8 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public Student selectStudetById(Paging paging) throws IOException {
-        return studentDao.selectStudentMessage(paging).get(0);
+        Connection connection = JDBCUtils.getConnection();
+        return studentDao.selectStudentMessage(connection,paging).get(0);
     }
 
 
@@ -54,7 +104,8 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public List<Student> SortByStudetId(Paging paging) throws IOException {
-        return studentDao.selectStudentMessage(paging);
+        Connection connection = JDBCUtils.getConnection();
+        return studentDao.selectStudentMessage(connection,paging);
     }
 
     /**
@@ -64,6 +115,7 @@ public class StudentServiceImpl implements StudentService {
      */
     public CheckStudentFormatResult checkStudentFormat(String filePath) {
         CheckStudentFormatResult result = new CheckStudentFormatResult();
+        Connection connection = JDBCUtils.getConnection();
 
         BufferedReader bufferedReader = null;
         try {
@@ -93,12 +145,12 @@ public class StudentServiceImpl implements StudentService {
                     //获取全部数据
                     Paging<Student> paging = new Paging<>();
                     List<Student> list = new ArrayList<>();
-                    long items = studentDao.selectItems(new Paging());
+                    long items = studentDao.selectItems(connection,new Paging());
                     paging.setRecordTotal(items);
 
                     for (int i = 1; i <= paging.getPageTotal(); i++){
                         paging.setPageNum(i);
-                        list.addAll(studentDao.selectStudentMessage(paging));
+                        list.addAll(studentDao.selectStudentMessage(connection,paging));
                     }
                     //检查重复的数据
                     if (checkRepeatData(list, data[0])){
@@ -133,7 +185,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public Boolean checkRepeatData(List<Student> list, String id){
-
         for (int i = 0; i < list.size(); i++)
             if (list.get(i).getStudent_id().equals(id))
                 return true;
@@ -148,8 +199,8 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public ImportResult ImportStudentMessage(String path) throws IOException {
-
         ImportResult importResult = new ImportResult();
+        Connection connection = JDBCUtils.getConnection();
 
         //文件名为空
         if (path == null || path.equals("")){
@@ -195,7 +246,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         for (Student student : data){
-            studentDao.insertStudent(student);
+            studentDao.insertStudent(connection,student);
         }
 
         importResult.setResult(true);
@@ -215,7 +266,8 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public void InsertStudentMessage(Student student) throws IOException {
-        studentDao.insertStudent(student);
+        Connection connection = JDBCUtils.getConnection();
+        studentDao.insertStudent(connection,student);
     }
 
     /**
@@ -226,7 +278,8 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public void DeleteStudentById(String id) throws IOException {
-        studentDao.deleteStudentById(id);
+        Connection connection = JDBCUtils.getConnection();
+        studentDao.deleteStudentById(connection,id);
     }
 
     /**
@@ -239,29 +292,63 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public boolean changeStudentInfo(Student student) throws ParseException {
-        // 1:检查该学号的学生是否存在、查不到直接报错
-        Student stu = null;
-        try {
-            Paging paging = new Paging();
-            Map<String,Object> map = new HashMap<>();
-            map.put("student_id",String.valueOf(student.getStudent_id()));
-            paging.setMap(map);
-            stu = selectStudetById(paging);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // 2:更新学生信息
-        studentDao.updateStudentMessage(student);
-        // 3:添加日志记录
+        Connection connection = JDBCUtils.getConnection();
         OperationLog operationLog = new OperationLog();
-        operationLog.setOperationMsg("运行正常");
-        operationLog.setDeleteFlag(1);
-        operationLog.setUserId(Integer.valueOf(student.getStudent_id()));
-        operationLog.setInfo("学生信息更新");
-        operationLog.setUpdateTime(Tools.getCurrentSystemDate());
-        // 4：返回操作成功
+        LogDao logDao = new LogDaoImpl();
 
-        // 如果上面的操作有异常，回滚。
+        boolean res = false;
+        boolean autoCommit = false;
+
+        try {
+            autoCommit = connection.getAutoCommit();
+            //关闭自动提交事务
+            connection.setAutoCommit(false);
+            // 1检查该学号的学生是否存在、查不到直接报错
+            Student stu = studentDao.selectStudentById(connection, Long.valueOf(student.getStudent_id()));
+
+            if (stu != null){
+                //更新学生信息
+                studentDao.updateStudentMessage(connection,student);
+                //日志信息
+                operationLog.setOperationMsg("更新学生信息");
+                operationLog.setDeleteFlag(1);
+                //管理员和用户都具有管理学生的功能，判断执行对象是谁
+                if (Main.is_manager) operationLog.setUserId(Main.managerId);
+                if (Main.is_user) operationLog.setUserId(Main.userId);
+
+                operationLog.setInfo("无");
+                operationLog.setUpdateTime(Tools.getCurrentSystemDate());
+                //添加日志记录
+                logDao.insert(connection,operationLog);
+            } else return false; //更改信息为空
+
+            res = true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                e.printStackTrace();
+            }
+        } finally {
+            if (res){
+                try {
+                    connection.commit();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                connection.setAutoCommit(autoCommit);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            JDBCUtils.connRelease(connection);
+        }
+
         return true;
     }
 }

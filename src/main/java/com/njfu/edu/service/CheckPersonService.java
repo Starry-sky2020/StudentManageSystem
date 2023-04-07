@@ -1,6 +1,7 @@
 package com.njfu.edu.service;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.Map;
 
 public interface CheckPersonService {
@@ -9,7 +10,7 @@ public interface CheckPersonService {
      * @return
      * @throws IOException
      */
-    Boolean UserLoginView(Map<String,String> map) throws IOException;
+    Boolean UserLoginView(Map<String, String> map) throws IOException;
 
     /**
      *

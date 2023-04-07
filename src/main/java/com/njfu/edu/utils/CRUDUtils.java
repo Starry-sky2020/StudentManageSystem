@@ -8,29 +8,24 @@ import java.util.List;
 
 public class CRUDUtils<T> {
 
-    public static<T> long selectItems(String sql, Object... params) throws SQLException {
-        Connection connection = JDBCUtils.getConnection();
+    public static<T> long selectItems(Connection connection,String sql, Object... params) throws SQLException {
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         long value = 0;
 
         try {
             preparedStatement = connection.prepareStatement(sql);
-            connection.setAutoCommit(false);
             for (int i = 0; params != null && i < params.length; i++){
                 preparedStatement.setObject(i+1,params[i]);
             }
             resultSet = preparedStatement.executeQuery();
-            connection.commit();
             if(resultSet.next()){
                 value = (long) resultSet.getObject(1);
             }
         } catch (SQLException e) {
-            if (connection != null)
-                    connection.rollback();
             e.printStackTrace();
         } finally {
-            JDBCUtils.release(connection,preparedStatement,resultSet);
+            JDBCUtils.release(null,preparedStatement,resultSet);
         }
 
         return value;
@@ -43,22 +38,19 @@ public class CRUDUtils<T> {
      * @return
      * @param <T>
      */
-    public static <T> List<T> query(Class<T> tClass, String sql, Object... params){
+    public static <T> List<T> query(Connection connection,Class<T> tClass, String sql, Object... params){
 
         List<T> result = new ArrayList<>();
-        Connection connection = JDBCUtils.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
             preparedStatement = connection.prepareStatement(sql);
-            connection.setAutoCommit(false);
             for (int i = 0; params != null && i < params.length; i++){
                 preparedStatement.setObject(i+1,params[i]);
             }
 
             resultSet = preparedStatement.executeQuery();
-            connection.commit();
             //取出集合结果中的列名
             ResultSetMetaData metaData = resultSet.getMetaData();
             List<String> list = new ArrayList<>();
@@ -78,7 +70,6 @@ public class CRUDUtils<T> {
 
                 while (iterator.hasNext()){
                     String columnLabel = iterator.next();
-
                     Object value = resultSet.getObject(columnLabel);
                     //解决pojo类和数据库字段类型不匹配问题
                     if (columnLabel.equals("student_id") || columnLabel.equals("manager_id") || columnLabel.equals("user_id"))
@@ -91,21 +82,10 @@ public class CRUDUtils<T> {
 
                 result.add(t);
             }
-        } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            throw new RuntimeException();
-        } catch (NoSuchFieldException | IllegalAccessException e){
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
         } finally {
-            JDBCUtils.release(connection,preparedStatement,resultSet);
+            JDBCUtils.release(null,preparedStatement,resultSet);
         }
 
         return result;
@@ -117,30 +97,20 @@ public class CRUDUtils<T> {
      * @param data
      * @return
      */
-    public static int insert(String sql, Object... data){
-        int i;
-        Connection connection = JDBCUtils.getConnection();
+    public static int insert(Connection connection,String sql, Object... data){
+        int i = 0;
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(sql);
-            connection.setAutoCommit(false);
             int cnt = 1;
             for (Object elems : data){
                 preparedStatement.setObject(cnt++,elems);
             }
             i = preparedStatement.executeUpdate();
-            connection.commit();
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            throw new RuntimeException(e);
+            e.printStackTrace();
         } finally {
-            JDBCUtils.release(connection,preparedStatement,null);
+            JDBCUtils.stmtRelease(preparedStatement);
         }
 
         return i;
@@ -152,30 +122,20 @@ public class CRUDUtils<T> {
      * @param data
      * @return
      */
-    public int delete(String sql, Object... data){
-        int res;
-        Connection connection = JDBCUtils.getConnection();
+    public int delete(Connection connection,String sql, Object... data){
+        int res = 0;
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(sql);
-            connection.setAutoCommit(false);
             int cnt = 1;
             for (Object elems : data){
                 preparedStatement.setObject(cnt++,elems);
             }
             res = preparedStatement.executeUpdate();
-            connection.commit();
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            throw new RuntimeException(e);
+            e.printStackTrace();
         } finally {
-            JDBCUtils.release(connection,preparedStatement,null);
+            JDBCUtils.stmtRelease(preparedStatement);
         }
 
         return res;
@@ -187,30 +147,19 @@ public class CRUDUtils<T> {
      * @param params
      * @return
      */
-    public static int update(String sql, Object... params) {
-        Connection connection = JDBCUtils.getConnection();
+    public static int update(Connection connection,String sql, Object... params) {
         PreparedStatement preparedStatement = null;
         int cnt = -1;
         try {
             preparedStatement = connection.prepareStatement(sql);
-            connection.setAutoCommit(false);
             for(int i = 0; params != null && i < params.length; i++){
                 preparedStatement.setObject(i+1, params[i]);
             }
-
             cnt = preparedStatement.executeUpdate();
-            connection.commit();
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
             e.printStackTrace();
         } finally {
-            JDBCUtils.release(connection,preparedStatement,null);
+            JDBCUtils.stmtRelease(preparedStatement);
         }
         return cnt;
     }

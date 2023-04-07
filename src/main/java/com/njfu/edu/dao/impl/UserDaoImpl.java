@@ -5,17 +5,17 @@ import com.njfu.edu.pojo.User;
 import com.njfu.edu.utils.CRUDUtils;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.List;
 
 public class UserDaoImpl implements UserDao {
 
     private CRUDUtils crudUtils = new CRUDUtils();
-    public void insertUser(String username, String password){
+    public void insertUser(Connection connection,String username, String password){
 
         String sql = "insert into lessontraining.user(username,password)" +
                 "value(?,?)";
-
-        crudUtils.insert(sql,username,password);
+        crudUtils.insert(connection,sql,username,password);
     }
 
     /**
@@ -25,10 +25,10 @@ public class UserDaoImpl implements UserDao {
      * @throws IOException
      */
 
-    public List<User> selectUserMessage() {
+    public List<User> selectUserMessage(Connection connection) {
 
         String sql = "select * from lessontraining.user";
-        List<User> userList = CRUDUtils.query(User.class, sql, null);
+        List<User> userList = CRUDUtils.query(connection,User.class, sql, null);
 
         return userList;
     }
@@ -37,10 +37,10 @@ public class UserDaoImpl implements UserDao {
      * 根据用户id删除用户
      * @param id
      */
-    public void deleteUserById(String id){
+    public void deleteUserById(Connection connection,String id){
 
         String sql = "delete from lessontraining.user where user_id = ?";
-        crudUtils.delete(sql,id);
+        crudUtils.delete(connection,sql,id);
     }
 
 }

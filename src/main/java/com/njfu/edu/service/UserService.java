@@ -5,15 +5,12 @@ import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
-public interface ManageUserService {
+public interface UserService {
 
-    /**
-     * 管理员管理学生信息
-     * 与用户功能重合
-     */
-//    void ToUser() throws IOException;
 
     /**
      * 查询所有用户
@@ -28,8 +25,10 @@ public interface ManageUserService {
     void deleteUserById(String id) throws IOException;
 
     /**
-     * 创建管理账号
-     * @param manager
+     * 用户注册
+     * @param map
+     * @return
+     * @throws IOException
      */
-    SubmitResult createManger(Manager manager) throws IOException;
+    SubmitResult userSubmit(Map<String, String> map) throws IOException;
 }

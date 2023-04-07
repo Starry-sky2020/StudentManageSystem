@@ -49,4 +49,34 @@ public class JDBCUtils {
             conn = null;
         }
     }
+
+    public static void connRelease(Connection connection){
+        if (connection != null){
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static void stmtRelease(PreparedStatement statement){
+        if (statement != null){
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static void resRelease(ResultSet resultSet){
+        if (resultSet != null){
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

@@ -4,8 +4,10 @@ import com.njfu.edu.dao.StudentDao;
 import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
 import com.njfu.edu.utils.CRUDUtils;
+import com.njfu.edu.utils.JDBCUtils;
 
 import java.io.*;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,19 +15,19 @@ import java.util.List;
 public class StudentDaoImpl implements StudentDao {
 
     private CRUDUtils crudUtils = new CRUDUtils();
-    public void insertStudent(Student student){
+    public void insertStudent(Connection connection,Student student){
         String sql = "insert into lessonTraining.student(student_name,age,sex,school,address) " +
                 "value(?,?,?,?,?)";
-        crudUtils.insert(sql,student.getStudent_name(),String.valueOf(student.getAge()),String.valueOf(student.getSex()),student.getSchool(),student.getAddress());
+        crudUtils.insert(connection,sql,student.getStudent_name(),String.valueOf(student.getAge()),String.valueOf(student.getSex()),student.getSchool(),student.getAddress());
     }
 
-    public List<Student> selectStudentMessage() {
-        String sql = "select * from lessontraining.student";
-        List<Student> studentList = CRUDUtils.query(Student.class, sql, null);
-        return studentList;
+    public Student selectStudentById(Connection connection, long id){
+        String sql = "select * from lessontraining.student where student_id = ?";
+        Object params[] = {id};
+        return CRUDUtils.query(connection,Student.class,sql,params).get(0);
     }
 
-    public long selectItems(Paging paging) throws SQLException {
+    public long selectItems(Connection connection,Paging paging) throws SQLException {
 
         String sqlItems = "select count(*) from lessontraining.student where 1 = 1";
 
@@ -45,7 +47,7 @@ public class StudentDaoImpl implements StudentDao {
             }
         }
 
-        long cnt = CRUDUtils.selectItems(sqlItems,args);
+        long cnt = CRUDUtils.selectItems(connection,sqlItems,args);
 
         return cnt;
     }
@@ -57,7 +59,7 @@ public class StudentDaoImpl implements StudentDao {
      * @return
      */
     @Override
-    public List<Student> selectStudentMessage(Paging paging){
+    public List<Student> selectStudentMessage(Connection connection,Paging paging){
         int page = paging.getPageNum()-1;
         int pageSize = paging.getPageSize();
         String sql = "select * from lessontraining.student where 1 = 1";
@@ -76,6 +78,7 @@ public class StudentDaoImpl implements StudentDao {
             if (paging.getMap().containsKey("student_id")){
                 sql += " and student_id = ?";
             }
+            //根据id 年龄 性别进行排序，并使用分页查询
             if (paging.getMap().containsKey("key")){
                 if (paging.getMap().get("key").equals(SORT_BY_ID)) {
                     sql += " order by student_id";
@@ -95,7 +98,7 @@ public class StudentDaoImpl implements StudentDao {
             }
         }
         sql += " limit "+page+","+pageSize;
-        return CRUDUtils.query(Student.class,sql,args);
+        return CRUDUtils.query(connection,Student.class,sql,args);
     }
 
     public List<Student> selectStudentMessage(String filePath) throws IOException {
@@ -137,38 +140,19 @@ public class StudentDaoImpl implements StudentDao {
      * 根据学号删除学生
      * @param id
      */
-    public void deleteStudentById(String id){
+    public void deleteStudentById(Connection connection,String id){
         String sql = "delete from lessontraining.student where student_id = ?";
-        crudUtils.delete(sql,id);
+        crudUtils.delete(connection,sql,id);
     }
 
     @Override
-    public void updateStudentMessage(Student student) {
+    public void updateStudentMessage(Connection connection,Student student) {
         String sql = "update lessontraining.student set " +
-                "student_id = ?,student_name = ?,age = ?," +
+                "student_name = ?,age = ?," +
                 "sex = ?,school = ?,address = ?,deleteFlag = ?,info = ?," +
                 "updateTime = ? where student_id = ?";
-//        if (student.getStudent_id() != null)
-//            sql += " student_id = ?,";
-//        if (student.getStudent_name() != null)
-//            sql += " student_name = ?,";
-//        if (student.getAge() != null)
-//            sql += " student_age = ?,";
-//        if (student.getSex() != null)
-//            sql += " sex = ?,";
-//        if (student.getSchool() != null)
-//            sql += " school = ?,";
-//        if (student.getAddress() != null)
-//            sql += " deleteFlag = ?,";
-//        if (student.getInfo() != null)
-//            sql += " info = ?,";
-//        if (student.getUpdateTime() != null)
-//            sql += " updateTime = ?,";
-//        sql.substring(0,sql.length()-2);
-//        sql += "where student_id = ?";
 
-        CRUDUtils.update(sql,
-                student.getStudent_id(),
+        CRUDUtils.update(connection,sql,
                 student.getStudent_name(),
                 student.getAge(),
                 student.getSex(),

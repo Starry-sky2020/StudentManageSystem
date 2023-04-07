@@ -1,12 +1,11 @@
 package com.njfu.edu.View.impl;
 
-import com.njfu.edu.controller.CheckPersonController;
+import com.njfu.edu.Main;
 import com.njfu.edu.controller.StudentController;
-import com.njfu.edu.controller.UserSubmitController;
 import com.njfu.edu.pojo.*;
 import com.njfu.edu.utils.Tools;
 import com.njfu.edu.View.SystemView;
-import com.njfu.edu.controller.ManageUserMessageController;
+import com.njfu.edu.controller.UserController;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,9 +18,7 @@ import java.util.Scanner;
 public class SystemViewImpl implements SystemView {
 
     private StudentController studentController = new StudentController();
-    private ManageUserMessageController manageUserMessageController = new ManageUserMessageController();
-    private CheckPersonController personController = new CheckPersonController();
-    private UserSubmitController submitController = new UserSubmitController();
+    private UserController userController = new UserController();
 
     public Integer MainUI(){
         int choice;
@@ -171,10 +168,11 @@ public class SystemViewImpl implements SystemView {
 //                map.put("name","李");
 //                paging.setMap(map);
                 int pageNum = Integer.valueOf(s);
-                long l = studentController.selectItems(paging);
-                paging.setRecordTotal(l);
                 paging.setPageNum(pageNum);
-                List<Student> studentList = studentController.selectAllStudent(paging);
+
+                studentController.selectAllStudent(paging);
+                List<Student> studentList = paging.getList();
+
                 for (Student student : studentList)
                     System.out.println(student);
             } else if (choice == 2) {
@@ -214,6 +212,7 @@ public class SystemViewImpl implements SystemView {
                 student.setSex(f);
                 student.setSchool(school);
                 student.setAddress(address);
+
                 studentController.UpdateStudentById(student);
             } else if (choice == 4) {
                 System.out.println("请输入要删除的学生信息:");
@@ -370,12 +369,12 @@ public class SystemViewImpl implements SystemView {
 
         while(true){
             if (choice == 1){
-                List<User> userList = manageUserMessageController.selectAllUser();
+                List<User> userList = userController.selectAllUser();
                 System.out.println(userList);
             } else if (choice == 2) {
                 System.out.println("请输入删除用户Id");
                 String id = scanner.nextLine();
-                manageUserMessageController.deleteUserById(id);
+                userController.deleteUserById(id);
             } else if (choice == 3) {
                 ManageUserView();
             }

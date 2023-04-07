@@ -4,8 +4,10 @@ import com.njfu.edu.pojo.ImportResult;
 import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
 import com.njfu.edu.service.impl.StudentServiceImpl;
+import com.njfu.edu.utils.JDBCUtils;
 
 import java.io.*;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.*;
@@ -20,12 +22,8 @@ public class StudentController {
      * @return
      * @throws IOException
      */
-    public List<Student> selectAllStudent(Paging paging) throws IOException {
-        return studentService.selectAllStudent(paging);
-    }
-
-    public long selectItems(Paging paging) throws SQLException {
-        return studentService.selectItems(paging);
+    public void selectAllStudent(Paging paging) throws IOException {
+        studentService.selectAllStudent(paging);
     }
 
     /**

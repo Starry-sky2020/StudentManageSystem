@@ -15,14 +15,8 @@ public interface StudentService {
      * 采用分页
      * @return
      */
-    List<Student> selectAllStudent(Paging paging) throws IOException;
+    void selectAllStudent(Paging paging) throws IOException;
 
-    /**
-     * 查询所有学生信息
-     * @return
-     * @throws IOException
-     */
-    List<Student> selectAllStudent() throws IOException;
 
     /**
      * 根据学生学号查询学生信息

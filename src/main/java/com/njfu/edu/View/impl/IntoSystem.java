@@ -1,12 +1,13 @@
 package com.njfu.edu.View.impl;
 
 import com.njfu.edu.controller.CheckPersonController;
-import com.njfu.edu.controller.UserSubmitController;
+import com.njfu.edu.controller.ManagerController;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
-import com.njfu.edu.controller.ManageUserMessageController;
+import com.njfu.edu.controller.UserController;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Map;
@@ -14,9 +15,9 @@ import java.util.Map;
 public class IntoSystem {
 
     private SystemViewImpl systemView = new SystemViewImpl();
-    private ManageUserMessageController manageUserMessageController = new ManageUserMessageController();
+    private UserController userController = new UserController();
+    private ManagerController managerController = new ManagerController();
     private CheckPersonController personController = new CheckPersonController();
-    private UserSubmitController submitController = new UserSubmitController();
 
     public void IntoSystemView() {
         int choice = systemView.MainUI();
@@ -37,7 +38,7 @@ public class IntoSystem {
                                 systemView.ManageUserMessage(manageUserMessageView);
                             } else if (manageUserView == 3) { //创建管理员
                                 Manager manager = systemView.createManager();
-                                SubmitResult manger = manageUserMessageController.createManger(manager);
+                                SubmitResult manger = managerController.createManger(manager);
                                 System.out.println(manger);
                             } else if (manageUserView == 4){ //退出系统
                                 System.exit(0);
@@ -85,7 +86,7 @@ public class IntoSystem {
             try {
                 do {
                     map = systemView.UserSubmit();
-                    submitResult = submitController.userSubmit(map);
+                    submitResult = userController.userSubmit(map);
                     System.out.println(submitResult);
                 } while (submitResult.getCode() != 4);
 
