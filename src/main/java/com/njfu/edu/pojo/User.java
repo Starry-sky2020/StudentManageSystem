@@ -3,6 +3,8 @@ package com.njfu.edu.pojo;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 @Data
 public class User {
 
@@ -12,18 +14,10 @@ public class User {
     private Integer age;
     private boolean sex;
     private String address;
+    private long studentId;
+    private int deleteFlag;
+    private String info;
+    private Timestamp updateTime;
 
-    public User(String user_id, String username, String password, Integer age, boolean sex, String address){
-        this.user_id = user_id;
-        this.username = username;
-        this.password = password;
-        this.age = age;
-        this.sex = sex;
-        this.address = address;
-    }
-
-    public User(){
-
-    }
 
 }

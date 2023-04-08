@@ -1,21 +1,22 @@
 package com.njfu.edu.service;
 
 import com.njfu.edu.pojo.Student;
+import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.impl.StudentServiceImpl;
+import com.njfu.edu.service.impl.UserServiceImpl;
 import com.njfu.edu.utils.Tools;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 public class StudentServiceImplTest {
 
-//    @Test
-//    public void testUpdate() throws ParseException {
-//        StudentServiceImpl studentService = new StudentServiceImpl();
-//        Student student = new Student("1","欧阳修",21,1,"中山大学","广东广州");
-//        student.setUpdateTime(Tools.getCurrentSystemDate());
-//        student.setInfo("更新信息");
-//        student.setDeleteFlag(1);
-//        studentService.changeStudentInfo(student);
-//    }
+    @Test
+    public void testUpdate() throws ParseException, IOException {
+        UserServiceImpl userService = new UserServiceImpl();
+        List<User> users = userService.selectAllUser();
+        System.out.println(users);
+    }
 }

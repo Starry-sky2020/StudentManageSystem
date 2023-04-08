@@ -3,9 +3,9 @@ package com.njfu.edu.service;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
+import jakarta.servlet.http.HttpServlet;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 

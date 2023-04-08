@@ -28,6 +28,7 @@ public class UserDaoImpl implements UserDao {
     public List<User> selectUserMessage(Connection connection) {
 
         String sql = "select * from lessontraining.user";
+        System.out.println("hhhhhhhhhh");
         List<User> userList = CRUDUtils.query(connection,User.class, sql, null);
 
         return userList;

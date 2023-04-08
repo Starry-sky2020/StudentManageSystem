@@ -7,6 +7,7 @@ import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.CheckPersonService;
 import com.njfu.edu.utils.JDBCUtils;
+import jakarta.servlet.http.HttpServlet;
 
 import java.io.IOException;
 import java.sql.Connection;

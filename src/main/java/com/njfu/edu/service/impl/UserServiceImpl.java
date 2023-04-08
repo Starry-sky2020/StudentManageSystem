@@ -1,18 +1,14 @@
 package com.njfu.edu.service.impl;
 
 import com.njfu.edu.Main;
-import com.njfu.edu.dao.LogDao;
 import com.njfu.edu.dao.impl.LogDaoImpl;
-import com.njfu.edu.dao.impl.ManagerDaoImpl;
 import com.njfu.edu.dao.impl.UserDaoImpl;
-import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.OperationLog;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.UserService;
 import com.njfu.edu.utils.JDBCUtils;
 import com.njfu.edu.utils.Tools;
-import jdk.nashorn.internal.scripts.JD;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -24,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserServiceImpl implements UserService {
+
 
     private UserDaoImpl userDaoImpl = new UserDaoImpl();
     private SubmitResult submitResult = new SubmitResult();
@@ -132,4 +129,6 @@ public class UserServiceImpl implements UserService {
 
         return submitResult;
     }
+
+
 }

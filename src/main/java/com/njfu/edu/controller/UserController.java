@@ -1,17 +1,20 @@
 package com.njfu.edu.controller;
 
-import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.impl.UserServiceImpl;
-import com.njfu.edu.utils.JDBCUtils;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
-public class UserController {
+@WebServlet({"/manager/staff"})
+public class UserController extends HttpServlet {
 
     private UserServiceImpl userService = new UserServiceImpl();
 
@@ -26,5 +29,19 @@ public class UserController {
 
     public SubmitResult userSubmit(Map<String, String> map) throws IOException {
         return userService.userSubmit(map);
+    }
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String servletPath = request.getServletPath();
+
+        if (servletPath.equals("/manager/staff")){
+            List<User> users = selectAllUser();
+            request.setAttribute("users",users);
+            System.out.println(users);
+            request.getRequestDispatcher("/userList.jsp").forward(request,response);
+        }
     }
 }
