@@ -56,7 +56,7 @@ public class CRUDUtils<T> {
             List<String> list = new ArrayList<>();
             // 获取resultSet中的列数
             int cnt = metaData.getColumnCount();
-            for (int i = 1; i < cnt; i++){
+            for (int i = 1; i <= cnt; i++){
                 //获取第i列信息
                 String columnLabel = metaData.getColumnLabel(i);
                 //将第i列信息加入数组

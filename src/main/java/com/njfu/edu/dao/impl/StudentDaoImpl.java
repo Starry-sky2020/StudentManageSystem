@@ -75,9 +75,7 @@ public class StudentDaoImpl implements StudentDao {
                 sql += " and student_name like concat('%',?,'%')";
                 list.add( paging.getMap().get("name"));
             }
-            if (paging.getMap().containsKey("student_id")){
-                sql += " and student_id = ?";
-            }
+
             //根据id 年龄 性别进行排序，并使用分页查询
             if (paging.getMap().containsKey("key")){
                 if (paging.getMap().get("key").equals(SORT_BY_ID)) {
@@ -97,7 +95,7 @@ public class StudentDaoImpl implements StudentDao {
                 args[i] = list.get(i);
             }
         }
-        sql += " limit "+page+","+pageSize;
+        sql += " limit "+page*pageSize+","+pageSize;
         return CRUDUtils.query(connection,Student.class,sql,args);
     }
 

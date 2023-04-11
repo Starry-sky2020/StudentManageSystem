@@ -11,7 +11,7 @@ public class Paging<T> {
     //记录总条数
     private long recordTotal;
     //每页最大记录条数
-    private Integer pageSize = 5;
+    private Integer pageSize = 8;
     //总页数
     private Integer pageTotal;
     //开始记录条数
@@ -19,7 +19,7 @@ public class Paging<T> {
     //当前页数
     private Integer pageNum = 1;
     //分页的页面数据
-    private List<T> list;
+    public List<T> list;
     //参数
     private Map<String,Object> map;
 
@@ -29,4 +29,5 @@ public class Paging<T> {
             t++;
         return t;
     }
+
 }

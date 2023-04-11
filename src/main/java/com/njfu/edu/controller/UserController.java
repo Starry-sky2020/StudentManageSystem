@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet({"/manager/staff"})
+@WebServlet({"/manager/staff","/manager/deluser"})
 public class UserController extends HttpServlet {
 
     private UserServiceImpl userService = new UserServiceImpl();
@@ -40,8 +40,11 @@ public class UserController extends HttpServlet {
         if (servletPath.equals("/manager/staff")){
             List<User> users = selectAllUser();
             request.setAttribute("users",users);
-            System.out.println(users);
-            request.getRequestDispatcher("/userList.jsp").forward(request,response);
+            request.getRequestDispatcher("/list/userList.jsp").forward(request,response);
+        } else if (servletPath.equals("/manager/deluser")) {
+            String userId = request.getParameter("user_id");
+            deleteUserById(userId);
+            request.getRequestDispatcher("/manager/staff").forward(request,response);
         }
     }
 }

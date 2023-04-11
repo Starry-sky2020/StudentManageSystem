@@ -38,10 +38,9 @@ public class CheckPersonController extends HttpServlet {
             Map<String,String> map = new HashMap<>();
             map.put("managername",username);
             map.put("password",password);
-            System.out.println(username+" "+password);
             if (ManagerLoginView(map)){
                 // TODO 管理员管理信息页面
-                response.sendRedirect("/StudentManageSystem/managerFunction.html");
+                response.sendRedirect("/StudentManageSystem/list/index.html");
             } else {
                 // TODO error页面
                 response.sendRedirect("/StudentManageSystem/error.html");

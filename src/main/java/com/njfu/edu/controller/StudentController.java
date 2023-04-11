@@ -4,15 +4,19 @@ import com.njfu.edu.pojo.ImportResult;
 import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
 import com.njfu.edu.service.impl.StudentServiceImpl;
-import com.njfu.edu.utils.JDBCUtils;
+import com.njfu.edu.utils.Tools;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.*;
 
-public class StudentController {
+@WebServlet({"/stulist","/delstu","/updatestu","/selectstuid"})
+public class StudentController extends HttpServlet {
 
     private StudentServiceImpl studentService = new StudentServiceImpl();
 
@@ -28,12 +32,12 @@ public class StudentController {
 
     /**
      * 根据学号查询学生信息
-     * @param paging
+     * @param id
      * @return
      * @throws IOException
      */
-    public Student selectStudetById(Paging paging) throws IOException {
-       return studentService.selectStudetById(paging);
+    public Student selectStudetById(long id) throws IOException {
+       return studentService.selectStudetById(id);
     }
 
     /**
@@ -92,5 +96,59 @@ public class StudentController {
      */
     public void BackwardSystem() {
         studentService.BackwardSystem();
+    }
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String servletPath = request.getServletPath();
+
+        if (servletPath.equals("/stulist")){ //学生信息列表
+            Paging<Student> paging = new Paging<>();
+            String pageNum = request.getParameter("pageNum");
+            if (pageNum != null) paging.setPageNum(Integer.valueOf(pageNum));
+            selectAllStudent(paging);
+            request.setAttribute("paging",paging);
+            request.getRequestDispatcher("/list/stuList.jsp").forward(request,response);
+        } else if (servletPath.equals("/delstu")){ //删除学生
+            String id = request.getParameter("id");
+            DeleteStudentById(id);
+            request.getRequestDispatcher("/stulist").forward(request,response);
+        } else if (servletPath.equals("/selectstuid")) {  //根据id查询学生
+            String id = request.getParameter("id");
+            Student student = selectStudetById(Long.parseLong(id));
+            request.setAttribute("updateStu",student);
+            request.getRequestDispatcher("/list/updateStu.jsp").forward(request,response);
+        } else if (servletPath.equals("/updatestu")) { //修改学生信息
+            String stuId = request.getParameter("stuId");
+            String stuName = request.getParameter("stuName");
+            Integer stuAge = Integer.valueOf(request.getParameter("stuAge"));
+            Integer stuSex = Integer.valueOf(request.getParameter("stuSex"));
+            String stuSch = request.getParameter("stuSch");
+            String stuAdd = request.getParameter("stuAdd");
+            String stuInfo = request.getParameter("stuInfo");
+
+            Student student = new Student();
+            student.setStudent_id(stuId);
+            student.setStudent_name(stuName);
+            student.setAge(stuAge);
+            student.setSex(stuSex);
+            student.setSchool(stuSch);
+            student.setAddress(stuAdd);
+            student.setInfo(stuInfo);
+
+            try {
+                student.setUpdateTime(Tools.getCurrentSystemDate());
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                UpdateStudentById(student);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            request.getRequestDispatcher("/stulist").forward(request,response);
+        }
     }
 }

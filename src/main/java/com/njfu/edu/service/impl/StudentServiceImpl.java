@@ -85,14 +85,14 @@ public class StudentServiceImpl implements StudentService {
 
     /**
      * 根据学号查询学生信息
-     * @param paging
+     * @param id
      * @return
      * @throws IOException
      */
     @Override
-    public Student selectStudetById(Paging paging) throws IOException {
+    public Student selectStudetById(long id) throws IOException {
         Connection connection = JDBCUtils.getConnection();
-        return studentDao.selectStudentMessage(connection,paging).get(0);
+        return studentDao.selectStudentById(connection,id);
     }
 
 
@@ -234,11 +234,7 @@ public class StudentServiceImpl implements StudentService {
              * selectStudetById查询系统文件内的学生
              * 检验导入的学生是否已经存在在系统文件
              */
-            Paging<Student> paging = new Paging<>();
-            Map<String,Object> map = new HashMap<>();
-            map.put("student_id",data.get(i).getStudent_id());
-            paging.setMap(map);
-            if (selectStudetById(paging) == null){
+            if (selectStudetById(Long.parseLong(data.get(i).getStudent_id())) == null){
                 importResult.getSuccessData().add(data.get(i));
             } else {
                 importResult.getExistData().add(data.get(i));

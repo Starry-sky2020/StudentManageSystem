@@ -16,10 +16,8 @@ public class ManagerDaoImpl implements ManagerDao {
      * @return
      */
     public List<Manager> selectManagerMessage(Connection connection) {
-
         String sql = "select * from lessontraining.manager";
         List<Manager> managerList = CRUDUtils.query(connection,Manager.class, sql, null);
-
         return managerList;
     }
 

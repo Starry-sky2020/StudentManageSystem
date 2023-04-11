@@ -8,6 +8,7 @@ public class Manager {
     private String manager_id;
     private String manager_name;
     private String password;
+    private String remarks;
 
     public Manager(String manager_id,String manager_name,String password){
         this.manager_id = manager_id;

@@ -7,7 +7,6 @@ import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.CheckPersonService;
 import com.njfu.edu.utils.JDBCUtils;
-import jakarta.servlet.http.HttpServlet;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -48,6 +47,7 @@ public class CheckPersonServiceImpl implements CheckPersonService {
         for (int i = 0; i < managerList.size(); i++){
             if (managerList.get(i).getManager_name().equals(map.get("managername"))){
                 if (managerList.get(i).getPassword().equals(map.get("password"))){
+
                     Main.is_manager = true;
                     // TODO 待解决 如何获取管理员Id
                     Main.managerId = 1;

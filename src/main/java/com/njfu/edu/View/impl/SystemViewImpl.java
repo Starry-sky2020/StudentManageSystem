@@ -1,6 +1,5 @@
 package com.njfu.edu.View.impl;
 
-import com.njfu.edu.Main;
 import com.njfu.edu.controller.StudentController;
 import com.njfu.edu.pojo.*;
 import com.njfu.edu.utils.Tools;
@@ -179,11 +178,7 @@ public class SystemViewImpl implements SystemView {
                 System.out.println("请输入要查询学生的学号");
                 Scanner scanner = new Scanner(System.in);
                 String id = scanner.nextLine();
-                Paging<Student> paging = new Paging<>();
-                Map<String,Object> map = new HashMap<>();
-                map.put("student_id",id);
-                paging.setMap(map);
-                Student student = studentController.selectStudetById(paging);
+                Student student = studentController.selectStudetById(Long.parseLong(id));
                 System.out.println(student);
             } else if (choice == 3) {
                 System.out.println("请输入要修改的学生信息:");
