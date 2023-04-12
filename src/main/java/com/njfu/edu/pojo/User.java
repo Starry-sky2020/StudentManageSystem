@@ -18,6 +18,4 @@ public class User {
     private int deleteFlag;
     private String info;
     private Timestamp updateTime;
-
-
 }

@@ -66,6 +66,7 @@ public class StudentDaoImpl implements StudentDao {
 
         List list = new ArrayList<>();
         Object[] args = new Object[list.size()];
+
         if (paging.getMap() != null){
             if (paging.getMap().containsKey("age")){
                 sql += " and age = ?";
@@ -96,6 +97,7 @@ public class StudentDaoImpl implements StudentDao {
             }
         }
         sql += " limit "+page*pageSize+","+pageSize;
+        System.out.println(sql);
         return CRUDUtils.query(connection,Student.class,sql,args);
     }
 

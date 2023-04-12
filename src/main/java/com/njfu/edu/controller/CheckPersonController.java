@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 
 import java.io.IOException;
@@ -28,21 +29,20 @@ public class CheckPersonController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String servletPath = request.getServletPath();
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
+        HttpSession session = request.getSession();
 
         if (servletPath.equals("/managerlogin")){
             Map<String,String> map = new HashMap<>();
             map.put("managername",username);
             map.put("password",password);
             if (ManagerLoginView(map)){
-                // TODO 管理员管理信息页面
-                response.sendRedirect("/StudentManageSystem/list/index.html");
+                session.setAttribute("identity",0);
+                response.sendRedirect("/StudentManageSystem/list/manager-index.jsp");
             } else {
-                // TODO error页面
                 response.sendRedirect("/StudentManageSystem/error.html");
             }
 
@@ -51,10 +51,10 @@ public class CheckPersonController extends HttpServlet {
             map.put("username",username);
             map.put("password",password);
             if (UserLoginView(map)){
-                // TODO 管理员管理信息页面
-
+                session.setAttribute("identity",1);
+                response.sendRedirect("/StudentManageSystem/list/manager-index.jsp");
             } else {
-                // TODO error页面
+                response.sendRedirect("/StudentManageSystem/error.html");
             }
         }
     }

@@ -10,10 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet({"/manager/staff","/manager/deluser"})
+@WebServlet({"/manager/staff","/manager/deluser","/usersubmit"})
 public class UserController extends HttpServlet {
 
     private UserServiceImpl userService = new UserServiceImpl();
@@ -40,11 +41,21 @@ public class UserController extends HttpServlet {
         if (servletPath.equals("/manager/staff")){
             List<User> users = selectAllUser();
             request.setAttribute("users",users);
-            request.getRequestDispatcher("/list/userList.jsp").forward(request,response);
+            request.getRequestDispatcher("/list/manager-userList.jsp").forward(request,response);
         } else if (servletPath.equals("/manager/deluser")) {
             String userId = request.getParameter("user_id");
             deleteUserById(userId);
             request.getRequestDispatcher("/manager/staff").forward(request,response);
+        } else if (servletPath.equals("/usersubmit")) {
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            Map map = new HashMap();
+            map.put("username",username);
+            map.put("password",password);
+
+            SubmitResult submitResult = userSubmit(map);
+            request.setAttribute("userSubmit",submitResult);
+            request.getRequestDispatcher("/user-submit.jsp").forward(request,response);
         }
     }
 }

@@ -11,7 +11,9 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StudentDaoTest {
 
@@ -41,10 +43,14 @@ public class StudentDaoTest {
     public void testselect() throws ParseException {
         Connection connection = JDBCUtils.getConnection();
         StudentDaoImpl studentDao = new StudentDaoImpl();
-//        Paging<Student> paging = new Paging<>();
-//        List<Student> students = studentDao.selectStudentMessage(connection, paging);
-        ManagerDaoImpl managerDao = new ManagerDaoImpl();
-        List<Manager> managers = managerDao.selectManagerMessage(connection);
-        System.out.println(managers);
+        Paging<Student> paging = new Paging<>();
+        Map map = new HashMap<>();
+        map.put("key","2");
+        paging.setMap(map);
+        List<Student> students = studentDao.selectStudentMessage(connection, paging);
+        System.out.println(paging.getMap().containsKey("key"));
+        for (Student student:students){
+            System.out.println(student);
+        }
     }
 }

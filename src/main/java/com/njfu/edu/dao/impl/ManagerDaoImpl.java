@@ -22,8 +22,8 @@ public class ManagerDaoImpl implements ManagerDao {
     }
 
     public void insertManager(Connection connection,Manager manager){
-        String sql = "insert into lessontraining.manager(manager_name,password)" +
-                "value(?,?)";
-        crudUtils.insert(connection,sql, manager.getManager_name(),manager.getPassword());
+        String sql = "insert into lessontraining.manager(manager_name,password,remarks)" +
+                "value(?,?,?)";
+        crudUtils.insert(connection,sql, manager.getManager_name(),manager.getPassword(),manager.getRemarks());
     }
 }

@@ -10,12 +10,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
 
-@WebServlet({"/stulist","/delstu","/updatestu","/selectstuid"})
+@WebServlet({"/stulist","/delstu","/updatestu","/selectstuid","/addstu"})
 public class StudentController extends HttpServlet {
 
     private StudentServiceImpl studentService = new StudentServiceImpl();
@@ -39,6 +40,7 @@ public class StudentController extends HttpServlet {
     public Student selectStudetById(long id) throws IOException {
        return studentService.selectStudetById(id);
     }
+
 
     /**
      * 更新学生信息
@@ -105,11 +107,21 @@ public class StudentController extends HttpServlet {
 
         if (servletPath.equals("/stulist")){ //学生信息列表
             Paging<Student> paging = new Paging<>();
+            Map map = new HashMap();
             String pageNum = request.getParameter("pageNum");
+            String condition = request.getParameter("condition");
+            HttpSession session = request.getSession();
+            if (condition != null){
+                if (condition.equals("1"))  map = null;session.setAttribute("map",map);
+                if (condition.equals("2")) map.put("key","2");session.setAttribute("map",map);
+                if (condition.equals("3")) map.put("key","3");session.setAttribute("map",map);
+            }
+            paging.setMap((Map<String, Object>) session.getAttribute("map"));
             if (pageNum != null) paging.setPageNum(Integer.valueOf(pageNum));
             selectAllStudent(paging);
             request.setAttribute("paging",paging);
-            request.getRequestDispatcher("/list/stuList.jsp").forward(request,response);
+            paging.setMap(null);
+            request.getRequestDispatcher("/list/manager-stuList.jsp").forward(request,response);
         } else if (servletPath.equals("/delstu")){ //删除学生
             String id = request.getParameter("id");
             DeleteStudentById(id);
@@ -118,7 +130,7 @@ public class StudentController extends HttpServlet {
             String id = request.getParameter("id");
             Student student = selectStudetById(Long.parseLong(id));
             request.setAttribute("updateStu",student);
-            request.getRequestDispatcher("/list/updateStu.jsp").forward(request,response);
+            request.getRequestDispatcher("/list/manager-updateStu.jsp").forward(request,response);
         } else if (servletPath.equals("/updatestu")) { //修改学生信息
             String stuId = request.getParameter("stuId");
             String stuName = request.getParameter("stuName");
@@ -148,6 +160,26 @@ public class StudentController extends HttpServlet {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            request.getRequestDispatcher("/stulist").forward(request,response);
+        } else if (servletPath.equals("/addstu")) {  //添加学生
+            String stuName = request.getParameter("stuName");
+            Integer stuAge = Integer.valueOf(request.getParameter("stuAge"));
+            String stuSex = request.getParameter("stuSex");
+            String stuSch = request.getParameter("stuSch");
+            String stuAdd = request.getParameter("stuAdd");
+
+
+            Student student = new Student();
+            student.setStudent_name(stuName);
+            student.setAge(stuAge);
+            if (stuSex.equals("男")) student.setSex(1);
+            else student.setSex(0);
+
+            student.setSchool(stuSch);
+            student.setAddress(stuAdd);
+
+            InsertStudentMessage(student);
+
             request.getRequestDispatcher("/stulist").forward(request,response);
         }
     }

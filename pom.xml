@@ -11,7 +11,7 @@
   <name>StudentManageSystem</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
-
+  <packaging>war</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
@@ -63,12 +63,32 @@
       <version>3.1.0</version>
     </dependency>
 
-<!--    &lt;!&ndash; https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api &ndash;&gt;-->
-<!--    <dependency>-->
-<!--      <groupId>jakarta.servlet.jsp.jstl</groupId>-->
-<!--      <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>-->
-<!--      <version>3.0.0</version>-->
-<!--    </dependency>-->
+      <!--Log4j2自带的日志门面-->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>2.19.0</version>
+      </dependency>
+      <!--Log4j2具体的日志实现-->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>2.19.0</version>
+      </dependency>
+      <!--导入slf4j日志的门面（最终这个案例的日志实现是log4j2） -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.6</version>
+      </dependency>
+      <!--为slf4j绑定日志实现 log4j2的适配器 -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>2.9.0</version>
+      </dependency>
+
+
   </dependencies>
 
   <build>
@@ -112,6 +132,11 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.3.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
