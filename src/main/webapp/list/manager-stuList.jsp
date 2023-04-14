@@ -56,6 +56,26 @@
     function sexSort(){
         window.location.href='${pageContext.request.contextPath}/stulist?pageNum=1&condition=3';
     }
+
+    function getCollegeName(){
+        let sel = document.getElementById("college");
+        let index = sel.selectedIndex;
+        let collegeName = sel.options[index].value;
+        return collegeName;
+    }
+
+    function getClazzName(){
+        let sel = document.getElementById("clazz");
+        let index = sel.selectedIndex;
+        let clazzName = sel.options[index].value
+        return clazzName;
+    }
+
+    function query(){
+        let collegeName = getCollegeName();
+        let clazzName = getClazzName();
+        window.location.href='${pageContext.request.contextPath}/stulist?pageNum=1&collegeName='+collegeName+'&clazzName='+clazzName;
+    }
 </script>
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
@@ -134,6 +154,23 @@
                         <button type="button" class="btn btn-outline-primary" onclick="initSort()">默认排序</button>
                         <button type="button" class="btn btn-outline-primary" onclick="ageSort()">年龄升序</button>
                         <button type="button" class="btn btn-outline-primary" onclick="sexSort()">性别升序</button>
+                        <select id="college" onchange="getCollegeName()" class="form-select" aria-label="Default select example" style="width: 8rem;">
+                            <option selected>----请选择学院----</option>
+                            <c:forEach items="${college}" var="college">
+                                <option value="${college.collegeName}">
+                                        ${college.collegeName}
+                                </option>
+                            </c:forEach>
+                        </select>
+                        <select id="clazz" onchange="getClazzName()" class="form-select" aria-label="Default select example" style="width: 8rem;">
+                            <option selected>----请选择班级----</option>
+                            <c:forEach items="${clazz}" var="clazz">
+                                <option value="${clazz.studentclassName}">
+                                        ${clazz.studentclassName}
+                                </option>
+                            </c:forEach>
+                        </select>
+                        <button type="button" class="btn btn-outline-primary" onclick="query()">查询</button>
                     </div>
                     <div class="table-responsive">
                         <table class="table text-start align-middle table-bordered table-hover mb-0">
@@ -144,8 +181,8 @@
                                     <th scope="col">性别</th>
                                     <th scope="col">学校</th>
                                     <th scope="col">地址</th>
-                                    <th scope="col">信息</th>
-                                    <th scope="col">更新时间</th>
+                                    <th scope="col">班级</th>
+                                    <th scope="col">学院</th>
                                     <th scope="col">操作</th>
                                 </tr>
                             </thead>
@@ -157,8 +194,8 @@
                                         <td>${stu.sex}</td>
                                         <td>${stu.school}</td>
                                         <td>${stu.address}</td>
-                                        <td>${stu.info}</td>
-                                        <td>${stu.updateTime}</td>
+                                        <td>${stu.studentclassName}</td>
+                                        <td>${stu.collegeName}</td>
                                         <td>
                                             <button type="button" class="btn btn-danger m-2" onclick="delStu(${stu.student_id})">删除</button>
                                             <button type="button" class="btn btn-primary m-2" onclick="updateStu(${stu.student_id})">更新</button>

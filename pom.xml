@@ -62,33 +62,6 @@
       <artifactId>jakarta.servlet.jsp-api</artifactId>
       <version>3.1.0</version>
     </dependency>
-
-      <!--Log4j2自带的日志门面-->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api</artifactId>
-        <version>2.19.0</version>
-      </dependency>
-      <!--Log4j2具体的日志实现-->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <version>2.19.0</version>
-      </dependency>
-      <!--导入slf4j日志的门面（最终这个案例的日志实现是log4j2） -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>2.0.6</version>
-      </dependency>
-      <!--为slf4j绑定日志实现 log4j2的适配器 -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>2.9.0</version>
-      </dependency>
-
-
   </dependencies>
 
   <build>

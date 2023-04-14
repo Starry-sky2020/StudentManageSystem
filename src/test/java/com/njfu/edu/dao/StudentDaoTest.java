@@ -44,11 +44,11 @@ public class StudentDaoTest {
         Connection connection = JDBCUtils.getConnection();
         StudentDaoImpl studentDao = new StudentDaoImpl();
         Paging<Student> paging = new Paging<>();
-        Map map = new HashMap<>();
-        map.put("key","2");
-        paging.setMap(map);
+//        Map map = new HashMap<>();
+//        map.put("key","2");
+//        paging.setMap(map);
         List<Student> students = studentDao.selectStudentMessage(connection, paging);
-        System.out.println(paging.getMap().containsKey("key"));
+//        System.out.println(paging.getMap().containsKey("key"));
         for (Student student:students){
             System.out.println(student);
         }

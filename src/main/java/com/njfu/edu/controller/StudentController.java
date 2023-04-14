@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.*;
 
@@ -20,6 +21,8 @@ import java.util.*;
 public class StudentController extends HttpServlet {
 
     private StudentServiceImpl studentService = new StudentServiceImpl();
+    private CollegeController collegeController = new CollegeController();
+    private StudentClassController classController = new StudentClassController();
 
     /**
      * 查询所有学生
@@ -110,15 +113,36 @@ public class StudentController extends HttpServlet {
             Map map = new HashMap();
             String pageNum = request.getParameter("pageNum");
             String condition = request.getParameter("condition");
+            String collegeName = request.getParameter("collegeName");
+            String clazzName = request.getParameter("clazzName");
+
             HttpSession session = request.getSession();
-            if (condition != null){
-                if (condition.equals("1"))  map = null;session.setAttribute("map",map);
-                if (condition.equals("2")) map.put("key","2");session.setAttribute("map",map);
-                if (condition.equals("3")) map.put("key","3");session.setAttribute("map",map);
+
+            if (collegeName != null) {
+                map.put("collegeName",collegeName);
+                session.setAttribute("map_name",map);
             }
-            paging.setMap((Map<String, Object>) session.getAttribute("map"));
+            if (clazzName != null) {
+                map.put("clazzName",clazzName);
+                session.setAttribute("map_name",map);
+            }
+
+
+            if (condition != null){
+                if (condition.equals("1"))  map = null;
+                if (condition.equals("2")) map.put("key","2");
+                if (condition.equals("3")) map.put("key","3");
+                session.setAttribute("map",map);
+            }
+            if (session.getAttribute("map") != null) map.putAll((Map) session.getAttribute("map"));
+            if (session.getAttribute("map_name") != null) map.putAll((Map) session.getAttribute("map_name"));
+//            session.setAttribute("map",map);
+            paging.setMap(map);
+
             if (pageNum != null) paging.setPageNum(Integer.valueOf(pageNum));
             selectAllStudent(paging);
+            request.setAttribute("college",collegeController.queryData());
+            request.setAttribute("clazz", classController.queryStuedntClass());
             request.setAttribute("paging",paging);
             paging.setMap(null);
             request.getRequestDispatcher("/list/manager-stuList.jsp").forward(request,response);

@@ -16,6 +16,9 @@ public class Student {
     private int deleteFlag;
     private String info;
     private Timestamp updateTime;
+    private int studentClassId;
+    private String collegeName;
+    private String studentclassName;
 
 
     public Student(){

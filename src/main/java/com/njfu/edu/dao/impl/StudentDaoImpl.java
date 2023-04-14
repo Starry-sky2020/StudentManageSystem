@@ -4,7 +4,6 @@ import com.njfu.edu.dao.StudentDao;
 import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
 import com.njfu.edu.utils.CRUDUtils;
-import com.njfu.edu.utils.JDBCUtils;
 
 import java.io.*;
 import java.sql.Connection;
@@ -62,19 +61,33 @@ public class StudentDaoImpl implements StudentDao {
     public List<Student> selectStudentMessage(Connection connection,Paging paging){
         int page = paging.getPageNum()-1;
         int pageSize = paging.getPageSize();
-        String sql = "select * from lessontraining.student where 1 = 1";
-
+        System.out.println(paging.getMap());
+//        String sql = "select * from lessontraining.student, lessontraining.studentClass, where 1 = 1";
+        String sql = "select lessontraining.student.student_id,lessontraining.student.student_name,\n" +
+                "       lessontraining.student.age,lessontraining.student.sex,lessontraining.student.school,\n" +
+                "       lessontraining.student.address,lessontraining.studentclass.studentclassName,\n" +
+                "       lessontraining.college.collegeName\n" +
+                "from lessontraining.student,lessontraining.studentclass,lessontraining.college\n" +
+                "where lessontraining.studentclass.id = lessontraining.student.studentClassId\n" +
+                "and lessontraining.studentclass.collegeId = lessontraining.college.id";
         List list = new ArrayList<>();
-        Object[] args = new Object[list.size()];
-
+        Object[] args = null;
         if (paging.getMap() != null){
             if (paging.getMap().containsKey("age")){
                 sql += " and age = ?";
                 list.add(paging.getMap().get("age"));
             }
             if (paging.getMap().containsKey("name")){
-                sql += " and student_name like concat('%',?,'%')";
+                sql += " and lessontraining.student.student_name like concat('%',?,'%')";
                 list.add( paging.getMap().get("name"));
+            }
+            if (paging.getMap().containsKey("collegeName")){
+                sql += " and lessontraining.college.collegeName like concat('%',?,'%')";
+                list.add(paging.getMap().get("collegeName"));
+            }
+            if (paging.getMap().containsKey("clazzName")){
+                sql += " and lessontraining.studentclass.studentclassName like concat('%',?,'%')";
+                list.add(paging.getMap().get("clazzName"));
             }
 
             //根据id 年龄 性别进行排序，并使用分页查询
@@ -92,7 +105,10 @@ public class StudentDaoImpl implements StudentDao {
 
             }
 
-            for(int i = 0; i < list.size(); i++){
+            args = new Object[list.size()];
+            System.out.println(paging.getMap());
+//            System.out.println(list.get(0));
+            for(int i = list.size()-1; i >= 0; i--){
                 args[i] = list.get(i);
             }
         }

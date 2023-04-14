@@ -81,7 +81,7 @@
               <label for="floatingRemark">管理员信息</label>
             </div>
             <button type="submit" class="btn btn-primary py-3 w-100 mb-4">确认创建</button>
-            <a href="${pageContext.request.contextPath}/list/index.html">返回主界面</a>
+            <a href="${pageContext.request.contextPath}/list/stulist">返回主界面</a>
           </form>
         </div>
       </div>
