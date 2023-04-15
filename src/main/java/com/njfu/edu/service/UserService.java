@@ -31,4 +31,11 @@ public interface UserService {
      * @throws IOException
      */
     SubmitResult userSubmit(Map<String, String> map) throws IOException;
+
+    /**
+     * 获取用户id
+     * @param phone
+     * @return
+     */
+    Long selectUserIdByPhone(String phone);
 }

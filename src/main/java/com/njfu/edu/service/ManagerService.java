@@ -8,4 +8,5 @@ import java.sql.Connection;
 
 public interface ManagerService {
     SubmitResult createManger(Manager manager) throws IOException;
+    Long selectManagerIdByPhone(String phone);
 }

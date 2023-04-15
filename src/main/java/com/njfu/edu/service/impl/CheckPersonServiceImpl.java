@@ -1,6 +1,5 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.Main;
 import com.njfu.edu.dao.impl.ManagerDaoImpl;
 import com.njfu.edu.dao.impl.UserDaoImpl;
 import com.njfu.edu.pojo.Manager;
@@ -24,16 +23,11 @@ public class CheckPersonServiceImpl implements CheckPersonService {
     public Boolean UserLoginView(Map<String, String> map) throws IOException {
         Connection connection = JDBCUtils.getConnection();
         List<User> userList = userDaoImpl.selectUserMessage(connection);
-        for (int i = 0; i < userList.size(); i++){
+        for (int i = 0; i < userList.size(); i++)
             if (userList.get(i).getUsername().equals(map.get("username"))){
-                if (userList.get(i).getPassword().equals(map.get("password"))){
-                    Main.is_user = true;
-                    // TODO 待解决 如何获取用户Id
-                    Main.userId = 1;
+                if (userList.get(i).getPassword().equals(map.get("password")))
                     return true;
-                }
             }
-        }
         return false;
     }
 
@@ -44,17 +38,10 @@ public class CheckPersonServiceImpl implements CheckPersonService {
     public Boolean ManagerLoginView(Map<String,String> map) throws IOException {
         Connection connection = JDBCUtils.getConnection();
         List<Manager> managerList = managerDaoImpl.selectManagerMessage(connection);
-        for (int i = 0; i < managerList.size(); i++){
-            if (managerList.get(i).getManager_name().equals(map.get("managername"))){
-                if (managerList.get(i).getPassword().equals(map.get("password"))){
-
-                    Main.is_manager = true;
-                    // TODO 待解决 如何获取管理员Id
-                    Main.managerId = 1;
+        for (int i = 0; i < managerList.size(); i++)
+            if (managerList.get(i).getManager_name().equals(map.get("managername")))
+                if (managerList.get(i).getPassword().equals(map.get("password")))
                     return true;
-                }
-            }
-        }
         return false;
     }
 

@@ -20,7 +20,7 @@ public class LogDaoTest {
         operationLog.setOperationMsg("更新学生信息");
         operationLog.setDeleteFlag(1);
         //管理员和用户都具有管理学生的功能，判断执行对象是谁
-        operationLog.setUserId(222);
+        operationLog.setUserId(Long.valueOf(222));
 
         operationLog.setInfo("无");
         operationLog.setUpdateTime(Tools.getCurrentSystemDate());

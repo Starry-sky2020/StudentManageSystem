@@ -51,10 +51,10 @@
   <script>
     let res = ${resManager.getCode()};
       switch (res){
-        case 1: alert("用户名不合法");break;
+        case 1: alert("姓名不合法");break;
         case 2: alert("密码不合法");break;
-        case 3: alert("用户已存在");break;
-        case 4: alert("用户注册成功");break;
+        case 3: alert("管理员已存在");break;
+        case 4: alert("管理员创建成功");break;
       }
   </script>
   <!-- Sign In Start -->
@@ -81,7 +81,7 @@
               <label for="floatingRemark">管理员信息</label>
             </div>
             <button type="submit" class="btn btn-primary py-3 w-100 mb-4">确认创建</button>
-            <a href="${pageContext.request.contextPath}/list/stulist">返回主界面</a>
+            <a href="${pageContext.request.contextPath}/stulist">返回主界面</a>
           </form>
         </div>
       </div>

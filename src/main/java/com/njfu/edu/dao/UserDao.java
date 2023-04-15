@@ -9,4 +9,5 @@ public interface UserDao {
     void insertUser(Connection connection,String username, String password);
     List<User> selectUserMessage(Connection connection);
     void deleteUserById(Connection connection,String id);
+    Long selectUserIdByPhone(Connection connection, String phone);
 }

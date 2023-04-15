@@ -51,6 +51,7 @@ public class CRUDUtils<T> {
             }
 
             resultSet = preparedStatement.executeQuery();
+
             //取出集合结果中的列名
             ResultSetMetaData metaData = resultSet.getMetaData();
             List<String> list = new ArrayList<>();
@@ -67,19 +68,17 @@ public class CRUDUtils<T> {
             while (resultSet.next()){
                 T t = tClass.newInstance();
                 Iterator<String> iterator = list.iterator();
-
                 while (iterator.hasNext()){
                     String columnLabel = iterator.next();
                     Object value = resultSet.getObject(columnLabel);
                     //解决pojo类和数据库字段类型不匹配问题
-                    if (columnLabel.equals("student_id") || columnLabel.equals("manager_id") || columnLabel.equals("user_id"))
+                    if (columnLabel.equals("student_id") || columnLabel.equals("user_id"))
                         value = String.valueOf(value);
 
                     Field declaredField = tClass.getDeclaredField(columnLabel);
                     declaredField.setAccessible(true);
                     declaredField.set(t,value);
                 }
-
                 result.add(t);
             }
         } catch (Exception e) {
@@ -122,7 +121,7 @@ public class CRUDUtils<T> {
      * @param data
      * @return
      */
-    public int delete(Connection connection,String sql, Object... data){
+    public static int delete(Connection connection,String sql, Object... data){
         int res = 0;
         PreparedStatement preparedStatement = null;
         try {

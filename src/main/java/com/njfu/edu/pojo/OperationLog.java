@@ -10,7 +10,9 @@ public class OperationLog {
     private long id;
     private String operationMsg;
     private int deleteFlag;
-    private long userId;
+    private Long userId;
+    private Long managerId;
     private String info;
     private Timestamp updateTime;
+    private String identity;
 }

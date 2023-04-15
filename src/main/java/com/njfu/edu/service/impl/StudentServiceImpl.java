@@ -1,7 +1,7 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.Main;
 import com.njfu.edu.dao.LogDao;
+import com.njfu.edu.dao.StudentDao;
 import com.njfu.edu.dao.impl.LogDaoImpl;
 import com.njfu.edu.dao.impl.StudentDaoImpl;
 import com.njfu.edu.pojo.*;
@@ -17,7 +17,7 @@ import java.util.*;
 
 public class StudentServiceImpl implements StudentService {
 
-    private StudentDaoImpl studentDao = new StudentDaoImpl();
+    private StudentDao studentDao = new StudentDaoImpl();
 
     /**
      * 查询所有学生
@@ -29,7 +29,6 @@ public class StudentServiceImpl implements StudentService {
     public void selectAllStudent(Paging paging) throws IOException{
         Connection connection = JDBCUtils.getConnection();
         LogDao logDao = new LogDaoImpl();
-        OperationLog operationLog = new OperationLog();
 
         boolean autoCommit = false;
         boolean res = false;
@@ -43,15 +42,8 @@ public class StudentServiceImpl implements StudentService {
             List<Student> students = studentDao.selectStudentMessage(connection, paging);
             paging.setList(students);
 
-            operationLog.setOperationMsg("分页查询学生信息");
-            operationLog.setDeleteFlag(1);
-            //管理员和用户都具有管理学生的功能，判断执行对象是谁
-            if (Main.is_manager) operationLog.setUserId(Main.managerId);
-            if (Main.is_user) operationLog.setUserId(Main.userId);
-            operationLog.setInfo("无");
-            operationLog.setUpdateTime(Tools.getCurrentSystemDate());
-
-            logDao.insert(connection, operationLog);
+            logDao.insert(connection,
+                    Tools.getOpreationLog("分页查询学生信息",1,"无"));
 
             res = true;
 
@@ -278,18 +270,9 @@ public class StudentServiceImpl implements StudentService {
         studentDao.deleteStudentById(connection,id);
     }
 
-    /**
-     * 退出系统
-     */
-    @Override
-    public void BackwardSystem() {
-        System.exit(0);
-    }
-
     @Override
     public boolean changeStudentInfo(Student student) throws ParseException {
         Connection connection = JDBCUtils.getConnection();
-        OperationLog operationLog = new OperationLog();
         LogDao logDao = new LogDaoImpl();
 
         boolean res = false;
@@ -305,17 +288,9 @@ public class StudentServiceImpl implements StudentService {
             if (stu != null){
                 //更新学生信息
                 studentDao.updateStudentMessage(connection,student);
-                //日志信息
-                operationLog.setOperationMsg("更新学生信息");
-                operationLog.setDeleteFlag(1);
-                //管理员和用户都具有管理学生的功能，判断执行对象是谁
-                if (Main.is_manager) operationLog.setUserId(Main.managerId);
-                if (Main.is_user) operationLog.setUserId(Main.userId);
-
-                operationLog.setInfo("无");
-                operationLog.setUpdateTime(Tools.getCurrentSystemDate());
                 //添加日志记录
-                logDao.insert(connection,operationLog);
+                logDao.insert(connection,
+                        Tools.getOpreationLog("更新学生信息",1,"无"));
             } else return false; //更改信息为空
 
             res = true;

@@ -1,6 +1,7 @@
 package com.njfu.edu.service.impl;
 
 import com.njfu.edu.Main;
+import com.njfu.edu.dao.UserDao;
 import com.njfu.edu.dao.impl.LogDaoImpl;
 import com.njfu.edu.dao.impl.UserDaoImpl;
 import com.njfu.edu.pojo.OperationLog;
@@ -22,19 +23,19 @@ import java.util.regex.Pattern;
 public class UserServiceImpl implements UserService {
 
 
-    private UserDaoImpl userDaoImpl = new UserDaoImpl();
+    private UserDao userDao = new UserDaoImpl();
     private SubmitResult submitResult = new SubmitResult();
 
     @Override
     public List<User> selectAllUser() throws IOException {
         Connection connection = JDBCUtils.getConnection();
-        return userDaoImpl.selectUserMessage(connection);
+        return userDao.selectUserMessage(connection);
     }
 
     @Override
     public void deleteUserById(String id) throws IOException {
         Connection connection = JDBCUtils.getConnection();
-        userDaoImpl.deleteUserById(connection,id);
+        userDao.deleteUserById(connection,id);
     }
 
     /**
@@ -74,8 +75,8 @@ public class UserServiceImpl implements UserService {
         try {
             autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
-            List<User> userList = userDaoImpl.selectUserMessage(connection);
-
+            List<User> userList = userDao.selectUserMessage(connection);
+            System.out.println(userList);
             //用户名重复检测
             for (int i = 0; i < userList.size(); i++){
                 if (map.get("username").equals(userList.get(i).getUsername())){
@@ -86,16 +87,10 @@ public class UserServiceImpl implements UserService {
                 }
             }
 
-            userDaoImpl.insertUser(connection,map.get("username"),map.get("password"));
+            userDao.insertUser(connection,map.get("username"),map.get("password"));
 
-            OperationLog operationLog = new OperationLog();
-            operationLog.setOperationMsg("用户注册信息");
-            operationLog.setDeleteFlag(1);
-            operationLog.setUserId(Main.userId);
-            operationLog.setUpdateTime(Tools.getCurrentSystemDate());
-            operationLog.setInfo("无");
-
-            new LogDaoImpl().insert(connection,operationLog);
+            new LogDaoImpl().insert(connection,
+                    Tools.getOpreationLog("用户注册信息",1,"无"));
 
             submitResult.setResult(true);
             submitResult.setMessage("用户注册成功");
@@ -128,6 +123,13 @@ public class UserServiceImpl implements UserService {
         }
 
         return submitResult;
+    }
+
+    @Override
+    public Long selectUserIdByPhone(String phone) {
+        Connection connection = JDBCUtils.getConnection();
+        Long aLong = userDao.selectUserIdByPhone(connection, phone);
+        return aLong;
     }
 
 

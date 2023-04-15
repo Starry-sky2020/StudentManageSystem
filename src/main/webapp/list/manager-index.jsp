@@ -94,17 +94,9 @@
         <input class="form-control border-0" type="search" placeholder="Search">
       </form>
       <div class="navbar-nav align-items-center ms-auto">
-        <div class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-            <span class="d-none d-lg-inline-flex">John Doe</span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-            <a href="#" class="dropdown-item">My Profile</a>
-            <a href="#" class="dropdown-item">Settings</a>
-            <a href="#" class="dropdown-item">Log Out</a>
-          </div>
-        </div>
+       <a href="${pageContext.request.contextPath}/exitsystem">
+         <button type="button" class="btn btn-outline-warning">退出系统</button>
+       </a>
       </div>
     </nav>
     <!-- Navbar End -->
@@ -114,7 +106,7 @@
     <div class="container-fluid pt-4 px-4">
       <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
         <div class="col-md-6 text-center">
-          <h3>This is blank page</h3>
+          <h1>欢迎,${loginName}进入系统</h1>
         </div>
       </div>
     </div>
@@ -147,7 +139,6 @@
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}/list/lib/chart/chart.min.js"></script>
 <script src="${pageContext.request.contextPath}/list/lib/easing/easing.min.js"></script>
 <script src="${pageContext.request.contextPath}/list/lib/waypoints/waypoints.min.js"></script>
 <script src="${pageContext.request.contextPath}/list/lib/owlcarousel/owl.carousel.min.js"></script>

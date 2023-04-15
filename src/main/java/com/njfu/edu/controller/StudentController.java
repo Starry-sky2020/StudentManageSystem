@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.*;
-import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.*;
 
@@ -96,13 +95,6 @@ public class StudentController extends HttpServlet {
        studentService.DeleteStudentById(id);
     }
 
-    /**
-     * 退出系统
-     */
-    public void BackwardSystem() {
-        studentService.BackwardSystem();
-    }
-
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -110,13 +102,13 @@ public class StudentController extends HttpServlet {
 
         if (servletPath.equals("/stulist")){ //学生信息列表
             Paging<Student> paging = new Paging<>();
+            HttpSession session = request.getSession();
             Map map = new HashMap();
+
             String pageNum = request.getParameter("pageNum");
             String condition = request.getParameter("condition");
             String collegeName = request.getParameter("collegeName");
             String clazzName = request.getParameter("clazzName");
-
-            HttpSession session = request.getSession();
 
             if (collegeName != null) {
                 map.put("collegeName",collegeName);
@@ -127,33 +119,39 @@ public class StudentController extends HttpServlet {
                 session.setAttribute("map_name",map);
             }
 
-
             if (condition != null){
                 if (condition.equals("1"))  map = null;
                 if (condition.equals("2")) map.put("key","2");
                 if (condition.equals("3")) map.put("key","3");
                 session.setAttribute("map",map);
             }
-            if (session.getAttribute("map") != null) map.putAll((Map) session.getAttribute("map"));
-            if (session.getAttribute("map_name") != null) map.putAll((Map) session.getAttribute("map_name"));
-//            session.setAttribute("map",map);
+
+            //session域 记忆选择条件
+            if (session.getAttribute("map") != null)
+                map.putAll((Map) session.getAttribute("map"));
+            if (session.getAttribute("map_name") != null)
+                map.putAll((Map) session.getAttribute("map_name"));
             paging.setMap(map);
 
             if (pageNum != null) paging.setPageNum(Integer.valueOf(pageNum));
+
             selectAllStudent(paging);
+
             request.setAttribute("college",collegeController.queryData());
             request.setAttribute("clazz", classController.queryStuedntClass());
             request.setAttribute("paging",paging);
-            paging.setMap(null);
+
             request.getRequestDispatcher("/list/manager-stuList.jsp").forward(request,response);
         } else if (servletPath.equals("/delstu")){ //删除学生
             String id = request.getParameter("id");
             DeleteStudentById(id);
+
             request.getRequestDispatcher("/stulist").forward(request,response);
         } else if (servletPath.equals("/selectstuid")) {  //根据id查询学生
             String id = request.getParameter("id");
             Student student = selectStudetById(Long.parseLong(id));
             request.setAttribute("updateStu",student);
+
             request.getRequestDispatcher("/list/manager-updateStu.jsp").forward(request,response);
         } else if (servletPath.equals("/updatestu")) { //修改学生信息
             String stuId = request.getParameter("stuId");
@@ -175,15 +173,12 @@ public class StudentController extends HttpServlet {
 
             try {
                 student.setUpdateTime(Tools.getCurrentSystemDate());
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
                 UpdateStudentById(student);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+
+
             request.getRequestDispatcher("/stulist").forward(request,response);
         } else if (servletPath.equals("/addstu")) {  //添加学生
             String stuName = request.getParameter("stuName");
@@ -192,17 +187,16 @@ public class StudentController extends HttpServlet {
             String stuSch = request.getParameter("stuSch");
             String stuAdd = request.getParameter("stuAdd");
 
-
             Student student = new Student();
             student.setStudent_name(stuName);
             student.setAge(stuAge);
             if (stuSex.equals("男")) student.setSex(1);
             else student.setSex(0);
-
             student.setSchool(stuSch);
             student.setAddress(stuAdd);
 
             InsertStudentMessage(student);
+
 
             request.getRequestDispatcher("/stulist").forward(request,response);
         }

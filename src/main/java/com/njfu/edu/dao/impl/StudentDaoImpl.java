@@ -158,7 +158,7 @@ public class StudentDaoImpl implements StudentDao {
      */
     public void deleteStudentById(Connection connection,String id){
         String sql = "delete from lessontraining.student where student_id = ?";
-        crudUtils.delete(connection,sql,id);
+        CRUDUtils.delete(connection,sql,id);
     }
 
     @Override

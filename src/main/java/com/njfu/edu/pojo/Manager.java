@@ -5,12 +5,12 @@ import lombok.Data;
 @Data
 public class Manager {
 
-    private String manager_id;
+    private Long manager_id;
     private String manager_name;
     private String password;
     private String remarks;
 
-    public Manager(String manager_id,String manager_name,String password){
+    public Manager(Long manager_id,String manager_name,String password){
         this.manager_id = manager_id;
         this.manager_name = manager_name;
         this.password = password;

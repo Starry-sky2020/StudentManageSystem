@@ -9,4 +9,5 @@ public interface ManagerDao {
 
     List<Manager> selectManagerMessage(Connection connection);
     void insertManager(Connection connection,Manager manager);
+    Long selectManagerIdByPhone(Connection connection, String phone);
 }

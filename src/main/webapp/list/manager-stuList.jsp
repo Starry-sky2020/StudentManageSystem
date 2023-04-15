@@ -79,15 +79,6 @@
 </script>
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
-<%--        <!-- Spinner Start -->--%>
-<%--        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">--%>
-<%--            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">--%>
-<%--                <span class="sr-only">Loading...</span>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--        <!-- Spinner End -->--%>
-
-
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
@@ -107,10 +98,10 @@
                 <div class="navbar-nav w-100">
                     <a href="${pageContext.request.contextPath}/list/manager-index.jsp" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>首页</a>
                     <c:if test="${identity == 0}">
-                        <a href="${pageContext.request.contextPath}/manager/staff" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
+                        <a href="${pageContext.request.contextPath}/manager/staff" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
                         <a href="${pageContext.request.contextPath}/list/manager-createManager.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加管理员</a>
                     </c:if>
-                    <a href="${pageContext.request.contextPath}/stulist" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
+                    <a href="${pageContext.request.contextPath}/stulist" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
                     <a href="${pageContext.request.contextPath}/list/manager-addStu.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加学生</a>
                 </div>
             </nav>
@@ -258,7 +249,6 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/list/lib/chart/chart.min.js"></script>
     <script src="${pageContext.request.contextPath}/list/lib/easing/easing.min.js"></script>
     <script src="${pageContext.request.contextPath}/list/lib/waypoints/waypoints.min.js"></script>
     <script src="${pageContext.request.contextPath}/list/lib/owlcarousel/owl.carousel.min.js"></script>

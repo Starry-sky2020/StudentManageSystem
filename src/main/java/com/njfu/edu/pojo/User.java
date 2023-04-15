@@ -12,10 +12,10 @@ public class User {
     private String username;
     private String password;
     private Integer age;
-    private boolean sex;
+    private Integer sex;
     private String address;
-    private long studentId;
-    private int deleteFlag;
+    private Long studentId;
+    private Integer deleteFlag;
     private String info;
     private Timestamp updateTime;
 }

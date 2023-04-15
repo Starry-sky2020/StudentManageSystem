@@ -10,12 +10,10 @@ import java.util.List;
 
 public class UserDaoImpl implements UserDao {
 
-    private CRUDUtils crudUtils = new CRUDUtils();
     public void insertUser(Connection connection,String username, String password){
-
         String sql = "insert into lessontraining.user(username,password)" +
                 "value(?,?)";
-        crudUtils.insert(connection,sql,username,password);
+        CRUDUtils.insert(connection,sql,username,password);
     }
 
     /**
@@ -24,12 +22,9 @@ public class UserDaoImpl implements UserDao {
      * @return
      * @throws IOException
      */
-
     public List<User> selectUserMessage(Connection connection) {
-
         String sql = "select * from lessontraining.user";
         List<User> userList = CRUDUtils.query(connection,User.class, sql, null);
-
         return userList;
     }
 
@@ -38,9 +33,22 @@ public class UserDaoImpl implements UserDao {
      * @param id
      */
     public void deleteUserById(Connection connection,String id){
-
         String sql = "delete from lessontraining.user where user_id = ?";
-        crudUtils.delete(connection,sql,id);
+        CRUDUtils.delete(connection,sql,id);
+    }
+
+    /**
+     * 更具用户手机号码获取用户id
+     * 记录系统运行日志时使用
+     * @param connection
+     * @param phone
+     * @return
+     */
+    @Override
+    public Long selectUserIdByPhone(Connection connection, String phone) {
+        String sql = "select user_id from lessontraining.user where password = ?";
+        List<User> query = CRUDUtils.query(connection, User.class, sql, null);
+        return query.get(0).getStudentId();
     }
 
 }

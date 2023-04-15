@@ -48,11 +48,6 @@ public interface StudentService {
     void DeleteStudentById(String id) throws IOException;
 
     /**
-     * 退出学生系统
-     */
-    void BackwardSystem();
-
-    /**
      * 更改学生信息
      * @return
      */

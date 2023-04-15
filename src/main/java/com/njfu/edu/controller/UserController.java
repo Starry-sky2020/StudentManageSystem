@@ -41,10 +41,12 @@ public class UserController extends HttpServlet {
         if (servletPath.equals("/manager/staff")){
             List<User> users = selectAllUser();
             request.setAttribute("users",users);
+
             request.getRequestDispatcher("/list/manager-userList.jsp").forward(request,response);
         } else if (servletPath.equals("/manager/deluser")) {
             String userId = request.getParameter("user_id");
             deleteUserById(userId);
+
             request.getRequestDispatcher("/manager/staff").forward(request,response);
         } else if (servletPath.equals("/usersubmit")) {
             String username = request.getParameter("username");
@@ -55,6 +57,7 @@ public class UserController extends HttpServlet {
 
             SubmitResult submitResult = userSubmit(map);
             request.setAttribute("userSubmit",submitResult);
+
             request.getRequestDispatcher("/user-submit.jsp").forward(request,response);
         }
     }

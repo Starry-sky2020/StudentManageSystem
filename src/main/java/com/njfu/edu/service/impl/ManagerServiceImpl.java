@@ -1,11 +1,9 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.Main;
 import com.njfu.edu.dao.ManagerDao;
 import com.njfu.edu.dao.impl.LogDaoImpl;
 import com.njfu.edu.dao.impl.ManagerDaoImpl;
 import com.njfu.edu.pojo.Manager;
-import com.njfu.edu.pojo.OperationLog;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.service.ManagerService;
 import com.njfu.edu.utils.JDBCUtils;
@@ -38,13 +36,13 @@ public class ManagerServiceImpl implements ManagerService {
             return submitResult;
         }
 
-        //正则验证用户密码是否合法
-        String regPassword = "^(?=.*[0-9])|(?=.*[a-z])|(?=.*[A-Z])|(?=.*[@#$%^&+=])|(?=\\S+$).{4,20}$";
+        //正则验证用户密码是否合法 手机号
+        String regPassword = "^1(3[0-9]|5[0-3,5-9]|7[1-3,5-8]|8[0-9])\\d{8}$";
         pattern = Pattern.compile(regPassword);
         matcher = pattern.matcher(manager.getPassword());
         if (!matcher.find()){
             submitResult.setResult(false);
-            submitResult.setMessage("密码设置不合法，请重新输入");
+            submitResult.setMessage("手机号码不合法，请重新输入");
             submitResult.setCode(SubmitResult.ERROR_CODE_2);
             return submitResult;
         }
@@ -65,13 +63,8 @@ public class ManagerServiceImpl implements ManagerService {
                 }
             }
 
-            OperationLog operationLog = new OperationLog();
-            operationLog.setOperationMsg("用户注册信息");
-            operationLog.setDeleteFlag(1);
-            operationLog.setUserId(Main.managerId);
-            operationLog.setUpdateTime(Tools.getCurrentSystemDate());
-            operationLog.setInfo("无");
-            new LogDaoImpl().insert(connection,operationLog);
+            new LogDaoImpl().insert(connection,
+                    Tools.getOpreationLog("创建管理员",1,"无"));
 
             submitResult.setResult(true);
             submitResult.setMessage("创建管理员成功");
@@ -107,5 +100,12 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         return submitResult;
+    }
+
+    @Override
+    public Long selectManagerIdByPhone(String phone) {
+        Connection connection = JDBCUtils.getConnection();
+        Long aLong = managerDao.selectManagerIdByPhone(connection, phone);
+        return aLong;
     }
 }
