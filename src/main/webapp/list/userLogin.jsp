@@ -19,7 +19,7 @@
     <!-- //Meta tag Keywords -->
     <link href="//fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap" rel="stylesheet">
     <!--/Style-CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/list/css/login.css" type="text/css" media="all" />
     <!--//Style-CSS -->
 </head>
 
@@ -39,7 +39,7 @@
             </div>
             <div class="workinghny-block-grid">
                 <div class="workinghny-left-img align-end">
-                    <img src="${pageContext.request.contextPath}/img/2.png" class="img-responsive" alt="img" />
+                    <img src="${pageContext.request.contextPath}/list/img/2.png" class="img-responsive" alt="img" />
                 </div>
                 <div class="form-right-inf">
 

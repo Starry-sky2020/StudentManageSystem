@@ -25,17 +25,10 @@ public class Tools {
     }
 
     /**
-     * 检查是否字符串类型
-     * @param str
+     * 获取当前系统时间
      * @return
+     * @throws ParseException
      */
-    public static boolean checkString(String str){
-        if (str instanceof String)
-            return true;
-        return false;
-    }
-
-
     public static Timestamp getCurrentSystemDate() throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format = simpleDateFormat.format(System.currentTimeMillis());

@@ -61,8 +61,7 @@ public class StudentDaoImpl implements StudentDao {
     public List<Student> selectStudentMessage(Connection connection,Paging paging){
         int page = paging.getPageNum()-1;
         int pageSize = paging.getPageSize();
-        System.out.println(paging.getMap());
-//        String sql = "select * from lessontraining.student, lessontraining.studentClass, where 1 = 1";
+
         String sql = "select lessontraining.student.student_id,lessontraining.student.student_name,\n" +
                 "       lessontraining.student.age,lessontraining.student.sex,lessontraining.student.school,\n" +
                 "       lessontraining.student.address,lessontraining.studentclass.studentclassName,\n" +
@@ -106,14 +105,11 @@ public class StudentDaoImpl implements StudentDao {
             }
 
             args = new Object[list.size()];
-            System.out.println(paging.getMap());
-//            System.out.println(list.get(0));
             for(int i = list.size()-1; i >= 0; i--){
                 args[i] = list.get(i);
             }
         }
         sql += " limit "+page*pageSize+","+pageSize;
-        System.out.println(sql);
         return CRUDUtils.query(connection,Student.class,sql,args);
     }
 

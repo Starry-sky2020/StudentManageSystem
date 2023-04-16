@@ -124,11 +124,11 @@ public class StudentServiceImpl implements StudentService {
                         result.getFailCode().add(CheckStudentFormatResult.CODE_1);
                         continue;
                     }
-                    if(!Tools.checkString(data[0])){
-                        result.getFailData().add(line);
-                        result.getFailCode().add(CheckStudentFormatResult.CODE_2);
-                        continue;
-                    }
+//                    if(!Tools.checkString(data[0])){
+//                        result.getFailData().add(line);
+//                        result.getFailCode().add(CheckStudentFormatResult.CODE_2);
+//                        continue;
+//                    }
                     if(!Tools.checkInt(data[2])){
                         result.getFailData().add(line);
                         result.getFailCode().add(CheckStudentFormatResult.CODE_3);
