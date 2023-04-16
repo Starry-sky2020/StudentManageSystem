@@ -18,9 +18,9 @@ public class LoginFilter implements Filter {
         String servletPath = request.getServletPath();
         HttpSession session = request.getSession();
         Object identity = session.getAttribute("identity");
-        if (servletPath.equals("/managerLogin.jsp") || servletPath.equals("/managerlogin")
-            || servletPath.equals("/userLogin.jsp") || servletPath.equals("/userlogin")
-            || servletPath.equals("/user-submit.jsp") || servletPath.equals("/usersubmit")){
+        if (servletPath.equals("/list/managerLogin.jsp") || servletPath.equals("/managerlogin")
+            || servletPath.equals("/list/userLogin.jsp") || servletPath.equals("/userlogin")
+            || servletPath.equals("/list/user-submit.jsp") || servletPath.equals("/usersubmit")){
             filterChain.doFilter(request,response);
         } else {
             if (identity == null){

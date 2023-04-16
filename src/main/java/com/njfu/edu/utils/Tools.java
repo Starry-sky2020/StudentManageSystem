@@ -1,14 +1,11 @@
 package com.njfu.edu.utils;
 
-import com.njfu.edu.controller.CheckPersonController;
+import com.njfu.edu.servlet.CheckPersonServlet;
 import com.njfu.edu.pojo.OperationLog;
-import lombok.Data;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class Tools {
 
@@ -60,12 +57,12 @@ public class Tools {
         operationLog.setUpdateTime(getCurrentSystemDate());
         operationLog.setInfo(info);
 
-        if (CheckPersonController.indentity){
+        if (CheckPersonServlet.indentity){
             operationLog.setIdentity("管理员");
-            operationLog.setManagerId(CheckPersonController.id);
+            operationLog.setManagerId(CheckPersonServlet.id);
         } else {
             operationLog.setIdentity("普通员工");
-            operationLog.setUserId(CheckPersonController.id);
+            operationLog.setUserId(CheckPersonServlet.id);
         }
         return operationLog;
     }

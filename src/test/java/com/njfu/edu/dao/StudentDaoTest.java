@@ -21,7 +21,7 @@ public class StudentDaoTest {
     public void testSelectStudentById(){
         Connection connection = JDBCUtils.getConnection();
         StudentDaoImpl studentDao = new StudentDaoImpl();
-        System.out.println( studentDao.selectStudentById(connection,1));
+        System.out.println( studentDao.selectStudentById(connection,Long.valueOf(1)));
     }
 
     @Test
@@ -29,7 +29,7 @@ public class StudentDaoTest {
         Connection connection = JDBCUtils.getConnection();
         StudentDaoImpl studentDao = new StudentDaoImpl();
         Student student = new Student();
-        student.setStudent_id(String.valueOf(14));
+        student.setStudent_id(Long.valueOf(14));
         student.setUpdateTime(Tools.getCurrentSystemDate());
         student.setStudent_name("高适");
         student.setAddress("重庆");

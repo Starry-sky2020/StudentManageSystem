@@ -22,7 +22,7 @@ public interface StudentService {
      * 根据学生学号查询学生信息
      * @return
      */
-    Student selectStudetById(long id) throws IOException;
+    Student selectStudetById(Long id) throws IOException;
 
 
     /**

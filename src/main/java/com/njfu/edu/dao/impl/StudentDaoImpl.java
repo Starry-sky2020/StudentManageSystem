@@ -20,7 +20,7 @@ public class StudentDaoImpl implements StudentDao {
         crudUtils.insert(connection,sql,student.getStudent_name(),String.valueOf(student.getAge()),String.valueOf(student.getSex()),student.getSchool(),student.getAddress());
     }
 
-    public Student selectStudentById(Connection connection, long id){
+    public Student selectStudentById(Connection connection, Long id){
         String sql = "select * from lessontraining.student where student_id = ?";
         Object params[] = {id};
         return CRUDUtils.query(connection,Student.class,sql,params).get(0);
@@ -135,7 +135,7 @@ public class StudentDaoImpl implements StudentDao {
             if (lineNum == 0){
                 lineNum++;
             } else {
-                student.setStudent_id(studentArray[0]);
+                student.setStudent_id(Long.valueOf(studentArray[0]));
                 student.setStudent_name(studentArray[1]);
                 student.setAge(Integer.valueOf(studentArray[2]));
                 if (studentArray[3].equals("男")){

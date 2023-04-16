@@ -82,7 +82,7 @@ public class StudentServiceImpl implements StudentService {
      * @throws IOException
      */
     @Override
-    public Student selectStudetById(long id) throws IOException {
+    public Student selectStudetById(Long id) throws IOException {
         Connection connection = JDBCUtils.getConnection();
         return studentDao.selectStudentById(connection,id);
     }
@@ -226,7 +226,7 @@ public class StudentServiceImpl implements StudentService {
              * selectStudetById查询系统文件内的学生
              * 检验导入的学生是否已经存在在系统文件
              */
-            if (selectStudetById(Long.parseLong(data.get(i).getStudent_id())) == null){
+            if (selectStudetById(data.get(i).getStudent_id()) == null){
                 importResult.getSuccessData().add(data.get(i));
             } else {
                 importResult.getExistData().add(data.get(i));

@@ -7,16 +7,16 @@ import java.sql.Timestamp;
 @Data
 public class Student {
 
-    private String student_id;
+    private Long student_id;
     private String student_name;
     private Integer age;
     private Integer sex;
     private String school;
     private String address;
-    private int deleteFlag;
+    private Integer deleteFlag;
     private String info;
     private Timestamp updateTime;
-    private int studentClassId;
+    private Integer studentClassId;
     private String collegeName;
     private String studentclassName;
 
@@ -25,7 +25,7 @@ public class Student {
 
     }
 
-    public Student(String student_id, String name, Integer age, Integer sex, String school, String address) {
+    public Student(Long student_id, String name, Integer age, Integer sex, String school, String address) {
         this.student_id = student_id;
         this.student_name = name;
         this.age = age;

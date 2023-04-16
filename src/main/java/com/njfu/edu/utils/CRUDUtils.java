@@ -71,9 +71,6 @@ public class CRUDUtils<T> {
                 while (iterator.hasNext()){
                     String columnLabel = iterator.next();
                     Object value = resultSet.getObject(columnLabel);
-                    //解决pojo类和数据库字段类型不匹配问题
-                    if (columnLabel.equals("student_id") || columnLabel.equals("user_id"))
-                        value = String.valueOf(value);
 
                     Field declaredField = tClass.getDeclaredField(columnLabel);
                     declaredField.setAccessible(true);

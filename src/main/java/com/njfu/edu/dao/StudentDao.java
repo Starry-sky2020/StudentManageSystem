@@ -20,5 +20,5 @@ public interface StudentDao {
     void deleteStudentById(Connection connection,String id);
     void updateStudentMessage(Connection connection,Student student);
     long selectItems(Connection connection,Paging paging) throws SQLException;
-    Student selectStudentById(Connection connection, long id);
+    Student selectStudentById(Connection connection, Long id);
 }
