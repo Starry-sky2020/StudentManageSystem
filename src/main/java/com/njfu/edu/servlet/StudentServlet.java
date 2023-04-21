@@ -50,9 +50,9 @@ public class StudentServlet extends HttpServlet {
                 map.put("clazzName",clazzName);
                 session.setAttribute("map_name",map);
             }
-
+            boolean falg = false;
             if (condition != null){
-                if (condition.equals("1"))  map = null;
+                if (condition.equals("1"))  falg=true;
                 if (condition.equals("2")) map.put("key","2");
                 if (condition.equals("3")) map.put("key","3");
                 session.setAttribute("map",map);
@@ -63,10 +63,11 @@ public class StudentServlet extends HttpServlet {
                 map.putAll((Map) session.getAttribute("map"));
             if (session.getAttribute("map_name") != null)
                 map.putAll((Map) session.getAttribute("map_name"));
+            if (falg) map.clear();
             paging.setMap(map);
 
             if (pageNum != null) paging.setPageNum(Integer.valueOf(pageNum));
-
+            System.out.println(pageNum);
             studentService.selectAllStudent(paging);
 
             request.setAttribute("college",collegeService.queryAllCollege());
@@ -102,6 +103,7 @@ public class StudentServlet extends HttpServlet {
             student.setSchool(stuSch);
             student.setAddress(stuAdd);
             student.setInfo(stuInfo);
+            student.setDeleteFlag(1);
 
             try {
                 student.setUpdateTime(Tools.getCurrentSystemDate());

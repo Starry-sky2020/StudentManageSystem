@@ -1,15 +1,19 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.ManagerDao;
-import com.njfu.edu.dao.impl.LogDaoImpl;
-import com.njfu.edu.dao.impl.ManagerDaoImpl;
+import com.njfu.edu.dao.ManagerMapper;
+import com.njfu.edu.dao.OpreationLogMapper;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.service.ManagerService;
 import com.njfu.edu.utils.JDBCUtils;
 import com.njfu.edu.utils.Tools;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -18,8 +22,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ManagerServiceImpl implements ManagerService {
+    String resouces = "mybatis-config.xml";
+    InputStream inputStream;
 
-    private ManagerDao managerDao = new ManagerDaoImpl();
+    {
+        try {
+            inputStream = Resources.getResourceAsStream(resouces);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+    ManagerMapper mapper = sqlSession.getMapper(ManagerMapper.class);
+    OpreationLogMapper logMapper = sqlSession.getMapper(OpreationLogMapper.class);
 
     @Override
     public SubmitResult createManger(Manager manager) throws IOException {
@@ -53,7 +70,8 @@ public class ManagerServiceImpl implements ManagerService {
             autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            List<Manager> managerList = managerDao.selectManagerMessage(connection);
+//            List<Manager> managerList = managerDao.selectManagerMessage(connection);
+            List<Manager> managerList = mapper.selectManagerMessage();
             for (int i = 0; i < managerList.size(); i++){
                 if (manager.getManager_name().equals(managerList.get(i).getManager_name())){
                     submitResult.setResult(false);
@@ -63,13 +81,15 @@ public class ManagerServiceImpl implements ManagerService {
                 }
             }
 
-            new LogDaoImpl().insert(connection,
-                    Tools.getOpreationLog("创建管理员",1,"无"));
+//            new LogDaoImpl().insert(connection,
+//                    Tools.getOpreationLog("创建管理员",1,"无"));
+            logMapper.insert(Tools.getOpreationLog("创建管理员",1,"无"));
 
             submitResult.setResult(true);
             submitResult.setMessage("创建管理员成功");
             submitResult.setCode(SubmitResult.ERROR_CODE_4);
-            managerDao.insertManager(connection,manager);
+            mapper.insertManager(manager);
+//            managerDao.insertManager(connection,manager);
 
             res = true;
         } catch (SQLException | ParseException e) {
@@ -105,7 +125,8 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public Long selectManagerIdByPhone(String phone) {
         Connection connection = JDBCUtils.getConnection();
-        Long aLong = managerDao.selectManagerIdByPhone(connection, phone);
+//        Long aLong = managerDao.selectManagerIdByPhone(connection, phone);
+        Long aLong = mapper.selectManagerIdByPhone(phone);
         return aLong;
     }
 }

@@ -1,13 +1,15 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.LogDao;
-import com.njfu.edu.dao.StudentDao;
-import com.njfu.edu.dao.impl.LogDaoImpl;
-import com.njfu.edu.dao.impl.StudentDaoImpl;
+import com.njfu.edu.dao.OpreationLogMapper;
+import com.njfu.edu.dao.StudentMapper;
 import com.njfu.edu.pojo.*;
 import com.njfu.edu.service.StudentService;
 import com.njfu.edu.utils.JDBCUtils;
 import com.njfu.edu.utils.Tools;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.*;
 import java.sql.Connection;
@@ -16,8 +18,21 @@ import java.text.ParseException;
 import java.util.*;
 
 public class StudentServiceImpl implements StudentService {
+    String resouce = "mybatis-config.xml";
+    InputStream inputStream;
 
-    private StudentDao studentDao = new StudentDaoImpl();
+    {
+        try {
+            inputStream = Resources.getResourceAsStream(resouce);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+    StudentMapper mapper = sqlSession.getMapper(StudentMapper.class);
+    OpreationLogMapper logMapper = sqlSession.getMapper(OpreationLogMapper.class);
+
 
     /**
      * 查询所有学生
@@ -28,7 +43,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void selectAllStudent(Paging paging) throws IOException{
         Connection connection = JDBCUtils.getConnection();
-        LogDao logDao = new LogDaoImpl();
 
         boolean autoCommit = false;
         boolean res = false;
@@ -36,15 +50,16 @@ public class StudentServiceImpl implements StudentService {
             autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            long items = studentDao.selectItems(connection, paging);
+            long items = mapper.selectItems(paging);
             paging.setRecordTotal(items);
 
-            List<Student> students = studentDao.selectStudentMessage(connection, paging);
+//            List<Student> students = studentDao.selectStudentMessage(connection, paging);
+            List<Student> students = mapper.selectStudentMessage(paging);
+//            sqlSession.commit();
             paging.setList(students);
 
-            logDao.insert(connection,
-                    Tools.getOpreationLog("分页查询学生信息",1,"无"));
-
+            logMapper.insert(Tools.getOpreationLog("分页查询学生信息",1,"无"));
+            sqlSession.commit();
             res = true;
 
         } catch (SQLException e) {
@@ -83,8 +98,9 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public Student selectStudetById(Long id) throws IOException {
-        Connection connection = JDBCUtils.getConnection();
-        return studentDao.selectStudentById(connection,id);
+        Student student = mapper.selectStudentById(id);
+//        System.out.println(student);
+        return student;
     }
 
 
@@ -97,7 +113,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> SortByStudetId(Paging paging) throws IOException {
         Connection connection = JDBCUtils.getConnection();
-        return studentDao.selectStudentMessage(connection,paging);
+        return mapper.selectStudentMessage(paging);
     }
 
     /**
@@ -137,12 +153,12 @@ public class StudentServiceImpl implements StudentService {
                     //获取全部数据
                     Paging<Student> paging = new Paging<>();
                     List<Student> list = new ArrayList<>();
-                    long items = studentDao.selectItems(connection,new Paging());
+                    long items = mapper.selectItems(new Paging());
                     paging.setRecordTotal(items);
 
                     for (int i = 1; i <= paging.getPageTotal(); i++){
                         paging.setPageNum(i);
-                        list.addAll(studentDao.selectStudentMessage(connection,paging));
+                        list.addAll(mapper.selectStudentMessage(paging));
                     }
                     //检查重复的数据
                     if (checkRepeatData(list, data[0])){
@@ -219,7 +235,7 @@ public class StudentServiceImpl implements StudentService {
             return importResult;
         }
 
-        List<Student> data = studentDao.selectStudentMessage(path);
+        List<Student> data = mapper.selectStudentMessage(path);
 
         for (int i = 0; i < data.size(); i++){
             /**
@@ -234,7 +250,9 @@ public class StudentServiceImpl implements StudentService {
         }
 
         for (Student student : data){
-            studentDao.insertStudent(connection,student);
+//            studentDao.insertStudent(connection,student);
+            mapper.insertStudent(student);
+            sqlSession.commit();
         }
 
         importResult.setResult(true);
@@ -254,8 +272,8 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public void InsertStudentMessage(Student student) throws IOException {
-        Connection connection = JDBCUtils.getConnection();
-        studentDao.insertStudent(connection,student);
+        mapper.insertStudent(student);
+        sqlSession.commit();
     }
 
     /**
@@ -266,14 +284,15 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public void DeleteStudentById(String id) throws IOException {
-        Connection connection = JDBCUtils.getConnection();
-        studentDao.deleteStudentById(connection,id);
+//        Connection connection = JDBCUtils.getConnection();
+        mapper.deleteStudentById(id);
+        sqlSession.commit();
+//        studentDao.deleteStudentById(connection,id);
     }
 
     @Override
     public boolean changeStudentInfo(Student student) throws ParseException {
         Connection connection = JDBCUtils.getConnection();
-        LogDao logDao = new LogDaoImpl();
 
         boolean res = false;
         boolean autoCommit = false;
@@ -283,14 +302,16 @@ public class StudentServiceImpl implements StudentService {
             //关闭自动提交事务
             connection.setAutoCommit(false);
             // 1检查该学号的学生是否存在、查不到直接报错
-            Student stu = studentDao.selectStudentById(connection, Long.valueOf(student.getStudent_id()));
-
+//            Student stu = studentDao.selectStudentById(connection, Long.valueOf(student.getStudent_id()));
+            Student stu = mapper.selectStudentById(student.getStudent_id());
             if (stu != null){
                 //更新学生信息
-                studentDao.updateStudentMessage(connection,student);
+                mapper.updateStudentMessage(student);
+//                mapper.updateStudentMessage(student);
+                sqlSession.commit();
                 //添加日志记录
-                logDao.insert(connection,
-                        Tools.getOpreationLog("更新学生信息",1,"无"));
+                logMapper.insert(Tools.getOpreationLog("更新学生信息",1,"无"));
+                sqlSession.commit();
             } else return false; //更改信息为空
 
             res = true;

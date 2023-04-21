@@ -1,22 +1,37 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.CollegeDao;
-import com.njfu.edu.dao.impl.CollegeDaoImpl;
+import com.njfu.edu.dao.CollegeMapper;
 import com.njfu.edu.pojo.College;
 import com.njfu.edu.service.CollegeService;
-import com.njfu.edu.utils.JDBCUtils;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import java.sql.Connection;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class CollegeServiceImpl implements CollegeService {
 
-    private CollegeDao collegeDao = new CollegeDaoImpl();
+    String resource = "mybatis-config.xml";
+    InputStream inputStream;
+
+    {
+        try {
+            inputStream = Resources.getResourceAsStream(resource);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+    CollegeMapper mapper = sqlSession.getMapper(CollegeMapper.class);
+
     @Override
     public List<College> queryAllCollege() {
-        Connection connection = JDBCUtils.getConnection();
-        List<College> colleges = collegeDao.queryData(connection);
-        JDBCUtils.connRelease(connection);
+        List<College> colleges = mapper.queryData();
         return colleges;
     }
 }

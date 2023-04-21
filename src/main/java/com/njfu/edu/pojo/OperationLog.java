@@ -14,5 +14,5 @@ public class OperationLog {
     private Long managerId;
     private String info;
     private Timestamp updateTime;
-    private String identity;
+    private String indetity;
 }

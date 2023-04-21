@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.njfu.edu.dao.OpreationLogMapper">
+    <insert id="insert" parameterType="OperationLog">
+        insert into lessontraining.operationLog(operationMsg,deleteFlag,userId,managerId,info,updateTime,indetity)
+        value(#{operationLog.operationMsg},#{operationLog.deleteFlag},#{operationLog.userId},#{operationLog.managerId},
+              #{operationLog.info},#{operationLog.updateTime},#{operationLog.indetity})
+    </insert>
+</mapper>

@@ -1,28 +1,43 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.impl.ManagerDaoImpl;
-import com.njfu.edu.dao.impl.UserDaoImpl;
+import com.njfu.edu.dao.ManagerMapper;
+import com.njfu.edu.dao.UserMapper;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.CheckPersonService;
-import com.njfu.edu.utils.JDBCUtils;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
-import java.sql.Connection;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 public class CheckPersonServiceImpl implements CheckPersonService {
+    String resource = "mybatis-config.xml";
+    InputStream inputStream;
 
-    private ManagerDaoImpl managerDaoImpl = new ManagerDaoImpl();
-    private UserDaoImpl userDaoImpl = new UserDaoImpl();
+    {
+        try {
+            inputStream = Resources.getResourceAsStream(resource);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+    UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+    ManagerMapper managerMapper = sqlSession.getMapper(ManagerMapper.class);
+
     /**
      * 用户登录信息验证
      * @throws IOException
      */
     public Boolean UserLoginView(Map<String, String> map) throws IOException {
-        Connection connection = JDBCUtils.getConnection();
-        List<User> userList = userDaoImpl.selectUserMessage(connection);
+        List<User> userList = userMapper.selectUserMessage();
         for (int i = 0; i < userList.size(); i++)
             if (userList.get(i).getUsername().equals(map.get("username"))){
                 if (userList.get(i).getPassword().equals(map.get("password")))
@@ -36,8 +51,7 @@ public class CheckPersonServiceImpl implements CheckPersonService {
      * @throws IOException
      */
     public Boolean ManagerLoginView(Map<String,String> map) throws IOException {
-        Connection connection = JDBCUtils.getConnection();
-        List<Manager> managerList = managerDaoImpl.selectManagerMessage(connection);
+        List<Manager> managerList = managerMapper.selectManagerMessage();
         for (int i = 0; i < managerList.size(); i++)
             if (managerList.get(i).getManager_name().equals(map.get("managername")))
                 if (managerList.get(i).getPassword().equals(map.get("password")))

@@ -51,10 +51,10 @@ public class Tools {
         operationLog.setInfo(info);
 
         if (CheckPersonServlet.indentity){
-            operationLog.setIdentity("管理员");
+            operationLog.setIndetity("管理员");
             operationLog.setManagerId(CheckPersonServlet.id);
         } else {
-            operationLog.setIdentity("普通员工");
+            operationLog.setIndetity("普通员工");
             operationLog.setUserId(CheckPersonServlet.id);
         }
         return operationLog;

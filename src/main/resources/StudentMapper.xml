@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.njfu.edu.dao.StudentMapper">
+    <insert id="insertStudent" parameterType="Student">
+        insert into lessonTraining.student(student_name,age,sex,school,address)
+        value (#{student_name},#{age},#{sex},#{school},#{address});
+    </insert>
+    
+    <select id="selectStudent" resultType="Student">
+        select * from lessontraining.student;
+    </select>
+
+    <select id="selectStudentMessage" parameterType="Paging" resultType="Student" >
+        select lessontraining.student.student_id,lessontraining.student.student_name,
+                     lessontraining.student.age,lessontraining.student.sex,lessontraining.student.school,
+                     lessontraining.student.address,lessontraining.studentclass.studentclassName,lessontraining.college.collegeName
+                from lessontraining.student,lessontraining.studentclass,lessontraining.college
+                where lessontraining.studentclass.id = lessontraining.student.studentClassId
+                and lessontraining.studentclass.collegeId = lessontraining.college.id
+        <if test="paging.map != null">
+            <if test="paging.map.containsKey('age')">
+                and age = ${paging.map.get('age')}
+            </if>
+            <if test="paging.map.containsKey('name')">
+                and student_name like concat('%',${paging.map.get('name')},'%')
+            </if>
+            <if test="paging.map.containsKey('collegeName')">
+                and lessontraining.college.collegeName like concat('%','${paging.map.get("collegeName")}','%')
+            </if>
+            <if test="paging.map.containsKey('clazzName')">
+                and studentclassName like concat('%','${paging.map.get("clazzName")}','%')
+            </if>
+
+            <if test="paging.map.containsKey('key')">
+                <if test="paging.map.key == 1">
+                    order by student_id
+                </if>
+                <if test="paging.map.key == 2">
+                    order by age
+                </if>
+                <if test="paging.map.key == 3">
+                    order by sex
+                </if>
+            </if>
+        </if>
+         limit ${(paging.pageNum-1)*paging.pageSize},${paging.pageSize};
+    </select>
+
+    <select id="selectItems" resultType="Long" parameterType="Paging">
+        select count(*) from lessontraining.student
+        where 1 = 1
+        <if test="paging.map != null">
+            <if test="paging.map.containsKey('age')">
+                and age = ${paging.map.get("age")}
+            </if>
+            <if test="paging.map.containsKey('name')">
+                and student_name like concat('%','${paging.map.get("name")}','%');
+            </if>
+        </if>
+    </select>
+    
+    <select id="selectStudentById" parameterType="Long" resultType="Student">
+        select * from lessontraining.student
+        where student_id = #{id}
+    </select>
+
+    <update id="updateStudentMessage" parameterType="Student">
+        update lessontraining.student
+        set student_name = #{student.student_name},age = #{student.age},
+            sex = #{student.sex},school = #{student.school},address = #{student.school},
+            deleteFlag = #{student.deleteFlag},info = #{student.info},updateTime = #{student.updateTime}
+        where student_id = #{student.student_id};
+    </update>
+
+    <delete id="deleteStudentById" parameterType="String">
+        delete from lessontraining.student where student_id = #{id}
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.njfu.edu.dao.ManagerMapper">
+    <select id="selectManagerMessage" resultType="Manager">
+        select * from lessontraining.manager;
+    </select>
+
+    <select id="selectManagerIdByPhone" resultType="Long">
+        select manager_id from lessontraining.manager where password = #{phone}
+    </select>
+
+    <insert id="insertManager" parameterType="Manager">
+        insert into lessontraining.manager(manager_name,password,remarks)
+        values (#{manager.manager_name},#{manager.password},#{manager.remarks})
+    </insert>
+</mapper>
