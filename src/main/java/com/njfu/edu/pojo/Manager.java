@@ -2,8 +2,11 @@ package com.njfu.edu.pojo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
+//Serializable 序列化，为实现二级缓存
 @Data
-public class Manager {
+public class Manager implements Serializable {
 
     private Long manager_id;
     private String manager_name;

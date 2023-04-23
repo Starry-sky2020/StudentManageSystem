@@ -3,10 +3,11 @@ package com.njfu.edu.pojo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Data
-public class User {
+public class User implements Serializable {
 
     private Long user_id;
     private String username;

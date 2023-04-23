@@ -4,7 +4,6 @@ import com.njfu.edu.dao.OpreationLogMapper;
 import com.njfu.edu.dao.StudentMapper;
 import com.njfu.edu.pojo.*;
 import com.njfu.edu.service.StudentService;
-import com.njfu.edu.utils.JDBCUtils;
 import com.njfu.edu.utils.Tools;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -12,7 +11,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.*;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.*;
@@ -42,51 +40,24 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public void selectAllStudent(Paging paging) throws IOException{
-        Connection connection = JDBCUtils.getConnection();
 
-        boolean autoCommit = false;
-        boolean res = false;
+        long items = 0;
         try {
-            autoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
+            items = mapper.selectItems(paging);
+            sqlSession.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        paging.setRecordTotal(items);
+        List<Student> students = mapper.selectStudentMessage(paging);
+        sqlSession.commit();
+        paging.setList(students);
 
-            long items = mapper.selectItems(paging);
-            paging.setRecordTotal(items);
-
-//            List<Student> students = studentDao.selectStudentMessage(connection, paging);
-            List<Student> students = mapper.selectStudentMessage(paging);
-//            sqlSession.commit();
-            paging.setList(students);
-
+        try {
             logMapper.insert(Tools.getOpreationLog("分页查询学生信息",1,"无"));
             sqlSession.commit();
-            res = true;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                e.printStackTrace();
-            }
         } catch (ParseException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (res){
-                try {
-                    connection.commit();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            try {
-                connection.setAutoCommit(autoCommit);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            JDBCUtils.connRelease(connection);
         }
     }
 
@@ -99,7 +70,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student selectStudetById(Long id) throws IOException {
         Student student = mapper.selectStudentById(id);
-//        System.out.println(student);
+        sqlSession.commit();
         return student;
     }
 
@@ -112,8 +83,9 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public List<Student> SortByStudetId(Paging paging) throws IOException {
-        Connection connection = JDBCUtils.getConnection();
-        return mapper.selectStudentMessage(paging);
+        List<Student> students = mapper.selectStudentMessage(paging);
+        sqlSession.commit();
+        return students;
     }
 
     /**
@@ -123,7 +95,6 @@ public class StudentServiceImpl implements StudentService {
      */
     public CheckStudentFormatResult checkStudentFormat(String filePath) {
         CheckStudentFormatResult result = new CheckStudentFormatResult();
-        Connection connection = JDBCUtils.getConnection();
 
         BufferedReader bufferedReader = null;
         try {
@@ -208,7 +179,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public ImportResult ImportStudentMessage(String path) throws IOException {
         ImportResult importResult = new ImportResult();
-        Connection connection = JDBCUtils.getConnection();
 
         //文件名为空
         if (path == null || path.equals("")){
@@ -250,7 +220,6 @@ public class StudentServiceImpl implements StudentService {
         }
 
         for (Student student : data){
-//            studentDao.insertStudent(connection,student);
             mapper.insertStudent(student);
             sqlSession.commit();
         }
@@ -284,62 +253,23 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public void DeleteStudentById(String id) throws IOException {
-//        Connection connection = JDBCUtils.getConnection();
         mapper.deleteStudentById(id);
         sqlSession.commit();
-//        studentDao.deleteStudentById(connection,id);
     }
 
     @Override
     public boolean changeStudentInfo(Student student) throws ParseException {
-        Connection connection = JDBCUtils.getConnection();
 
-        boolean res = false;
-        boolean autoCommit = false;
-
-        try {
-            autoCommit = connection.getAutoCommit();
-            //关闭自动提交事务
-            connection.setAutoCommit(false);
             // 1检查该学号的学生是否存在、查不到直接报错
-//            Student stu = studentDao.selectStudentById(connection, Long.valueOf(student.getStudent_id()));
             Student stu = mapper.selectStudentById(student.getStudent_id());
             if (stu != null){
                 //更新学生信息
                 mapper.updateStudentMessage(student);
-//                mapper.updateStudentMessage(student);
                 sqlSession.commit();
                 //添加日志记录
                 logMapper.insert(Tools.getOpreationLog("更新学生信息",1,"无"));
                 sqlSession.commit();
             } else return false; //更改信息为空
-
-            res = true;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                e.printStackTrace();
-            }
-        } finally {
-            if (res){
-                try {
-                    connection.commit();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            try {
-                connection.setAutoCommit(autoCommit);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            JDBCUtils.connRelease(connection);
-        }
 
         return true;
     }

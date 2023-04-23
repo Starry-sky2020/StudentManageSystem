@@ -2,10 +2,11 @@ package com.njfu.edu.pojo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Data
-public class Student {
+public class Student implements Serializable {
 
     private Long student_id;
     private String student_name;
@@ -19,6 +20,8 @@ public class Student {
     private Integer studentClassId;
     private String collegeName;
     private String studentclassName;
+    private StudentClass studentClass;
+    private College college;
 
 
     public Student(){

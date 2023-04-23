@@ -1,4 +1,5 @@
-<%--
+<%@ page import="com.njfu.edu.pojo.Student" %>
+<%@ page import="com.njfu.edu.pojo.Paging" %><%--
   Created by IntelliJ IDEA.
   User: Yang Shuailing
   Date: 2023/4/11
@@ -35,6 +36,7 @@
 
     <!-- Template Stylesheet -->
     <link href="${pageContext.request.contextPath}/list/css/style.css" rel="stylesheet">
+    <script src="${pageContext.request.contextPath}/list/jquery/jquery-3.6.0.min.js"></script>
 </head>
 <script type="text/javascript">
     function delStu(id){
@@ -44,6 +46,7 @@
     function updateStu(id){
         window.location.href='${pageContext.request.contextPath}/selectstuid?id='+id;
     }
+
 
     function initSort(){
         window.location.href='${pageContext.request.contextPath}/stulist?pageNum=1&condition=1';
@@ -193,7 +196,7 @@
                                         </c:if>
                                         <td>${stu.school}</td>
                                         <td>${stu.address}</td>
-                                        <td>${stu.studentclassName}</td>
+                                        <td>${stu.studentClass.getStudentclassName()}</td>
                                         <td>${stu.collegeName}</td>
                                         <td>
                                             <button type="button" class="btn btn-danger m-2" onclick="delStu(${stu.student_id})">删除</button>

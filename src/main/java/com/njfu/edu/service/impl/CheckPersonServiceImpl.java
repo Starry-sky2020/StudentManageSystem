@@ -38,6 +38,7 @@ public class CheckPersonServiceImpl implements CheckPersonService {
      */
     public Boolean UserLoginView(Map<String, String> map) throws IOException {
         List<User> userList = userMapper.selectUserMessage();
+        sqlSession.commit();
         for (int i = 0; i < userList.size(); i++)
             if (userList.get(i).getUsername().equals(map.get("username"))){
                 if (userList.get(i).getPassword().equals(map.get("password")))
@@ -52,6 +53,7 @@ public class CheckPersonServiceImpl implements CheckPersonService {
      */
     public Boolean ManagerLoginView(Map<String,String> map) throws IOException {
         List<Manager> managerList = managerMapper.selectManagerMessage();
+        sqlSession.commit();
         for (int i = 0; i < managerList.size(); i++)
             if (managerList.get(i).getManager_name().equals(map.get("managername")))
                 if (managerList.get(i).getPassword().equals(map.get("password")))

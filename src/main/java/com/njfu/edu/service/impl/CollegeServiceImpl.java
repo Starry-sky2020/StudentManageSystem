@@ -32,6 +32,7 @@ public class CollegeServiceImpl implements CollegeService {
     @Override
     public List<College> queryAllCollege() {
         List<College> colleges = mapper.queryData();
+        sqlSession.commit();
         return colleges;
     }
 }

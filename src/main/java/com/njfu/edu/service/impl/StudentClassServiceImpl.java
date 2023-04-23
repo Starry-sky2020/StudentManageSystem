@@ -30,20 +30,16 @@ public class StudentClassServiceImpl implements StudentClassService {
     StudenClazzMapper mapper = sqlSession.getMapper(StudenClazzMapper.class);
 
     @Override
-    public List<StudentClass> queryStudentClassById(int collegeId) {
-//        Connection connection = JDBCUtils.getConnection();
-//        List<StudentClass> studentClasses = studentClassDao.queryStudentClassById(connection, collegeId);
-//        JDBCUtils.connRelease(connection);
-        List<StudentClass> studentClasses = mapper.queryStudentClassById(collegeId);
+    public List<StudentClass> queryStudentClassById(int id) {
+        List<StudentClass> studentClasses = mapper.queryStudentClassById(id);
+        sqlSession.commit();
         return studentClasses;
     }
 
     @Override
     public List<StudentClass> queryStudentClass() {
-//        Connection connection = JDBCUtils.getConnection();
-//        List<StudentClass> studentClasses = studentClassDao.queryStudentClass(connection);
-//        JDBCUtils.connRelease(connection);
         List<StudentClass> studentClasses = mapper.queryStudentClass();
+        sqlSession.commit();
         return studentClasses;
     }
 }

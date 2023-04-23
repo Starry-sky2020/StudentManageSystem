@@ -3,19 +3,37 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.njfu.edu.dao.StudentMapper">
+
+    <cache/>
     <insert id="insertStudent" parameterType="Student">
         insert into lessonTraining.student(student_name,age,sex,school,address)
         value (#{student_name},#{age},#{sex},#{school},#{address});
     </insert>
-    
+
     <select id="selectStudent" resultType="Student">
         select * from lessontraining.student;
     </select>
 
-    <select id="selectStudentMessage" parameterType="Paging" resultType="Student" >
+<!--    使用延迟加载（懒加载）-->
+    <resultMap id="mapStu" type="Student">
+        <id property="student_id" column="student_id"/>
+        <result property="student_name" column="student_name"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="school" column="school"/>
+        <result property="address" column="address"/>
+        <result property="studentclassName" column="studentclassName"/>
+        <result property="collegeName" column="collegeName"/>
+        <association property="studentClass" column="studentClassId"
+                     select="com.njfu.edu.dao.StudenClazzMapper.queryStudentClassById"
+                     fetchType="lazy"/>
+    </resultMap>
+
+    <select id="selectStudentMessage" parameterType="Paging" resultMap="mapStu" >
         select lessontraining.student.student_id,lessontraining.student.student_name,
                      lessontraining.student.age,lessontraining.student.sex,lessontraining.student.school,
-                     lessontraining.student.address,lessontraining.studentclass.studentclassName,lessontraining.college.collegeName
+                     lessontraining.student.address,lessontraining.studentclass.studentclassName,
+                     lessontraining.college.collegeName,lessontraining.student.studentClassId
                 from lessontraining.student,lessontraining.studentclass,lessontraining.college
                 where lessontraining.studentclass.id = lessontraining.student.studentClassId
                 and lessontraining.studentclass.collegeId = lessontraining.college.id
@@ -78,5 +96,8 @@
         delete from lessontraining.student where student_id = #{id}
     </delete>
 
+    <select id="testselect" resultType="Student" useCache="true">
+        select * from student;
+    </select>
 
 </mapper>

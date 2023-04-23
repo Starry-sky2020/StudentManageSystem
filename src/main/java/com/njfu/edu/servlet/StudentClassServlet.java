@@ -10,8 +10,8 @@ public class StudentClassServlet {
 
     private StudentClassService service = new StudentClassServiceImpl();
 
-    public List<StudentClass> queryStudentClassById(int collegeId){
-        return service.queryStudentClassById(collegeId);
+    public List<StudentClass> queryStudentClassById(int id){
+        return service.queryStudentClassById(id);
     }
 
     public List<StudentClass> queryStuedntClass(){

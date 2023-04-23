@@ -5,7 +5,6 @@ import com.njfu.edu.dao.OpreationLogMapper;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.service.ManagerService;
-import com.njfu.edu.utils.JDBCUtils;
 import com.njfu.edu.utils.Tools;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -14,8 +13,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -40,13 +37,12 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public SubmitResult createManger(Manager manager) throws IOException {
-        Connection connection = JDBCUtils.getConnection();
         SubmitResult submitResult = new SubmitResult();
         //正则验证用户名是否合法
         String regName = "^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)";
         Pattern pattern = Pattern.compile(regName);
         Matcher matcher = pattern.matcher(manager.getManager_name());
-        if (!matcher.find()){
+        if (!matcher.find()) {
             submitResult.setResult(false);
             submitResult.setMessage("用户名不合法，请重新输入");
             submitResult.setCode(SubmitResult.ERROR_CODE_1);
@@ -57,23 +53,18 @@ public class ManagerServiceImpl implements ManagerService {
         String regPassword = "^1(3[0-9]|5[0-3,5-9]|7[1-3,5-8]|8[0-9])\\d{8}$";
         pattern = Pattern.compile(regPassword);
         matcher = pattern.matcher(manager.getPassword());
-        if (!matcher.find()){
+        if (!matcher.find()) {
             submitResult.setResult(false);
             submitResult.setMessage("手机号码不合法，请重新输入");
             submitResult.setCode(SubmitResult.ERROR_CODE_2);
             return submitResult;
         }
 
-        boolean res = false;
-        boolean autoCommit = false;
         try {
-            autoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
-
-//            List<Manager> managerList = managerDao.selectManagerMessage(connection);
             List<Manager> managerList = mapper.selectManagerMessage();
-            for (int i = 0; i < managerList.size(); i++){
-                if (manager.getManager_name().equals(managerList.get(i).getManager_name())){
+            sqlSession.commit();
+            for (int i = 0; i < managerList.size(); i++) {
+                if (manager.getManager_name().equals(managerList.get(i).getManager_name())) {
                     submitResult.setResult(false);
                     submitResult.setMessage("管理员已存在，请重新输入创建信息");
                     submitResult.setCode(SubmitResult.ERROR_CODE_3);
@@ -81,52 +72,24 @@ public class ManagerServiceImpl implements ManagerService {
                 }
             }
 
-//            new LogDaoImpl().insert(connection,
-//                    Tools.getOpreationLog("创建管理员",1,"无"));
-            logMapper.insert(Tools.getOpreationLog("创建管理员",1,"无"));
+            logMapper.insert(Tools.getOpreationLog("创建管理员", 1, "无"));
+            sqlSession.commit();
 
             submitResult.setResult(true);
             submitResult.setMessage("创建管理员成功");
             submitResult.setCode(SubmitResult.ERROR_CODE_4);
             mapper.insertManager(manager);
-//            managerDao.insertManager(connection,manager);
+            sqlSession.commit();
 
-            res = true;
-        } catch (SQLException | ParseException e) {
-            e.printStackTrace();
-
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                e.printStackTrace();
-            }
-        } finally {
-
-            if (res){
-                try {
-                   connection.commit();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            try {
-                connection.setAutoCommit(autoCommit);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            JDBCUtils.connRelease(connection);
+            return submitResult;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
-
-        return submitResult;
     }
-
-    @Override
+        @Override
     public Long selectManagerIdByPhone(String phone) {
-        Connection connection = JDBCUtils.getConnection();
-//        Long aLong = managerDao.selectManagerIdByPhone(connection, phone);
         Long aLong = mapper.selectManagerIdByPhone(phone);
+        sqlSession.commit();
         return aLong;
     }
 }

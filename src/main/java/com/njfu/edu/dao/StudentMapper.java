@@ -22,4 +22,6 @@ public interface StudentMapper {
     void updateStudentMessage(@Param("student") Student student);
     long selectItems(@Param("paging") Paging paging) throws SQLException;
     Student selectStudentById(@Param("id") Long id);
+
+    List<Student> testselect();
 }

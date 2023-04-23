@@ -5,7 +5,6 @@ import com.njfu.edu.dao.UserMapper;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.UserService;
-import com.njfu.edu.utils.JDBCUtils;
 import com.njfu.edu.utils.Tools;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -14,8 +13,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -44,17 +41,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> selectAllUser() throws IOException {
-        Connection connection = JDBCUtils.getConnection();
         List<User> users = mapper.selectUserMessage();
-//        return userDao.selectUserMessage(connection);
         return users;
     }
 
     @Override
     public void deleteUserById(String id) throws IOException {
-//        Connection connection = JDBCUtils.getConnection();
         mapper.deleteUserById("id");
-//        userDao.deleteUserById(connection,id);
+        sqlSession.commit();
     }
 
     /**
@@ -63,9 +57,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public SubmitResult userSubmit(Map<String, String> map) throws IOException {
-        Connection connection = JDBCUtils.getConnection();
-
-
         //正则验证用户名是否合法
         String regName = "^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)";
         Pattern pattern = Pattern.compile(regName);
@@ -88,15 +79,8 @@ public class UserServiceImpl implements UserService {
             return submitResult;
         }
 
-        boolean autoCommit = false;
-        boolean res = false;
-
         try {
-            autoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
-//            List<User> userList = userDao.selectUserMessage(connection);
             List<User> userList = mapper.selectUserMessage();
-            System.out.println(userList);
             //用户名重复检测
             for (int i = 0; i < userList.size(); i++){
                 if (map.get("username").equals(userList.get(i).getUsername())){
@@ -107,41 +91,15 @@ public class UserServiceImpl implements UserService {
                 }
             }
 
-//            userDao.insertUser(connection,map.get("username"),map.get("password"));
             mapper.insertUser(map.get("username"),map.get("password"));
             sqlSession.commit();
-//            new LogDaoImpl().insert(connection,
-//                    Tools.getOpreationLog("用户注册信息",1,"无"));
             logMapper.insert(Tools.getOpreationLog("用户注册信息",1,"无"));
             sqlSession.commit();
             submitResult.setResult(true);
             submitResult.setMessage("用户注册成功");
             submitResult.setCode(SubmitResult.ERROR_CODE_4);
-
-            res = true;
-        } catch (SQLException | ParseException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                e.printStackTrace();
-            }
-        } finally {
-            if (res){
-                try {
-                    connection.commit();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            try {
-                connection.setAutoCommit(autoCommit);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            JDBCUtils.connRelease(connection);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
 
         return submitResult;
@@ -149,8 +107,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long selectUserIdByPhone(String phone) {
-        Connection connection = JDBCUtils.getConnection();
-//        Long aLong = userDao.selectUserIdByPhone(connection, phone);
         Long aLong = mapper.selectUserIdByPhone(phone);
         return aLong;
     }

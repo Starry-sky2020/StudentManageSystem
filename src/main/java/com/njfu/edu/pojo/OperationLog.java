@@ -2,10 +2,11 @@ package com.njfu.edu.pojo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Data
-public class OperationLog {
+public class OperationLog implements Serializable {
 
     private long id;
     private String operationMsg;
