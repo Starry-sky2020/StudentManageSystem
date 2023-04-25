@@ -1,11 +1,17 @@
 package com.njfu.edu.pojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Student implements Serializable {
 
     private Long student_id;
@@ -20,13 +26,7 @@ public class Student implements Serializable {
     private Integer studentClassId;
     private String collegeName;
     private String studentclassName;
-    private StudentClass studentClass;
-    private College college;
 
-
-    public Student(){
-
-    }
 
     public Student(Long student_id, String name, Integer age, Integer sex, String school, String address) {
         this.student_id = student_id;

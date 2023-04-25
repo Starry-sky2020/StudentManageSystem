@@ -4,6 +4,7 @@ import com.njfu.edu.pojo.College;
 import com.njfu.edu.service.CollegeService;
 import com.njfu.edu.service.impl.CollegeServiceImpl;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class CollegeServlet {

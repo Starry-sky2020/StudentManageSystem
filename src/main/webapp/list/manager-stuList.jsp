@@ -196,7 +196,7 @@
                                         </c:if>
                                         <td>${stu.school}</td>
                                         <td>${stu.address}</td>
-                                        <td>${stu.studentClass.getStudentclassName()}</td>
+                                        <td>${stu.studentclassName}</td>
                                         <td>${stu.collegeName}</td>
                                         <td>
                                             <button type="button" class="btn btn-danger m-2" onclick="delStu(${stu.student_id})">删除</button>

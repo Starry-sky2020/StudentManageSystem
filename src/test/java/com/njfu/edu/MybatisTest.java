@@ -18,6 +18,7 @@ public class MybatisTest {
     @Test
     public void testselect(){
         Paging<Student> paging = new Paging<>();
+        paging.setPageNum(3);
         String resource = "mybatis-config.xml";
         InputStream inputStream;
 
@@ -30,17 +31,17 @@ public class MybatisTest {
         }
 
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        SqlSession sqlSession = sqlSessionFactory.openSession();
         StudentMapper mapper = sqlSession.getMapper(StudentMapper.class);
-        List<Student> students = mapper.testselect();
+        List<Student> students = mapper.selectStudentMessage(paging);
 //        System.out.println(students);
-//        sqlSession.commit();
+        sqlSession.commit();
 
-        SqlSession session = sqlSessionFactory.openSession(true);
+        SqlSession session = sqlSessionFactory.openSession();
         StudentMapper studentMapper = session.getMapper(StudentMapper.class);
         List<Student> students1 = studentMapper.testselect();
 //        System.out.println(students1);
-//        session.commit();
+        session.commit();
 
 //        List<Student> testselect = studentMapper.testselect();
 //        System.out.println(testselect);

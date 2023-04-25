@@ -4,39 +4,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.njfu.edu.dao.StudentMapper">
 
-    <cache/>
+<!--    <cache/>-->
     <insert id="insertStudent" parameterType="Student">
-        insert into lessonTraining.student(student_name,age,sex,school,address)
-        value (#{student_name},#{age},#{sex},#{school},#{address});
+        insert into lessonTraining.student(student_name,age,sex,school,address,studentClassId)
+        value (#{student.student_name},#{student.age},#{student.sex},#{student.school},#{student.address},#{student.studentClassId});
     </insert>
 
     <select id="selectStudent" resultType="Student">
         select * from lessontraining.student;
     </select>
 
-<!--    使用延迟加载（懒加载）-->
-    <resultMap id="mapStu" type="Student">
-        <id property="student_id" column="student_id"/>
-        <result property="student_name" column="student_name"/>
-        <result property="age" column="age"/>
-        <result property="sex" column="sex"/>
-        <result property="school" column="school"/>
-        <result property="address" column="address"/>
-        <result property="studentclassName" column="studentclassName"/>
-        <result property="collegeName" column="collegeName"/>
-        <association property="studentClass" column="studentClassId"
-                     select="com.njfu.edu.dao.StudenClazzMapper.queryStudentClassById"
-                     fetchType="lazy"/>
-    </resultMap>
-
-    <select id="selectStudentMessage" parameterType="Paging" resultMap="mapStu" >
+    <select id="selectStudentMessage" parameterType="Paging" resultType="Student">
         select lessontraining.student.student_id,lessontraining.student.student_name,
-                     lessontraining.student.age,lessontraining.student.sex,lessontraining.student.school,
-                     lessontraining.student.address,lessontraining.studentclass.studentclassName,
-                     lessontraining.college.collegeName,lessontraining.student.studentClassId
-                from lessontraining.student,lessontraining.studentclass,lessontraining.college
-                where lessontraining.studentclass.id = lessontraining.student.studentClassId
-                and lessontraining.studentclass.collegeId = lessontraining.college.id
+        lessontraining.student.age,lessontraining.student.sex,lessontraining.student.school,
+        lessontraining.student.address,lessontraining.studentclass.studentclassName,
+        lessontraining.college.collegeName,lessontraining.student.studentClassId
+
+        from lessontraining.student,lessontraining.studentclass,lessontraining.college
+        where (lessontraining.studentclass.id = lessontraining.student.studentClassId
+        and lessontraining.studentclass.collegeId = lessontraining.college.id)
         <if test="paging.map != null">
             <if test="paging.map.containsKey('age')">
                 and age = ${paging.map.get('age')}
@@ -48,7 +34,7 @@
                 and lessontraining.college.collegeName like concat('%','${paging.map.get("collegeName")}','%')
             </if>
             <if test="paging.map.containsKey('clazzName')">
-                and studentclassName like concat('%','${paging.map.get("clazzName")}','%')
+                and lessontraining.studentclass.studentclassName like concat('%','${paging.map.get("clazzName")}','%')
             </if>
 
             <if test="paging.map.containsKey('key')">
@@ -87,7 +73,7 @@
     <update id="updateStudentMessage" parameterType="Student">
         update lessontraining.student
         set student_name = #{student.student_name},age = #{student.age},
-            sex = #{student.sex},school = #{student.school},address = #{student.school},
+            sex = #{student.sex},school = #{student.school},address = #{student.address},
             deleteFlag = #{student.deleteFlag},info = #{student.info},updateTime = #{student.updateTime}
         where student_id = #{student.student_id};
     </update>
@@ -97,7 +83,7 @@
     </delete>
 
     <select id="testselect" resultType="Student" useCache="true">
-        select * from student;
+        select * from lessontraining.student;
     </select>
 
 </mapper>

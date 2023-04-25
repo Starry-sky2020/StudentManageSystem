@@ -65,6 +65,7 @@
             性别：<input type="text" name="stuSex"><br>
             学校：<input type="text" name="stuSch"><br>
             地址：<input type="text" name="stuAdd"><br>
+            班级id：<input type="text" name="stuClazz"><br>
             <button type="submit" class="btn btn-primary w-100 mb-4">确认添加</button>
             <a href="${pageContext.request.contextPath}/list/manager-index.jsp">返回主页</a>
           </form>

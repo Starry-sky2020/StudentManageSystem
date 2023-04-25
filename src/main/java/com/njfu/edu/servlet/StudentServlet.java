@@ -67,13 +67,11 @@ public class StudentServlet extends HttpServlet {
             paging.setMap(map);
 
             if (pageNum != null) paging.setPageNum(Integer.valueOf(pageNum));
-            System.out.println(pageNum);
             studentService.selectAllStudent(paging);
 
             request.setAttribute("college",collegeService.queryAllCollege());
             request.setAttribute("clazz", classService.queryStudentClass());
             request.setAttribute("paging",paging);
-
             request.getRequestDispatcher("/list/manager-stuList.jsp").forward(request,response);
         } else if (servletPath.equals("/delstu")){ //删除学生
             String id = request.getParameter("id");
@@ -120,6 +118,7 @@ public class StudentServlet extends HttpServlet {
             String stuSex = request.getParameter("stuSex");
             String stuSch = request.getParameter("stuSch");
             String stuAdd = request.getParameter("stuAdd");
+            String stuClazz = request.getParameter("stuClazz");
 
             Student student = new Student();
             student.setStudent_name(stuName);
@@ -128,6 +127,7 @@ public class StudentServlet extends HttpServlet {
             else student.setSex(0);
             student.setSchool(stuSch);
             student.setAddress(stuAdd);
+            student.setStudentClassId(Integer.valueOf(stuClazz));
 
             studentService.InsertStudentMessage(student);
             request.getRequestDispatcher("/stulist").forward(request,response);
