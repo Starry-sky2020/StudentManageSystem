@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.njfu.edu.dao.StudentMapper">
 
-<!--    <cache/>-->
+    <cache/>
     <insert id="insertStudent" parameterType="Student">
         insert into lessonTraining.student(student_name,age,sex,school,address,studentClassId)
         value (#{student.student_name},#{student.age},#{student.sex},#{student.school},#{student.address},#{student.studentClassId});

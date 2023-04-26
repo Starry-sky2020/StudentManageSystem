@@ -36,6 +36,4 @@ public class Student implements Serializable {
         this.school = school;
         this.address = address;
     }
-
-
 }

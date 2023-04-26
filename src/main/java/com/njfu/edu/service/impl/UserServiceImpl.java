@@ -5,14 +5,11 @@ import com.njfu.edu.dao.UserMapper;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.UserService;
+import com.njfu.edu.utils.SqlSessionUtil;
 import com.njfu.edu.utils.Tools;
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -23,32 +20,21 @@ public class UserServiceImpl implements UserService {
 
     private SubmitResult submitResult = new SubmitResult();
 
-    String resource = "mybatis-config.xml";
-    InputStream inputStream;
-
-    {
-        try {
-            inputStream = Resources.getResourceAsStream(resource);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-    SqlSession sqlSession = sqlSessionFactory.openSession();
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
     UserMapper mapper = sqlSession.getMapper(UserMapper.class);
     OpreationLogMapper logMapper = sqlSession.getMapper(OpreationLogMapper.class);
 
     @Override
     public List<User> selectAllUser() throws IOException {
         List<User> users = mapper.selectUserMessage();
+        sqlSession.commit();sqlSession.close();
         return users;
     }
 
     @Override
     public void deleteUserById(String id) throws IOException {
         mapper.deleteUserById("id");
-        sqlSession.commit();
+        sqlSession.commit();sqlSession.close();
     }
 
     /**
@@ -81,6 +67,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             List<User> userList = mapper.selectUserMessage();
+            sqlSession.commit();
             //用户名重复检测
             for (int i = 0; i < userList.size(); i++){
                 if (map.get("username").equals(userList.get(i).getUsername())){
@@ -100,6 +87,8 @@ public class UserServiceImpl implements UserService {
             submitResult.setCode(SubmitResult.ERROR_CODE_4);
         } catch (ParseException e) {
             throw new RuntimeException(e);
+        } finally {
+            sqlSession.close();
         }
 
         return submitResult;
@@ -108,6 +97,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long selectUserIdByPhone(String phone) {
         Long aLong = mapper.selectUserIdByPhone(phone);
+        sqlSession.commit();sqlSession.close();
         return aLong;
     }
 

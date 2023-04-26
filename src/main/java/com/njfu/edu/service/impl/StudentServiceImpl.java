@@ -4,11 +4,9 @@ import com.njfu.edu.dao.OpreationLogMapper;
 import com.njfu.edu.dao.StudentMapper;
 import com.njfu.edu.pojo.*;
 import com.njfu.edu.service.StudentService;
+import com.njfu.edu.utils.SqlSessionUtil;
 import com.njfu.edu.utils.Tools;
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -16,18 +14,7 @@ import java.text.ParseException;
 import java.util.*;
 
 public class StudentServiceImpl implements StudentService {
-    String resouce = "mybatis-config.xml";
-    InputStream inputStream;
-
-    {
-        try {
-            inputStream = Resources.getResourceAsStream(resouce);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-    SqlSession sqlSession = sqlSessionFactory.openSession();
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
     StudentMapper mapper = sqlSession.getMapper(StudentMapper.class);
     OpreationLogMapper logMapper = sqlSession.getMapper(OpreationLogMapper.class);
 
@@ -58,6 +45,8 @@ public class StudentServiceImpl implements StudentService {
             sqlSession.commit();
         } catch (ParseException e) {
             throw new RuntimeException(e);
+        } finally {
+            sqlSession.close();
         }
     }
 
@@ -70,7 +59,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student selectStudetById(Long id) throws IOException {
         Student student = mapper.selectStudentById(id);
-        sqlSession.commit();
+        sqlSession.commit();sqlSession.close();
         return student;
     }
 
@@ -84,7 +73,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> SortByStudetId(Paging paging) throws IOException {
         List<Student> students = mapper.selectStudentMessage(paging);
-        sqlSession.commit();
+        sqlSession.commit();sqlSession.close();
         return students;
     }
 
@@ -206,6 +195,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         List<Student> data = mapper.selectStudentMessage(path);
+        sqlSession.commit();
 
         for (int i = 0; i < data.size(); i++){
             /**
@@ -228,8 +218,9 @@ public class StudentServiceImpl implements StudentService {
         importResult.setCode(0);
         importResult.setMessage("导入成功");
 
-        return importResult;
+        sqlSession.close();
 
+        return importResult;
     }
 
     /**
@@ -242,7 +233,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void InsertStudentMessage(Student student) throws IOException {
         mapper.insertStudent(student);
-        sqlSession.commit();
+        sqlSession.commit();sqlSession.close();
     }
 
     /**
@@ -254,7 +245,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void DeleteStudentById(String id) throws IOException {
         mapper.deleteStudentById(id);
-        sqlSession.commit();
+        sqlSession.commit();sqlSession.close();
     }
 
     @Override
@@ -269,6 +260,8 @@ public class StudentServiceImpl implements StudentService {
                 //添加日志记录
                 logMapper.insert(Tools.getOpreationLog("更新学生信息",1,"无"));
                 sqlSession.commit();
+
+                sqlSession.close();
             } else return false; //更改信息为空
 
         return true;

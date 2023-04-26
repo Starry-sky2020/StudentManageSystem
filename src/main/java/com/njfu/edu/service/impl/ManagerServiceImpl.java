@@ -5,33 +5,18 @@ import com.njfu.edu.dao.OpreationLogMapper;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.service.ManagerService;
+import com.njfu.edu.utils.SqlSessionUtil;
 import com.njfu.edu.utils.Tools;
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ManagerServiceImpl implements ManagerService {
-    String resouces = "mybatis-config.xml";
-    InputStream inputStream;
-
-    {
-        try {
-            inputStream = Resources.getResourceAsStream(resouces);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-    SqlSession sqlSession = sqlSessionFactory.openSession();
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
     ManagerMapper mapper = sqlSession.getMapper(ManagerMapper.class);
     OpreationLogMapper logMapper = sqlSession.getMapper(OpreationLogMapper.class);
 
@@ -62,7 +47,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         try {
             List<Manager> managerList = mapper.selectManagerMessage();
-            sqlSession.commit();
+            sqlSession.commit();sqlSession.close();
             for (int i = 0; i < managerList.size(); i++) {
                 if (manager.getManager_name().equals(managerList.get(i).getManager_name())) {
                     submitResult.setResult(false);
@@ -73,13 +58,13 @@ public class ManagerServiceImpl implements ManagerService {
             }
 
             logMapper.insert(Tools.getOpreationLog("创建管理员", 1, "无"));
-            sqlSession.commit();
+            sqlSession.commit();sqlSession.close();
 
             submitResult.setResult(true);
             submitResult.setMessage("创建管理员成功");
             submitResult.setCode(SubmitResult.ERROR_CODE_4);
             mapper.insertManager(manager);
-            sqlSession.commit();
+            sqlSession.commit();sqlSession.close();
 
             return submitResult;
         } catch (ParseException e) {
@@ -89,7 +74,7 @@ public class ManagerServiceImpl implements ManagerService {
         @Override
     public Long selectManagerIdByPhone(String phone) {
         Long aLong = mapper.selectManagerIdByPhone(phone);
-        sqlSession.commit();
+        sqlSession.commit();sqlSession.close();
         return aLong;
     }
 }
