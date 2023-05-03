@@ -38,6 +38,38 @@
   <link href="${pageContext.request.contextPath}/list/css/style.css" rel="stylesheet">
 </head>
 
+<script>
+
+  window.onload = function (){
+    document.getElementById("btn").onclick = function (){
+      let xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function (){
+        if (xhr.readyState == 4){
+          if (xhr.status >= 200 && xhr.status < 300){
+            window.location.href="${pageContext.request.contextPath}/list/manager-stuList.jsp"
+          }
+        }
+      }
+
+      let stuId = document.getElementById("stuId").value;
+      let stuName = document.getElementById("stuName").value;
+      let stuAge = document.getElementById("stuAge").value;
+      let stuSex = document.getElementById("stuSex").value;
+      let stuSch = document.getElementById("stuSch").value;
+      let stuAdd = document.getElementById("stuAdd").value;
+
+      xhr.open("POST","${pageContext.request.contextPath}/updatestu",true)
+      xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
+      xhr.send("stuId="+stuId+"&stuName="+stuName+"&stuAge="+stuAge+"&stuSex="+stuSex
+              +"&stuSch="+stuSch+"&stuAdd="+stuAdd);
+    }
+  }
+
+  function bak(){
+    window.location.href="${pageContext.request.contextPath}/list/manager-index.jsp";
+  }
+</script>
+
 <body>
 <div class="container-fluid position-relative bg-white d-flex p-0">
   <!-- Spinner Start -->
@@ -59,17 +91,15 @@
               <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>修改学生信息</h3>
             </a>
           </div>
-          <form action="${pageContext.request.contextPath}/updatestu" method="post">
-            学号：<input type="text" name="stuId" value="${updateStu.student_id}" readonly><br>
-            姓名：<input type="text" name="stuName" value="${updateStu.student_name}"><br>
-            年龄：<input type="text" name="stuAge" value="${updateStu.age}"><br>
-            性别：<input type="text" name="stuSex" value="${updateStu.sex}"><br>
-            学校：<input type="text" name="stuSch" value="${updateStu.school}"><br>
-            地址：<input type="text" name="stuAdd" value="${updateStu.address}"><br>
-            信息：<input type="text" name="stuInfo" value="无"><br>
-            <button type="submit" class="btn btn-primary w-100 mb-4">确认修改</button>
-            <a href="${pageContext.request.contextPath}/stulist">返回上一级</a>
-          </form>
+            学号：<input id="stuId" type="text" name="stuId" value="${updateStu.student_id}" readonly><br>
+            姓名：<input id="stuName" type="text" name="stuName" value="${updateStu.student_name}"><br>
+            年龄：<input id="stuAge" type="text" name="stuAge" value="${updateStu.age}"><br>
+            性别：<input id="stuSex" type="text" name="stuSex" value="${updateStu.sex}"><br>
+            学校：<input id="stuSch" type="text" name="stuSch" value="${updateStu.school}"><br>
+            地址：<input id="stuAdd" type="text" name="stuAdd" value="${updateStu.address}"><br>
+            信息：<input id="stuInfo" type="text" name="stuInfo" value="无"><br>
+            <button id="btn" type="button" class="btn btn-primary w-100 mb-4">确认修改</button>
+            <button onclick="bak()">返回主页</button>
         </div>
       </div>
     </div>

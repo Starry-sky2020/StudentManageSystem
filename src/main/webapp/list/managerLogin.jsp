@@ -23,6 +23,28 @@
     <!--//Style-CSS -->
 </head>
 
+<script >
+    window.onload = function (){
+        document.getElementById("btn").onclick = function ajaxTran(){
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (){
+                if (xhr.readyState == 4){
+                    if (xhr.status >= 200 && xhr.status < 300){
+                        if (this.responseText == "OK")
+                            window.location.href="${pageContext.request.contextPath}/list/manager-index.jsp";
+                        else if (this.responseText == "ERROR")
+                            window.location.href="${pageContext.request.contextPath}/list/error.html"
+                    }
+                }
+            }
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            xhr.open("GET","${pageContext.request.contextPath}/managerlogin?username="+username+"&password="+password,true);
+            xhr.send();
+        }
+    }
+
+</script>
 <body>
 
 <!-- form section start -->
@@ -45,28 +67,24 @@
 
                     <div class="login-form-content">
                         <h2>Where to?</h2>
-                        <form action="${pageContext.request.contextPath}/managerlogin" class="signin-form" method="post">
                             <div class="one-frm">
-
                                 <label>姓名</label>
-                                <input type="text" name="username"  placeholder="" required="">
+                                <input id="username" type="text" name="username"  placeholder="" required="">
                             </div>
                             <div class="one-frm">
                                 <label>密码</label>
-                                <input type="password" name="password"  placeholder="" required="">
+                                <input id="password" type="password" name="password"  placeholder="" required="">
                             </div>
                             <label class="check-remaind">
                                 <input type="checkbox">
                                 <span class="checkmark"></span>
                                 <p class="remember">记住我</p>
-
                             </label>
-                            <button class="btn btn-style mt-3">登录</button>
+                            <button id="btn" class="btn btn-style mt-3">登录</button>
                             <p class="already">
                                 员工登录 <a href="userLogin.jsp">跳转</a>
                                 员工注册 <a href="user-submit.jsp">跳转</a>
                             </p>
-                        </form>
                     </div>
                 </div>
             </div>

@@ -47,7 +47,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         try {
             List<Manager> managerList = mapper.selectManagerMessage();
-            sqlSession.commit();sqlSession.close();
+            sqlSession.commit();
             for (int i = 0; i < managerList.size(); i++) {
                 if (manager.getManager_name().equals(managerList.get(i).getManager_name())) {
                     submitResult.setResult(false);
@@ -58,13 +58,13 @@ public class ManagerServiceImpl implements ManagerService {
             }
 
             logMapper.insert(Tools.getOpreationLog("创建管理员", 1, "无"));
-            sqlSession.commit();sqlSession.close();
+            sqlSession.commit();
 
             submitResult.setResult(true);
             submitResult.setMessage("创建管理员成功");
             submitResult.setCode(SubmitResult.ERROR_CODE_4);
             mapper.insertManager(manager);
-            sqlSession.commit();sqlSession.close();
+            sqlSession.commit();
 
             return submitResult;
         } catch (ParseException e) {
@@ -74,7 +74,7 @@ public class ManagerServiceImpl implements ManagerService {
         @Override
     public Long selectManagerIdByPhone(String phone) {
         Long aLong = mapper.selectManagerIdByPhone(phone);
-        sqlSession.commit();sqlSession.close();
+        sqlSession.commit();
         return aLong;
     }
 }

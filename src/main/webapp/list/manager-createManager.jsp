@@ -56,6 +56,30 @@
         case 3: alert("管理员已存在");break;
         case 4: alert("管理员创建成功");break;
       }
+
+    function bak(){
+      window.location.href="${pageContext.request.contextPath}/list/manager-index.jsp";
+    }
+
+    window.onload = function (){
+      document.getElementById("btn").onclick = function (){
+        let xhr = new XMLHttpRequest();
+        if (xhr.readyState == 4){
+          if (xhr.status >= 200 && xhr.status < 300){
+            window.location.href="${pageContext.request.contextPath}/list/manager-createManager.jsp";
+          }
+        }
+
+        let mName = document.getElementById("mName").value;
+        let mPassword = document.getElementById("mPassword").value;
+        let mRemark = document.getElementById("mRemark").value;
+
+        xhr.open("POST","${pageContext.request.contextPath}/manafer/createmanager",true)
+        xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
+        xhr.send("mName="+mName+"&mPassword="+mPassword+"&mRemark="+mRemark);
+      }
+    }
+
   </script>
   <!-- Sign In Start -->
   <div class="container-fluid">
@@ -67,22 +91,20 @@
               <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>创建管理账号</h3>
             </a>
           </div>
-          <form action="${pageContext.request.contextPath}/manager/createmanager" method="post">
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="floatingInput" placeholder="管理员姓名" name="mName">
+              <input id="mName" type="text" class="form-control" id="floatingInput" placeholder="管理员姓名" name="mName">
               <label for="floatingInput">管理员姓名</label>
             </div>
             <div class="form-floating mb-4">
-              <input type="password" class="form-control" id="floatingPassword" placeholder="密码" name="mPassword">
+              <input id="mPassword" type="password" class="form-control" id="floatingPassword" placeholder="密码" name="mPassword">
               <label for="floatingPassword">密码</label>
             </div>
             <div class="form-floating mb-4">
-              <input type="text" class="form-control" id="floatingRemark" placeholder="管理员信息" name="mRemark">
+              <input id="mRemark" type="text" class="form-control" id="floatingRemark" placeholder="管理员信息" name="mRemark">
               <label for="floatingRemark">管理员信息</label>
             </div>
-            <button type="submit" class="btn btn-primary py-3 w-100 mb-4">确认创建</button>
-            <a href="${pageContext.request.contextPath}/list/manager-index.jsp">返回主界面</a>
-          </form>
+            <button id="btn" class="btn btn-primary py-3 w-100 mb-4">确认创建</button>
+            <button onclick="bak()">返回主页</button>
         </div>
       </div>
     </div>

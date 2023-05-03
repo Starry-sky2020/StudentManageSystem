@@ -1,6 +1,7 @@
 package com.njfu.edu;
 
 import com.njfu.edu.dao.StudentMapper;
+import com.njfu.edu.dao.UserMapper;
 import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
 import org.apache.ibatis.io.Resources;
@@ -33,23 +34,11 @@ public class MybatisTest {
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         SqlSession sqlSession = sqlSessionFactory.openSession();
         StudentMapper mapper = sqlSession.getMapper(StudentMapper.class);
-        List<Student> students = mapper.selectStudentMessage(paging);
-//        System.out.println(students);
-        sqlSession.commit();
+        UserMapper mapper1 = sqlSession.getMapper(UserMapper.class);
 
-        SqlSession session = sqlSessionFactory.openSession();
-        StudentMapper studentMapper = session.getMapper(StudentMapper.class);
-        List<Student> students1 = studentMapper.testselect();
-//        System.out.println(students1);
-        session.commit();
+        Long aLong = mapper1.selectUserIdByPhone("13851701111");
+        System.out.println(aLong);
 
-//        List<Student> testselect = studentMapper.testselect();
-//        System.out.println(testselect);
-//        List<Student> testselect1 = studentMapper.testselect();
-//        System.out.println(testselect1);
-//        sqlSession.commit();
-//        sqlSession.close();
-//        session.commit();
-//        session.close();
+
     }
 }

@@ -34,6 +34,5 @@ public class ManagerServlet extends HttpServlet {
         manager.setRemarks(mRemark);
 
         request.setAttribute("resManager",createManger(manager));
-        request.getRequestDispatcher("/list/manager-createManager.jsp").forward(request,response);
     }
 }

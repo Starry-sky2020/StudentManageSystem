@@ -1,5 +1,6 @@
 package com.njfu.edu.servlet;
 
+import com.alibaba.fastjson2.JSON;
 import com.njfu.edu.service.CheckPersonService;
 import com.njfu.edu.service.ManagerService;
 import com.njfu.edu.service.UserService;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +35,8 @@ public class CheckPersonServlet extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String servletPath = request.getServletPath();
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter writer = response.getWriter();
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
@@ -49,8 +53,10 @@ public class CheckPersonServlet extends HttpServlet {
                 session.setAttribute("loginName",username);
                 id = managerService.selectManagerIdByPhone(password);
                 indentity = true;
-                response.sendRedirect(contextPath+"/list/manager-index.jsp");
-            } else response.sendRedirect(contextPath+"/list/error.html");
+                writer.write("OK");
+            } else writer.write("ERROR");
+            writer.flush();
+            writer.close();
 
         } else if (servletPath.equals("/userlogin")) {  //用户登录
             Map<String,String> map = new HashMap<>();
@@ -62,9 +68,10 @@ public class CheckPersonServlet extends HttpServlet {
                 session.setAttribute("loginName",username);
                 id = userService.selectUserIdByPhone(password);
                 indentity = false;
-                response.sendRedirect(contextPath+"/list/manager-index.jsp");
-            } else response.sendRedirect(contextPath+"/list/error.html");
-
+                writer.print("OK");
+            } else writer.print("ERROR");
+            writer.flush();
+            writer.close();
         } else if (servletPath.equals("/exitsystem")) {  //退出系统
             session.invalidate();  //销毁session
             response.sendRedirect(contextPath+"/list/managerLogin.jsp");

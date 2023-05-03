@@ -27,14 +27,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> selectAllUser() throws IOException {
         List<User> users = mapper.selectUserMessage();
-        sqlSession.commit();sqlSession.close();
+        sqlSession.commit();
         return users;
     }
 
     @Override
     public void deleteUserById(String id) throws IOException {
-        mapper.deleteUserById("id");
-        sqlSession.commit();sqlSession.close();
+        mapper.deleteUserById(id);
+        sqlSession.commit();
     }
 
     /**
@@ -87,8 +87,6 @@ public class UserServiceImpl implements UserService {
             submitResult.setCode(SubmitResult.ERROR_CODE_4);
         } catch (ParseException e) {
             throw new RuntimeException(e);
-        } finally {
-            sqlSession.close();
         }
 
         return submitResult;
@@ -97,7 +95,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long selectUserIdByPhone(String phone) {
         Long aLong = mapper.selectUserIdByPhone(phone);
-        sqlSession.commit();sqlSession.close();
+        sqlSession.commit();
         return aLong;
     }
 

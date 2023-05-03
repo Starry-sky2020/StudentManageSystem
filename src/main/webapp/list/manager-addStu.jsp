@@ -38,6 +38,37 @@
   <link href="${pageContext.request.contextPath}/list/css/style.css" rel="stylesheet">
 </head>
 
+<script>
+  window.onload = function (){
+      document.getElementById("btn").onclick = function (){
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+          if (xhr.readyState == 4){
+            alert(xhr.status)
+            if (xhr.status >= 200 && xhr.status < 300){
+              window.location.href="${pageContext.request.contextPath}/list/manager-addStu.jsp";
+            }
+          }
+        }
+        let stuName = document.getElementById("stuName").value;
+        let stuAge = document.getElementById("stuAge").value;
+        let stuSex = document.getElementById("stuSex").value;
+        let stuSch = document.getElementById("stuSch").value;
+        let stuAdd = document.getElementById("stuAdd").value;
+        let stuClazz = document.getElementById("stuClazz").value;
+
+        xhr.open("POST","${pageContext.request.contextPath}/addstu",true)
+        xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
+        xhr.send("stuName="+stuName+"&stuAge="+stuAge+"&stuSex="+stuSex
+                +"&stuSch="+stuSch+"&stuAdd="+stuAdd+"&stuClazz="+stuClazz);
+      }
+  }
+
+  function bak(){
+    window.location.href="${pageContext.request.contextPath}/list/manager-index.jsp";
+  }
+</script>
+
 <body>
 <div class="container-fluid position-relative bg-white d-flex p-0">
   <!-- Spinner Start -->
@@ -59,16 +90,14 @@
               <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>添加学生</h3>
             </a>
           </div>
-          <form action="${pageContext.request.contextPath}/addstu" method="post">
-            姓名：<input type="text" name="stuName"><br>
-            年龄：<input type="text" name="stuAge"><br>
-            性别：<input type="text" name="stuSex"><br>
-            学校：<input type="text" name="stuSch"><br>
-            地址：<input type="text" name="stuAdd"><br>
-            班级id：<input type="text" name="stuClazz"><br>
-            <button type="submit" class="btn btn-primary w-100 mb-4">确认添加</button>
-            <a href="${pageContext.request.contextPath}/list/manager-index.jsp">返回主页</a>
-          </form>
+            姓名：<input id="stuName" type="text" name="stuName"><br>
+            年龄：<input id="stuAge" type="text" name="stuAge"><br>
+            性别：<input id="stuSex" type="text" name="stuSex"><br>
+            学校：<input id="stuSch" type="text" name="stuSch"><br>
+            地址：<input id="stuAdd" type="text" name="stuAdd"><br>
+            班级id：<input id="stuClazz" type="text" name="stuClazz"><br>
+            <button id="btn" class="btn btn-primary w-100 mb-4">确认添加</button>
+            <button onclick="bak()">返回主页</button>
         </div>
       </div>
     </div>

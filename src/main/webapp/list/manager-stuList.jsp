@@ -36,11 +36,19 @@
 
     <!-- Template Stylesheet -->
     <link href="${pageContext.request.contextPath}/list/css/style.css" rel="stylesheet">
-    <script src="${pageContext.request.contextPath}/list/jquery/jquery-3.6.0.min.js"></script>
 </head>
-<script type="text/javascript">
+<script>
     function delStu(id){
-        window.location.href='${pageContext.request.contextPath}/delstu?id='+id;
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange=function (){
+            if (xhr.readyState == 4){
+                if (xhr.status >= 200 && xhr.status < 300){
+                    ajaxStuList(); //删除数据后及时刷新
+                }
+            }
+        }
+        xhr.open("GET","${pageContext.request.contextPath}/delstu?id="+id,true);
+        xhr.send();
     }
 
     function updateStu(id){
@@ -49,36 +57,193 @@
 
 
     function initSort(){
-        window.location.href='${pageContext.request.contextPath}/stulist?pageNum=1&condition=1';
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState == 4){
+                if (xhr.status >= 200 && xhr.status < 300){
+                    ajaxStuList()
+                }
+            }
+        }
+        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum+"&condition=1",true)
+        xhr.send();
     }
 
     function ageSort(){
-        window.location.href='${pageContext.request.contextPath}/stulist?pageNum=1&condition=2';
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState == 4){
+                if (xhr.status >= 200 && xhr.status < 300){
+                    ajaxStuList()
+                }
+            }
+        }
+        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum+"&condition=2",true)
+        xhr.send();
     }
 
     function sexSort(){
-        window.location.href='${pageContext.request.contextPath}/stulist?pageNum=1&condition=3';
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState == 4){
+                if (xhr.status >= 200 && xhr.status < 300){
+                    ajaxStuList()
+                }
+            }
+        }
+        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum+"&condition=3",true)
+        xhr.send();
     }
 
     function getCollegeName(){
         let sel = document.getElementById("college");
         let index = sel.selectedIndex;
-        let collegeName = sel.options[index].value;
+        let collegeName = sel.options[index].text;
         return collegeName;
     }
 
     function getClazzName(){
         let sel = document.getElementById("clazz");
         let index = sel.selectedIndex;
-        let clazzName = sel.options[index].value
+        let clazzName = sel.options[index].text
         return clazzName;
     }
 
     function query(){
         let collegeName = getCollegeName();
         let clazzName = getClazzName();
-        window.location.href='${pageContext.request.contextPath}/stulist?pageNum=1&collegeName='+collegeName+'&clazzName='+clazzName;
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState == 4){
+                if (xhr.status >= 200 && xhr.status < 300){
+                   ajaxStuList();
+                }
+            }
+        }
+
+        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum+"&collegeName="+collegeName+"&clazzName="+clazzName,true);
+        xhr.send();
     }
+
+    var pageNum = 1;
+    function getPageNum(pageNum){
+        this.pageNum = pageNum
+        ajaxStuList()
+    }
+
+
+    function ajaxStuList(){
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState == 4){
+                let parse = JSON.parse(this.responseText);
+                if (xhr.status >= 200 && xhr.status < 300){
+                    let res = "";
+                    for (let i = 0; i < parse.listStu.length; i++){
+                        res += "<tr>";
+                        res += "<td>"+parse.listStu[i].student_name+"</td>";
+                        res += "<td>"+parse.listStu[i].age+"</td>";
+                        if (parse.listStu[i].sex == 0) res += "<td>女</td>"
+                        else if (parse.listStu[i].sex == 1) res += "<td>男</td>"
+                        res += "<td>"+parse.listStu[i].address+"</td>";
+                        res += "<td>"+parse.listStu[i].school+"</td>"
+                        res += "<td>"+parse.listStu[i].studentclassName+"</td>"
+                        res += "<td>"+parse.listStu[i].collegeName+"</td>"
+                        res += "<td><button type='button' class='btn btn-danger m-2' onclick='delStu("+parse.listStu[i].student_id+")'>删除</button>"+
+                            " <button type='button' class='btn btn-primary m-2'  onclick='updateStu("+parse.listStu[i].student_id+")'>更新</button></td>"
+                        res += "</tr>";
+                    }
+                    let pageHelper = "";
+                    if (parse.paging.recordTotal > 0){
+                        if (parse.paging.pageNum <= 1){
+                            pageHelper += "<button>首页</button>";
+                            pageHelper += "<button>上一页</button>"
+                            let nextPage = parse.paging.pageNum+1;
+                            pageHelper += "<button style='color: #1aa6ff' onclick='getPageNum("+nextPage+")'>下一页</button>"
+                            let pageTotal = parse.paging.pageTotal;
+                            pageHelper += "<button style='color: #1aa6ff' onclick='getPageNum("+pageTotal+")'>尾页</button>"
+                        }
+
+                        if (parse.paging.pageNum > 1 && parse.paging.pageNum < parse.paging.pageTotal){
+                            pageHelper += "<button style='color: #1aa6ff' onclick='getPageNum(1)'>首页</button>"
+                            let frontPage = parse.paging.pageNum-1;
+                            pageHelper += "<button style='color: #1aa6ff' onclick='getPageNum("+frontPage+")'>前一页</button>"
+                            let nextPage = parse.paging.pageNum+1;
+                            pageHelper += "<button style='color: #1aa6ff' onclick='getPageNum("+nextPage+")'>下一页</button>"
+                            let pageTotal = parse.paging.pageTotal;
+                            pageHelper += "<button style='color: #1aa6ff' onclick='getPageNum("+pageTotal+")'>尾页</button>"
+                        }
+
+                        if (parse.paging.pageNum >= parse.paging.pageTotal){
+                            pageHelper += "<button style='color: #1aa6ff' onclick='getPageNum(1)'>首页</button>"
+                            let frontPage = parse.paging.pageNum-1;
+                            pageHelper += "<button style='color: #1aa6ff'onclick='getPageNum("+frontPage+")'>前一页</button>"
+                            pageHelper += "<button>下一页</button>"
+                            pageHelper += "<button>尾页</button>"
+                        }
+                    }
+                    ClazzName();CollegeName();
+                    document.getElementById("tbody").innerHTML = res;
+                    document.getElementById("pageHelper").innerHTML = pageHelper
+                }
+            }
+        }
+        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum,true)
+        xhr.send()
+    }
+
+    function CollegeName(){
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState == 4){
+                if (xhr.status >= 200 && xhr.status < 300){
+                    let parse = JSON.parse(this.responseText);
+                    let res = "";
+                    res += "<select id='college' onchange='getCollegeName()'" +
+                        " class='form-select' aria-label='Default select example' style='width: 9rem;'>"
+                    res += "<option selected>----请选择学院----</option>";
+
+                    for (let i = 0; i < parse.listCollege.length; i++){
+                        res += "<option>"+parse.listCollege[i].collegeName+ "</option>"
+                    }
+                    res += "</select>"
+                    document.getElementById("collegeName").innerHTML = res;
+                }
+            }
+        }
+
+        xhr.open("GET","${pageContext.request.contextPath}/stulist",true);
+        xhr.send();
+    }
+
+    function ClazzName(){
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState == 4){
+                if (xhr.status >= 200 && xhr.status < 300){
+                    let parse = JSON.parse(this.responseText);
+                    let res = "";
+                    res += "<select id='clazz' onchange='getClazzName()'" +
+                        " class='form-select' aria-label='Default select example' style='width: 9rem;'>"
+                    res += "<option selected>----请选择班级----</option>";
+
+                    for (let i = 0; i < parse.listClazz.length; i++){
+                        res += "<option>"+parse.listClazz[i].studentclassName+"</option>"
+                    }
+                    res += "</select>"
+                    document.getElementById("clazzName").innerHTML = res;
+                }
+            }
+        }
+
+        xhr.open("GET","${pageContext.request.contextPath}/stulist",true);
+        xhr.send();
+    }
+
+
+    // window.addEventListener('load',CollegeName,false);
+    // window.addEventListener('load',ClazzName,false);
+    window.addEventListener('load',ajaxStuList,false);
 </script>
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
@@ -109,7 +274,7 @@
                         <a href="${pageContext.request.contextPath}/manager/staff" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
                         <a href="${pageContext.request.contextPath}/list/manager-createManager.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加管理员</a>
                     </c:if>
-                    <a href="${pageContext.request.contextPath}/stulist" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
+                    <a href="${pageContext.request.contextPath}/list/manager-stuList.jsp" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
                     <a href="${pageContext.request.contextPath}/list/manager-addStu.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加学生</a>
                 </div>
             </nav>
@@ -143,25 +308,9 @@
                         <button type="button" class="btn btn-outline-primary" onclick="ageSort()">年龄升序</button>
                         <button type="button" class="btn btn-outline-primary" onclick="sexSort()">性别升序</button>
                         <div style="width: 24rem">
-                            <div style="float: left">
-                                <select id="college" onchange="getCollegeName()" class="form-select" aria-label="Default select example" style="width: 9rem;">
-                                    <option selected>----请选择学院----</option>
-                                    <c:forEach items="${college}" var="college">
-                                        <option value="${college.collegeName}">
-                                                ${college.collegeName}
-                                        </option>
-                                    </c:forEach>
-                                </select>
+                            <div id="collegeName" style="float: left">
                             </div>
-                            <div style="float: left">
-                                <select id="clazz" onchange="getClazzName()" class="form-select" aria-label="Default select example" style="width: 9rem;">
-                                    <option selected>----请选择班级----</option>
-                                    <c:forEach items="${clazz}" var="clazz">
-                                        <option value="${clazz.studentclassName}">
-                                                ${clazz.studentclassName}
-                                        </option>
-                                    </c:forEach>
-                                </select>
+                            <div id="clazzName" style="float: left">
                             </div>
                             <div style="float: left">
                                 <button type="button" class="btn btn-outline-primary" onclick="query()">查询</button>
@@ -183,56 +332,15 @@
                                     <th scope="col">操作</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <c:forEach items="${paging.getList()}" var="stu">
-                                    <tr>
-                                        <td>${stu.student_name}</td>
-                                        <td>${stu.age}</td>
-                                        <c:if test="${stu.sex == 0}">
-                                            <td>女</td>
-                                        </c:if>
-                                        <c:if test="${stu.sex == 1}">
-                                            <td>男</td>
-                                        </c:if>
-                                        <td>${stu.school}</td>
-                                        <td>${stu.address}</td>
-                                        <td>${stu.studentclassName}</td>
-                                        <td>${stu.collegeName}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger m-2" onclick="delStu(${stu.student_id})">删除</button>
-                                            <button type="button" class="btn btn-primary m-2" onclick="updateStu(${stu.student_id})">更新</button>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
+                            <tbody id="tbody">
+
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <!-- Recent Sales End -->
-            <div style="width: 200px;margin-left: 450px;">
-                <c:if test="${paging.getRecordTotal() > 0}">
-                    <c:if test="${paging.getPageNum() <= 1}">
-                        <span>首页</span>
-                        <span>上一页</span>
-                        <a  href="${pageContext.request.contextPath}/stulist?pageNum=${paging.getPageNum()+1}">下一页</a>
-                        <a  href="${pageContext.request.contextPath}/stulist?pageNum=${paging.getPageTotal()}">尾页</a>
-                    </c:if>
-
-                    <c:if test="${paging.getPageNum() > 1 && paging.getPageNum() < paging.getPageTotal()}">
-                        <a  href="${pageContext.request.contextPath}/stulist?pageNum=1">首页</a>
-                        <a  href="${pageContext.request.contextPath}/stulist?pageNum=${paging.getPageNum() - 1}">上一页</a>
-                        <a  href="${pageContext.request.contextPath}/stulist?pageNum=${paging.getPageNum() + 1}">下一页</a>
-                        <a  href="${pageContext.request.contextPath}/stulist?pageNum=${paging.getPageTotal()}">尾页</a>
-                    </c:if>
-
-                    <c:if test="${paging.getPageNum() >= paging.getPageTotal()}">
-                        <a  href="${pageContext.request.contextPath}/stulist?pageNum=1">首页</a>
-                        <a  href="${pageContext.request.contextPath}/stulist?pageNum=${paging.getPageNum() - 1}">上一页</a>
-                        <span>下一页</span>
-                        <span>尾页</span>
-                    </c:if>
-                </c:if>
+            <div id="pageHelper" style="width: 240px;margin-left: 450px;">
             </div>
         <!-- Content End -->
         <!-- Footer Start -->
@@ -243,8 +351,10 @@
                             &copy; <a href="#">Your Site Name</a>, All Right Reserved.
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <%--                                /*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/--%>
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink.
+                            If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/ -->
+                            Designed By
+                            <a href="https://htmlcodex.com">HTML Codex</a>
                         </div>
                     </div>
                 </div>

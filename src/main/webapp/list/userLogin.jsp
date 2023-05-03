@@ -23,6 +23,40 @@
     <!--//Style-CSS -->
 </head>
 
+<script>
+    window.onload = function init() {
+        document.getElementById("btn").onclick = function (){
+            let username = document.getElementById("username").value
+            let password = document.getElementById("password").value
+            // let regUserName = "^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)";
+            // let regUserPhone = "^(?=.*[0-9])|(?=.*[a-z])|(?=.*[A-Z])|(?=.*[@#$%^&+=])|(?=\S+$).{4,20}$";
+            // let matchUserName = username.match(regUserName);
+            // let matchUserPhone = password.match(regUserPhone);
+            // alert(matchUserPhone)
+            // alert(matchUserName)
+            // if (matchUserName != null && matchUserPhone != null){
+                let xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function (){
+                    if (xhr.readyState == 4){
+                        alert(xhr.status)
+                        if (xhr.status >= 200 && xhr.status < 300){
+                            if (this.responseText == "OK")
+                                window.location.href="${pageContext.request.contextPath}/list/manager-index.jsp";
+                            else if (this.responseText == "ERROR")
+                                window.location.href="${pageContext.request.contextPath}/list/error.html";
+                        }
+                    }
+                }
+
+
+                xhr.open("get","${pageContext.request.contextPath}/userlogin?username="+username+"&password="+password,true);
+                // xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=UTF-8");
+                xhr.send()
+        }
+    }
+
+</script>
+
 <body>
 
 <!-- form section start -->
@@ -45,15 +79,13 @@
 
                     <div class="login-form-content">
                         <h2>Where to?</h2>
-                        <form action="${pageContext.request.contextPath}/userlogin" class="signin-form" method="post">
                             <div class="one-frm">
-
                                 <label>姓名</label>
-                                <input type="text" name="username"  placeholder="" required="">
+                                <input id="username" type="text" name="username"  placeholder="" required="">
                             </div>
                             <div class="one-frm">
                                 <label>密码</label>
-                                <input type="password" name="password"  placeholder="" required="">
+                                <input id="password" type="password" name="password"  placeholder="" required="">
                             </div>
                             <label class="check-remaind">
                                 <input type="checkbox">
@@ -61,12 +93,11 @@
                                 <p class="remember">记住我</p>
 
                             </label>
-                            <button class="btn btn-style mt-3">登录</button>
+                            <button id="btn" class="btn btn-style mt-3">登录</button>
                             <p class="already">
                                 没有账号<a href="user-submit.jsp">创建</a>
                                 管理员<a href="managerLogin.jsp">登录</a>
                             </p>
-                        </form>
                     </div>
                 </div>
             </div>

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SqlSessionUtil {
-    private static SqlSession sqlSession;
+    private static SqlSessionFactory sqlSessionFactory = null;
     static {
         String resource = "mybatis-config.xml";
         InputStream inputStream = null;
@@ -20,11 +20,11 @@ public class SqlSessionUtil {
                 e.printStackTrace();
             }
         }
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        sqlSession = sqlSessionFactory.openSession();
+        sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
     }
 
     public static SqlSession getSqlSession(){
-        return sqlSession;
+        System.out.println(sqlSessionFactory.openSession());
+        return sqlSessionFactory.openSession();
     }
 }

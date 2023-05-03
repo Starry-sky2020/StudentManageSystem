@@ -73,10 +73,10 @@
       <div class="navbar-nav w-100">
         <a href="manager-index.jsp" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>首页</a>
         <c:if test="${identity == 0}">
-          <a href="${pageContext.request.contextPath}/manager/staff" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
+          <a href="${pageContext.request.contextPath}/list/manager-userList.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
           <a href="${pageContext.request.contextPath}/list/manager-createManager.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加管理员</a>
         </c:if>
-        <a href="${pageContext.request.contextPath}/stulist" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
+        <a href="${pageContext.request.contextPath}/list/manager-stuList.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
         <a href="${pageContext.request.contextPath}/list/manager-addStu.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加学生</a>
       </div>
     </nav>

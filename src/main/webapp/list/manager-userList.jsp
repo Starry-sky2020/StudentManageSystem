@@ -37,9 +37,47 @@
     <!-- Template Stylesheet -->
     <link href="<%=request.getContextPath()%>/list/css/style.css" rel="stylesheet">
 </head>
-<script type="text/javascript">
+<script>
     function delUser(userId){
-        window.location.href='${pageContext.request.contextPath}/manager/deluser?user_id='+userId;
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState == 4){
+                if (xhr.status >= 200 && xhr.status < 300){
+                    ajaxUserList();
+                }
+            }
+        }
+        xhr.open("POST","${pageContext.request.contextPath}/manager/deluser",true);
+        xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
+        xhr.send("user_id="+userId);
+    }
+
+    window.addEventListener('load',ajaxUserList,false)
+    function ajaxUserList(){
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState == 4){
+                if (xhr.status >= 200 && xhr.status < 300){
+                    let parse = JSON.parse(this.responseText);
+                    let res = "";
+                    for (let i = 0; i < parse.listUser.length; i++){
+                        res += "<tr>";
+                        res += "<td>"+parse.listUser[i].username+"</td>";
+
+                        if (parse.listUser[i].sex == 0) res += "<td>女</td>"
+                        else if (parse.listUser[i].sex == 1) res += "<td>男</td>"
+                        res += "<td>"+parse.listUser[i].age+"</td>";
+                        res += "<td>"+parse.listUser[i].address+"</td>";
+                        res += "<td>"+parse.listUser[i].info+"</td>"
+                        res += "<td><button type='button' class='btn btn-danger m-2' onclick='delUser("+parse.listUser[i].user_id+")'>删除</button>"
+                        res += "</tr>";
+                    }
+                    document.getElementById("tbody").innerHTML = res;
+                }
+            }
+        }
+        xhr.open("GET","${pageContext.request.contextPath}/manager/staff",true)
+        xhr.send()
     }
 </script>
 <body>
@@ -69,7 +107,7 @@
                 <div class="navbar-nav w-100">
                     <a href="${pageContext.request.contextPath}/list/manager-index.jsp" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>首页</a>
                     <c:if test="${identity == 0}">
-                        <a href="${pageContext.request.contextPath}/manager/staff" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
+                        <a href="${pageContext.request.contextPath}/list/manager-userList.jsp" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
                         <a href="${pageContext.request.contextPath}/list/manager-createManager.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加管理员</a>
                     </c:if>
                     <a href="${pageContext.request.contextPath}/stulist" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
@@ -118,22 +156,22 @@
                                     <th scope="col">管理</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <c:forEach items="${users}" var="user">
-                                    <tr>
-                                        <td>${user.username}</td>
-                                        <c:if test="${user.sex == 0}">
-                                            <td>女</td>
-                                        </c:if>
-                                        <c:if test="${user.sex == 1}">
-                                            <td>男</td>
-                                        </c:if>
-                                        <td>${user.age}</td>
-                                        <td>${user.address}</td>
-                                        <td>${user.info}</td>
-                                        <td><button type="button" class="btn btn-danger m-2" onclick="delUser(${user.user_id})">删除</button></td>
-                                    </tr>
-                                </c:forEach>
+                            <tbody id="tbody">
+<%--                                <c:forEach items="${users}" var="user">--%>
+<%--                                    <tr>--%>
+<%--                                        <td>${user.username}</td>--%>
+<%--                                        <c:if test="${user.sex == 0}">--%>
+<%--                                            <td>女</td>--%>
+<%--                                        </c:if>--%>
+<%--                                        <c:if test="${user.sex == 1}">--%>
+<%--                                            <td>男</td>--%>
+<%--                                        </c:if>--%>
+<%--                                        <td>${user.age}</td>--%>
+<%--                                        <td>${user.address}</td>--%>
+<%--                                        <td>${user.info}</td>--%>
+<%--                                        <td><button type="button" class="btn btn-danger m-2" onclick="delUser(${user.user_id})">删除</button></td>--%>
+<%--                                    </tr>--%>
+<%--                                </c:forEach>--%>
 
                             </tbody>
                         </table>

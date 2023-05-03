@@ -16,14 +16,14 @@ public class StudentClassServiceImpl implements StudentClassService {
     @Override
     public List<StudentClass> queryStudentClassById(int id) {
         List<StudentClass> studentClasses = mapper.queryStudentClassById(id);
-        sqlSession.commit();sqlSession.close();
+        sqlSession.commit();
         return studentClasses;
     }
 
     @Override
     public List<StudentClass> queryStudentClass() {
         List<StudentClass> studentClasses = mapper.queryStudentClass();
-        sqlSession.commit();sqlSession.close();
+        sqlSession.commit();
         return studentClasses;
     }
 }

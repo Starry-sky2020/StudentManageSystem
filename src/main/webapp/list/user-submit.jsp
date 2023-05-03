@@ -25,12 +25,23 @@
 
 <body>
 <script>
-  let res = ${userSubmit.getCode()};
-  switch (res){
-    case 1: alert("用户名不合法");break;
-    case 2: alert("密码不合法");break;
-    case 3: alert("用户已存在");break;
-    case 4: alert("用户注册成功，点击返回登录");break;
+  window.onload = function (){
+    document.getElementById("btn").onclick = function (){
+      let xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function (){
+        if (xhr.readyState == 4){
+          if (xhr.status >= 200 && xhr.status < 300){
+            window.location.href="${pageContext.request.contextPath}/list/userLogin.jsp"
+          }
+        }
+      }
+      let username = document.getElementById("username").value;
+      let password = document.getElementById("password").value;
+
+      xhr.open("POST","${pageContext.request.contextPath}/usersubmit",true);
+      xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
+      xhr.send("username="+username+"&password="+password);
+    }
   }
 </script>
 <!-- form section start -->
@@ -40,10 +51,6 @@
     <div class="wrapper">
       <div class="logo">
         <h1><a class="brand-logo" href="index.html"><span>普通用户</span>注册</a></h1>
-        <!-- if logo is image enable this
-            <a class="brand-logo" href="#index.html">
-                <img src="image-path" alt="Your logo" title="Your logo" style="height:35px;" />
-            </a> -->
       </div>
       <div class="workinghny-block-grid">
         <div class="workinghny-left-img align-end">
@@ -53,15 +60,13 @@
 
           <div class="login-form-content">
             <h2>Where to?</h2>
-            <form action="${pageContext.request.contextPath}/usersubmit" class="signin-form" method="post">
               <div class="one-frm">
-
                 <label>姓名</label>
-                <input type="text" name="username"  placeholder="" required="">
+                <input id="username" type="text" name="username"  placeholder="" required="">
               </div>
               <div class="one-frm">
                 <label>密码</label>
-                <input type="password" name="password"  placeholder="" required="">
+                <input id="password" type="password" name="password"  placeholder="" required="">
               </div>
               <label class="check-remaind">
                 <input type="checkbox">
@@ -69,18 +74,16 @@
                 <p class="remember">记住我</p>
 
               </label>
-              <button class="btn btn-style mt-3">注册</button>
+              <button id="btn" class="btn btn-style mt-3">注册</button>
               <p class="already">
                 已有账户<a href="userLogin.jsp">登录</a>
                 管理员<a href="managerLogin.jsp">登录</a>
               </p>
-            </form>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- //form -->
   <!-- copyright-->
   <div class="copyright text-center">
     <div class="wrapper">

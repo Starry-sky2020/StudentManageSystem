@@ -45,8 +45,6 @@ public class StudentServiceImpl implements StudentService {
             sqlSession.commit();
         } catch (ParseException e) {
             throw new RuntimeException(e);
-        } finally {
-            sqlSession.close();
         }
     }
 
@@ -59,7 +57,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student selectStudetById(Long id) throws IOException {
         Student student = mapper.selectStudentById(id);
-        sqlSession.commit();sqlSession.close();
+        sqlSession.commit();
         return student;
     }
 
@@ -73,7 +71,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> SortByStudetId(Paging paging) throws IOException {
         List<Student> students = mapper.selectStudentMessage(paging);
-        sqlSession.commit();sqlSession.close();
+        sqlSession.commit();
         return students;
     }
 
@@ -218,7 +216,6 @@ public class StudentServiceImpl implements StudentService {
         importResult.setCode(0);
         importResult.setMessage("导入成功");
 
-        sqlSession.close();
 
         return importResult;
     }
@@ -233,7 +230,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void InsertStudentMessage(Student student) throws IOException {
         mapper.insertStudent(student);
-        sqlSession.commit();sqlSession.close();
+        sqlSession.commit();
     }
 
     /**
@@ -245,7 +242,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void DeleteStudentById(String id) throws IOException {
         mapper.deleteStudentById(id);
-        sqlSession.commit();sqlSession.close();
+        sqlSession.commit();
     }
 
     @Override
@@ -261,7 +258,6 @@ public class StudentServiceImpl implements StudentService {
                 logMapper.insert(Tools.getOpreationLog("更新学生信息",1,"无"));
                 sqlSession.commit();
 
-                sqlSession.close();
             } else return false; //更改信息为空
 
         return true;
