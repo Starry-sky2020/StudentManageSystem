@@ -1,17 +1,19 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.ManagerMapper;
-import com.njfu.edu.dao.UserMapper;
+import com.njfu.edu.mapper.ManagerMapper;
+import com.njfu.edu.mapper.UserMapper;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.CheckPersonService;
 import com.njfu.edu.utils.SqlSessionUtil;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class CheckPersonServiceImpl implements CheckPersonService {
     SqlSession sqlSession = SqlSessionUtil.getSqlSession();
     UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
@@ -29,11 +31,13 @@ public class CheckPersonServiceImpl implements CheckPersonService {
                 if (userList.get(i).getPassword().equals(map.get("password"))){
                     return true;
                 }
-
             }
         return false;
     }
 
+    public void test(){
+        System.out.println("hello,world");
+    }
     /**
      * 管理员登录信息验证
      * @throws IOException

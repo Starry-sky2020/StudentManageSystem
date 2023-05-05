@@ -1,9 +1,8 @@
-package com.njfu.edu.dao;
+package com.njfu.edu.mapper;
 
 import com.njfu.edu.pojo.Manager;
 import org.apache.ibatis.annotations.Param;
 
-import java.sql.Connection;
 import java.util.List;
 
 public interface ManagerMapper {

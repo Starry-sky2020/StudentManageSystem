@@ -1,4 +1,4 @@
-package com.njfu.edu.dao;
+package com.njfu.edu.mapper;
 
 import com.njfu.edu.pojo.College;
 

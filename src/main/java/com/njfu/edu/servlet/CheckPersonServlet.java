@@ -1,25 +1,24 @@
 package com.njfu.edu.servlet;
 
-import com.alibaba.fastjson2.JSON;
 import com.njfu.edu.service.CheckPersonService;
 import com.njfu.edu.service.ManagerService;
 import com.njfu.edu.service.UserService;
-import com.njfu.edu.service.impl.CheckPersonServiceImpl;
-import com.njfu.edu.service.impl.ManagerServiceImpl;
-import com.njfu.edu.service.impl.UserServiceImpl;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+//不需加Controller注解 Controller和WebServlet有重合
 @WebServlet({"/userlogin","/managerlogin","/exitsystem"})
 public class CheckPersonServlet extends HttpServlet {
 
@@ -27,9 +26,18 @@ public class CheckPersonServlet extends HttpServlet {
     //为了记录系统运行日志
     public static Long id;
     public static Boolean indentity;
-    private CheckPersonService checkPersonService = new CheckPersonServiceImpl();
-    private ManagerService managerService = new ManagerServiceImpl();
-    private UserService userService = new UserServiceImpl();
+    @Autowired
+    private CheckPersonService checkPersonService;
+    @Autowired
+    private ManagerService managerService;
+    @Autowired
+    private UserService userService;
+
+    //spring整合tomcat 将对象控制权从tomcat转到spring
+    @Override
+    public void init(ServletConfig config) {
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -57,7 +65,6 @@ public class CheckPersonServlet extends HttpServlet {
             } else writer.write("ERROR");
             writer.flush();
             writer.close();
-
         } else if (servletPath.equals("/userlogin")) {  //用户登录
             Map<String,String> map = new HashMap<>();
             map.put("username",username);

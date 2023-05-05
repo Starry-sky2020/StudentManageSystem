@@ -1,13 +1,14 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.ManagerMapper;
-import com.njfu.edu.dao.OpreationLogMapper;
+import com.njfu.edu.mapper.ManagerMapper;
+import com.njfu.edu.mapper.OpreationLogMapper;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.service.ManagerService;
 import com.njfu.edu.utils.SqlSessionUtil;
 import com.njfu.edu.utils.Tools;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Service
 public class ManagerServiceImpl implements ManagerService {
     SqlSession sqlSession = SqlSessionUtil.getSqlSession();
     ManagerMapper mapper = sqlSession.getMapper(ManagerMapper.class);

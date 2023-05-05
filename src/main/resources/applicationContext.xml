@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<beans xmlns="http://www.springframework.org/schema/beans"-->
+<!--       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--       xmlns:context="http://www.springframework.org/schema/context"-->
+<!--       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+               http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans.xsd
+               http://www.springframework.org/schema/aop
+               http://www.springframework.org/schema/aop/spring-aop.xsd
+               http://www.springframework.org/schema/tx
+               http://www.springframework.org/schema/tx/spring-tx.xsd
+               http://www.springframework.org/schema/context
+               http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--开启注解-->
+    <context:annotation-config></context:annotation-config>
+    <!--扫描注解-->
+    <context:component-scan base-package="com.njfu.edu"/>
+
+<!--    <bean id="checkPersonService" class="com.njfu.edu.service.impl.CheckPersonServiceImpl"></bean>-->
+<!--    <bean id="managerService" class="com.njfu.edu.service.impl.ManagerServiceImpl"></bean>-->
+<!--    <bean id="userService" class="com.njfu.edu.service.impl.UserServiceImpl"></bean>-->
+
+<!--    <bean id="checkPersonServlet" class="com.njfu.edu.servlet.CheckPersonServlet">-->
+<!--        <constructor-arg index="0" ref="checkPersonService"></constructor-arg>-->
+<!--        <constructor-arg index="1" ref="managerService"></constructor-arg>-->
+<!--        <constructor-arg index="2" ref="userService"></constructor-arg>-->
+<!--    </bean>-->
+
+</beans>

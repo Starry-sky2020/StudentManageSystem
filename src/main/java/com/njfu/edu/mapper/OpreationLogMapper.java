@@ -1,9 +1,7 @@
-package com.njfu.edu.dao;
+package com.njfu.edu.mapper;
 
 import com.njfu.edu.pojo.OperationLog;
 import org.apache.ibatis.annotations.Param;
-
-import java.sql.Connection;
 
 public interface OpreationLogMapper {
 

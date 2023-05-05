@@ -1,13 +1,14 @@
 package com.njfu.edu.service.impl;
 
-import com.njfu.edu.dao.OpreationLogMapper;
-import com.njfu.edu.dao.UserMapper;
+import com.njfu.edu.mapper.OpreationLogMapper;
+import com.njfu.edu.mapper.UserMapper;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.UserService;
 import com.njfu.edu.utils.SqlSessionUtil;
 import com.njfu.edu.utils.Tools;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private SubmitResult submitResult = new SubmitResult();

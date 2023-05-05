@@ -6,11 +6,15 @@ import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.UserService;
 import com.njfu.edu.service.impl.UserServiceImpl;
 import com.njfu.edu.pojo.Ajax;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,10 +22,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @WebServlet({"/manager/staff","/manager/deluser","/usersubmit"})
 public class UserServlet extends HttpServlet {
 
-    private UserService userService = new UserServiceImpl();
+    @Autowired
+    private UserService userService;
+
+    @Override
+    public void init(ServletConfig config) {
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -42,10 +53,7 @@ public class UserServlet extends HttpServlet {
             writer.close();
         } else if (servletPath.equals("/manager/deluser")) {
             String userId = request.getParameter("user_id");
-            System.out.println(userId);
             userService.deleteUserById(userId);
-            System.out.println("ll"+userId);
-//            request.getRequestDispatcher("/manager/staff").forward(request,response);
         } else if (servletPath.equals("/usersubmit")) {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
@@ -56,8 +64,6 @@ public class UserServlet extends HttpServlet {
 
             SubmitResult submitResult = userService.userSubmit(map);
             request.setAttribute("userSubmit",submitResult);
-
-//            request.getRequestDispatcher("/list/user-submit.jsp").forward(request,response);
         }
     }
 }

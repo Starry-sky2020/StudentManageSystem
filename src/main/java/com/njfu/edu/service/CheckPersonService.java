@@ -19,4 +19,6 @@ public interface CheckPersonService {
      * @throws IOException
      */
     Boolean ManagerLoginView(Map<String,String> map) throws IOException;
+
+    public void test();
 }

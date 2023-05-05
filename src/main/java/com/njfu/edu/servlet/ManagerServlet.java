@@ -3,18 +3,27 @@ package com.njfu.edu.servlet;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.service.impl.ManagerServiceImpl;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
 
 @WebServlet({"/manager/createmanager"})
 public class ManagerServlet extends HttpServlet {
 
-    private ManagerServiceImpl managerService = new ManagerServiceImpl();
+    @Autowired
+    private ManagerServiceImpl managerService;
+
+    @Override
+    public void init(ServletConfig config) {
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
 
     public SubmitResult createManger(Manager manager) throws IOException {
         return managerService.createManger(manager);

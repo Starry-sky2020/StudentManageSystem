@@ -1,11 +1,10 @@
-package com.njfu.edu.dao;
+package com.njfu.edu.mapper;
 
 import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
 import org.apache.ibatis.annotations.Param;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 

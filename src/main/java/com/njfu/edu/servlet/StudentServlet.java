@@ -17,6 +17,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.*;
 import java.text.ParseException;
@@ -25,9 +27,17 @@ import java.util.*;
 @WebServlet({"/stulist","/delstu","/updatestu","/selectstuid","/addstu"})
 public class StudentServlet extends HttpServlet {
 
-    private StudentService studentService = new StudentServiceImpl();
-    private CollegeService collegeService = new CollegeServiceImpl();
-    private StudentClassService classService = new StudentClassServiceImpl();
+    @Autowired
+    private StudentService studentService;
+    @Autowired
+    private CollegeService collegeService;
+    @Autowired
+    private StudentClassService classService;
+
+    @Override
+    public void init(ServletConfig config) {
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)

@@ -26,12 +26,12 @@
         </environment>
     </environments>
     <mappers>
-<!--        <package name="com.njfu.edu"/>-->
-        <mapper resource="CollegeMapper.xml"/>
-        <mapper resource="StudentMapper.xml"/>
-        <mapper resource="ManagerMapper.xml"/>
-        <mapper resource="UserMapper.xml"/>
-        <mapper resource="StudentClazzMapper.xml"/>
-        <mapper resource="OperationLogMapper.xml"/>
+        <package name="com.njfu.edu.mapper"/>
+<!--        <mapper resource="CollegeMapper.xml"/>-->
+<!--        <mapper resource="StudentMapper.xml"/>-->
+<!--        <mapper resource="ManagerMapper.xml"/>-->
+<!--        <mapper resource="UserMapper.xml"/>-->
+<!--        <mapper resource="StudentClazzMapper.xml"/>-->
+<!--        <mapper resource="OperationLogMapper.xml"/>-->
     </mappers>
 </configuration>

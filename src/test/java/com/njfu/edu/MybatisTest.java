@@ -1,7 +1,7 @@
 package com.njfu.edu;
 
-import com.njfu.edu.dao.StudentMapper;
-import com.njfu.edu.dao.UserMapper;
+import com.njfu.edu.mapper.StudentMapper;
+import com.njfu.edu.mapper.UserMapper;
 import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
 import org.apache.ibatis.io.Resources;
@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 public class MybatisTest {
 
