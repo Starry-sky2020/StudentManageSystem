@@ -5,9 +5,8 @@ import com.njfu.edu.mapper.UserMapper;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.UserService;
-import com.njfu.edu.utils.SqlSessionUtil;
 import com.njfu.edu.utils.Tools;
-import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,23 +19,25 @@ import java.util.regex.Pattern;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private SubmitResult submitResult = new SubmitResult();
+//    private SubmitResult submitResult = new SubmitResult();
 
-    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
-    UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-    OpreationLogMapper logMapper = sqlSession.getMapper(OpreationLogMapper.class);
+    @Autowired
+    private SubmitResult submitResult;
+    @Autowired
+    private OpreationLogMapper logMapper;
+    @Autowired
+    private UserMapper mapper;
+
 
     @Override
     public List<User> selectAllUser() throws IOException {
         List<User> users = mapper.selectUserMessage();
-        sqlSession.commit();
         return users;
     }
 
     @Override
     public void deleteUserById(String id) throws IOException {
         mapper.deleteUserById(id);
-        sqlSession.commit();
     }
 
     /**
@@ -69,7 +70,6 @@ public class UserServiceImpl implements UserService {
 
         try {
             List<User> userList = mapper.selectUserMessage();
-            sqlSession.commit();
             //用户名重复检测
             for (int i = 0; i < userList.size(); i++){
                 if (map.get("username").equals(userList.get(i).getUsername())){
@@ -81,9 +81,7 @@ public class UserServiceImpl implements UserService {
             }
 
             mapper.insertUser(map.get("username"),map.get("password"));
-            sqlSession.commit();
             logMapper.insert(Tools.getOpreationLog("用户注册信息",1,"无"));
-            sqlSession.commit();
             submitResult.setResult(true);
             submitResult.setMessage("用户注册成功");
             submitResult.setCode(SubmitResult.ERROR_CODE_4);
@@ -97,7 +95,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long selectUserIdByPhone(String phone) {
         Long aLong = mapper.selectUserIdByPhone(phone);
-        sqlSession.commit();
         return aLong;
     }
 

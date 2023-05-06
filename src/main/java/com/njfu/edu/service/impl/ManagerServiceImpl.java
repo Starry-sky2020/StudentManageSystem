@@ -5,9 +5,8 @@ import com.njfu.edu.mapper.OpreationLogMapper;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.SubmitResult;
 import com.njfu.edu.service.ManagerService;
-import com.njfu.edu.utils.SqlSessionUtil;
 import com.njfu.edu.utils.Tools;
-import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,9 +17,11 @@ import java.util.regex.Pattern;
 
 @Service
 public class ManagerServiceImpl implements ManagerService {
-    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
-    ManagerMapper mapper = sqlSession.getMapper(ManagerMapper.class);
-    OpreationLogMapper logMapper = sqlSession.getMapper(OpreationLogMapper.class);
+
+    @Autowired
+    private ManagerMapper mapper;
+    @Autowired
+    private OpreationLogMapper logMapper;
 
     @Override
     public SubmitResult createManger(Manager manager) throws IOException {
@@ -49,7 +50,6 @@ public class ManagerServiceImpl implements ManagerService {
 
         try {
             List<Manager> managerList = mapper.selectManagerMessage();
-            sqlSession.commit();
             for (int i = 0; i < managerList.size(); i++) {
                 if (manager.getManager_name().equals(managerList.get(i).getManager_name())) {
                     submitResult.setResult(false);
@@ -60,13 +60,11 @@ public class ManagerServiceImpl implements ManagerService {
             }
 
             logMapper.insert(Tools.getOpreationLog("创建管理员", 1, "无"));
-            sqlSession.commit();
 
             submitResult.setResult(true);
             submitResult.setMessage("创建管理员成功");
             submitResult.setCode(SubmitResult.ERROR_CODE_4);
             mapper.insertManager(manager);
-            sqlSession.commit();
 
             return submitResult;
         } catch (ParseException e) {
@@ -76,7 +74,6 @@ public class ManagerServiceImpl implements ManagerService {
         @Override
     public Long selectManagerIdByPhone(String phone) {
         Long aLong = mapper.selectManagerIdByPhone(phone);
-        sqlSession.commit();
         return aLong;
     }
 }

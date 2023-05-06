@@ -5,8 +5,7 @@ import com.njfu.edu.mapper.UserMapper;
 import com.njfu.edu.pojo.Manager;
 import com.njfu.edu.pojo.User;
 import com.njfu.edu.service.CheckPersonService;
-import com.njfu.edu.utils.SqlSessionUtil;
-import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,17 +14,17 @@ import java.util.Map;
 
 @Service
 public class CheckPersonServiceImpl implements CheckPersonService {
-    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
-    UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-    ManagerMapper managerMapper = sqlSession.getMapper(ManagerMapper.class);
 
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private ManagerMapper managerMapper;
     /**
      * 用户登录信息验证
      * @throws IOException
      */
     public Boolean UserLoginView(Map<String, String> map) throws IOException {
         List<User> userList = userMapper.selectUserMessage();
-        sqlSession.commit();
         for (int i = 0; i < userList.size(); i++)
             if (userList.get(i).getUsername().equals(map.get("username"))){
                 if (userList.get(i).getPassword().equals(map.get("password"))){
@@ -44,7 +43,6 @@ public class CheckPersonServiceImpl implements CheckPersonService {
      */
     public Boolean ManagerLoginView(Map<String,String> map) throws IOException {
         List<Manager> managerList = managerMapper.selectManagerMessage();
-        sqlSession.commit();
         for (int i = 0; i < managerList.size(); i++)
             if (managerList.get(i).getManager_name().equals(map.get("managername")))
                 if (managerList.get(i).getPassword().equals(map.get("password")))
