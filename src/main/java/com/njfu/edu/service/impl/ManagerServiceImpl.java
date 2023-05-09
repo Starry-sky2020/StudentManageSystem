@@ -8,6 +8,7 @@ import com.njfu.edu.service.ManagerService;
 import com.njfu.edu.utils.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -16,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@Transactional
 public class ManagerServiceImpl implements ManagerService {
 
     @Autowired

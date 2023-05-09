@@ -7,12 +7,14 @@ import com.njfu.edu.service.StudentService;
 import com.njfu.edu.utils.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.*;
 @Service
+@Transactional
 public class StudentServiceImpl implements StudentService {
 
     @Autowired

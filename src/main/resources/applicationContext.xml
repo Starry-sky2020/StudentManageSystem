@@ -32,7 +32,7 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSources"></property>
     </bean>
-    <!--开启事务驱动-->
+    <!--开启注解型事务-->
     <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
     <!--替换mybatis-config-->
     <bean class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -49,7 +49,7 @@
     <bean id="aopUtils" class="com.njfu.edu.utils.AopUtils"></bean>
     <bean id="checkPersonService" class="com.njfu.edu.service.impl.CheckPersonServiceImpl"></bean>
 
-    
+    <!--配置环绕 aop-->
     <aop:config>
         <aop:pointcut id="pointcut" expression="execution(* com.njfu.edu.service.CheckPersonService.*(..))"/>
         <aop:aspect ref="aopUtils">
