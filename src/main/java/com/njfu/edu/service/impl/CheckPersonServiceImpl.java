@@ -37,7 +37,6 @@ public class CheckPersonServiceImpl implements CheckPersonService {
     }
 
     public void test(int i){
-
         System.out.println("hello,world");
     }
     /**

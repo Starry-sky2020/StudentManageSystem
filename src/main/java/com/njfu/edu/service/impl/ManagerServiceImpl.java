@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -24,32 +22,11 @@ public class ManagerServiceImpl implements ManagerService {
     private ManagerMapper mapper;
     @Autowired
     private OpreationLogMapper logMapper;
+    @Autowired
+    private SubmitResult submitResult;
 
     @Override
     public SubmitResult createManger(Manager manager) throws IOException {
-        SubmitResult submitResult = new SubmitResult();
-        //正则验证用户名是否合法
-        String regName = "^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)";
-        Pattern pattern = Pattern.compile(regName);
-        Matcher matcher = pattern.matcher(manager.getManager_name());
-        if (!matcher.find()) {
-            submitResult.setResult(false);
-            submitResult.setMessage("用户名不合法，请重新输入");
-            submitResult.setCode(SubmitResult.ERROR_CODE_1);
-            return submitResult;
-        }
-
-        //正则验证用户密码是否合法 手机号
-        String regPassword = "^1(3[0-9]|5[0-3,5-9]|7[1-3,5-8]|8[0-9])\\d{8}$";
-        pattern = Pattern.compile(regPassword);
-        matcher = pattern.matcher(manager.getPassword());
-        if (!matcher.find()) {
-            submitResult.setResult(false);
-            submitResult.setMessage("手机号码不合法，请重新输入");
-            submitResult.setCode(SubmitResult.ERROR_CODE_2);
-            return submitResult;
-        }
-
         try {
             List<Manager> managerList = mapper.selectManagerMessage();
             for (int i = 0; i < managerList.size(); i++) {
@@ -73,7 +50,7 @@ public class ManagerServiceImpl implements ManagerService {
             throw new RuntimeException(e);
         }
     }
-        @Override
+    @Override
     public Long selectManagerIdByPhone(String phone) {
         Long aLong = mapper.selectManagerIdByPhone(phone);
         return aLong;

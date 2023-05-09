@@ -132,7 +132,7 @@
     }
 
 
-    function ajaxStuList(){
+    window.onload = function ajaxStuList(){
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function (){
             if (xhr.readyState == 4){
@@ -243,7 +243,7 @@
 
     // window.addEventListener('load',CollegeName,false);
     // window.addEventListener('load',ClazzName,false);
-    window.addEventListener('load',ajaxStuList,false);
+    // window.addEventListener('load',ajaxStuList,false);
 </script>
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">

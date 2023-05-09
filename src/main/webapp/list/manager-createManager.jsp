@@ -51,8 +51,6 @@
   <script>
     let res = ${resManager.getCode()};
       switch (res){
-        case 1: alert("姓名不合法");break;
-        case 2: alert("密码不合法");break;
         case 3: alert("管理员已存在");break;
         case 4: alert("管理员创建成功");break;
       }
@@ -63,21 +61,39 @@
 
     window.onload = function (){
       document.getElementById("btn").onclick = function (){
-        let xhr = new XMLHttpRequest();
-        if (xhr.readyState == 4){
-          if (xhr.status >= 200 && xhr.status < 300){
-            window.location.href="${pageContext.request.contextPath}/list/manager-createManager.jsp";
+        if (CheckPassword() && CheckUserName){
+            let xhr = new XMLHttpRequest();
+            if (xhr.readyState == 4){
+              if (xhr.status >= 200 && xhr.status < 300){
+                window.location.href="${pageContext.request.contextPath}/list/manager-createManager.jsp";
+              }
+            }
+
+            let mName = document.getElementById("mName").value;
+            let mPassword = document.getElementById("mPassword").value;
+            let mRemark = document.getElementById("mRemark").value;
+
+            xhr.open("POST","${pageContext.request.contextPath}/manafer/createmanager",true)
+            xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
+            xhr.send("mName="+mName+"&mPassword="+mPassword+"&mRemark="+mRemark);
           }
         }
+    }
 
-        let mName = document.getElementById("mName").value;
-        let mPassword = document.getElementById("mPassword").value;
-        let mRemark = document.getElementById("mRemark").value;
+    function CheckUserName(){
+      let regUserName = /^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)/;
+      let userName = document.getElementById("mName").value;
+      if (regUserName.test(userName) && userName.length > 1){
+        return true;
+      } else return false;
+    }
 
-        xhr.open("POST","${pageContext.request.contextPath}/manafer/createmanager",true)
-        xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
-        xhr.send("mName="+mName+"&mPassword="+mPassword+"&mRemark="+mRemark);
-      }
+    function CheckPassword(){
+      let regUserPhone = /^(?=.*[0-9])|(?=.*[a-z])|(?=.*[A-Z])|(?=.*[@#$%^&+=])|(?=\S+$).{4,20}$/;
+      let passWord = document.getElementById("mPassword").value;
+      if(regUserPhone.test(passWord) && passWord.length==11){
+        return true;
+      }else return false;
     }
 
   </script>

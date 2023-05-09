@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -46,28 +44,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public SubmitResult userSubmit(Map<String, String> map) throws IOException {
-        //正则验证用户名是否合法
-        String regName = "^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)";
-        Pattern pattern = Pattern.compile(regName);
-        Matcher matcher = pattern.matcher(map.get("username"));
-        if (!matcher.find()){
-            submitResult.setResult(false);
-            submitResult.setMessage("用户名不合法，请重新输入");
-            submitResult.setCode(SubmitResult.ERROR_CODE_1);
-            return submitResult;
-        }
-
-        //正则验证用户密码是否合法
-        String regPassword = "^(?=.*[0-9])|(?=.*[a-z])|(?=.*[A-Z])|(?=.*[@#$%^&+=])|(?=\\S+$).{4,20}$";
-        pattern = Pattern.compile(regPassword);
-        matcher = pattern.matcher(map.get("password"));
-        if (!matcher.find()){
-            submitResult.setResult(false);
-            submitResult.setMessage("密码设置不合法，请重新输入");
-            submitResult.setCode(SubmitResult.ERROR_CODE_2);
-            return submitResult;
-        }
-
         try {
             List<User> userList = mapper.selectUserMessage();
             //用户名重复检测

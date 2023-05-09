@@ -26,24 +26,41 @@
 <script >
     window.onload = function (){
         document.getElementById("btn").onclick = function ajaxTran(){
-            let xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function (){
-                if (xhr.readyState == 4){
-                    if (xhr.status >= 200 && xhr.status < 300){
-                        if (this.responseText == "OK")
-                            window.location.href="${pageContext.request.contextPath}/list/manager-index.jsp";
-                        else if (this.responseText == "ERROR")
-                            window.location.href="${pageContext.request.contextPath}/list/error.html"
+                if (CheckUserName() && CheckPassword()){
+                let xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function (){
+                    if (xhr.readyState == 4){
+                        if (xhr.status >= 200 && xhr.status < 300){
+                            if (this.responseText == "OK")
+                                window.location.href="${pageContext.request.contextPath}/list/manager-index.jsp";
+                            else if (this.responseText == "ERROR")
+                                window.location.href="${pageContext.request.contextPath}/list/error.html"
+                        }
                     }
                 }
-            }
-            let username = document.getElementById("username").value;
-            let password = document.getElementById("password").value;
-            xhr.open("GET","${pageContext.request.contextPath}/managerlogin?username="+username+"&password="+password,true);
-            xhr.send();
+                let username = document.getElementById("username").value;
+                let password = document.getElementById("password").value;
+                xhr.open("GET","${pageContext.request.contextPath}/managerlogin?username="+username+"&password="+password,true);
+                xhr.send();
+            } else alert("输入的用户名或密码格式不合法，请重新输入")
         }
     }
 
+    function CheckUserName(){
+        let regUserName = /^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)/;
+        let userName = document.getElementById("username").value;
+        if (regUserName.test(userName) && userName.length > 1){
+            return true;
+        } else return false;
+    }
+
+    function CheckPassword(){
+        let regUserPhone = /^(?=.*[0-9])|(?=.*[a-z])|(?=.*[A-Z])|(?=.*[@#$%^&+=])|(?=\S+$).{4,20}$/;
+        let passWord = document.getElementById("password").value;
+        if(regUserPhone.test(passWord) && passWord.length==11){
+            return true;
+        }else return false;
+    }
 </script>
 <body>
 

@@ -26,34 +26,43 @@
 <script>
     window.onload = function init() {
         document.getElementById("btn").onclick = function (){
-            let username = document.getElementById("username").value
-            let password = document.getElementById("password").value
-            // let regUserName = "^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)";
-            // let regUserPhone = "^(?=.*[0-9])|(?=.*[a-z])|(?=.*[A-Z])|(?=.*[@#$%^&+=])|(?=\S+$).{4,20}$";
-            // let matchUserName = username.match(regUserName);
-            // let matchUserPhone = password.match(regUserPhone);
-            // alert(matchUserPhone)
-            // alert(matchUserName)
-            // if (matchUserName != null && matchUserPhone != null){
-                let xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function (){
-                    if (xhr.readyState == 4){
-                        alert(xhr.status)
-                        if (xhr.status >= 200 && xhr.status < 300){
-                            if (this.responseText == "OK")
-                                window.location.href="${pageContext.request.contextPath}/list/manager-index.jsp";
-                            else if (this.responseText == "ERROR")
-                                window.location.href="${pageContext.request.contextPath}/list/error.html";
+            if (CheckUserName() && CheckPassword()){
+                let username = document.getElementById("username").value
+                let password = document.getElementById("password").value
+                    let xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function (){
+                        if (xhr.readyState == 4){
+                            if (xhr.status >= 200 && xhr.status < 300){
+                                if (this.responseText == "OK")
+                                    window.location.href="${pageContext.request.contextPath}/list/manager-index.jsp";
+                                else if (this.responseText == "ERROR")
+                                    window.location.href="${pageContext.request.contextPath}/list/error.html";
+                            }
                         }
                     }
-                }
-
-
-                xhr.open("get","${pageContext.request.contextPath}/userlogin?username="+username+"&password="+password,true);
-                xhr.send()
+                    xhr.open("get","${pageContext.request.contextPath}/userlogin?username="+username+"&password="+password,true);
+                    xhr.send()
+            } else {
+                alert("用户名或密码格式不正确，请重新输入")
+            }
         }
     }
 
+    function CheckUserName(){
+        let regUserName = /^([\u4e00-\u9fa5a-zA-Z0-9]{2,12}$|([a-zA-Z]{2,16})$)/;
+        let userName = document.getElementById("username").value;
+        if (regUserName.test(userName) && userName.length > 1){
+            return true;
+        } else return false;
+    }
+
+     function CheckPassword(){
+        let regUserPhone = /^(?=.*[0-9])|(?=.*[a-z])|(?=.*[A-Z])|(?=.*[@#$%^&+=])|(?=\S+$).{4,20}$/;
+         let passWord = document.getElementById("password").value;
+        if(regUserPhone.test(passWord) && passWord.length==11){
+            return true;
+        }else return false;
+    }
 </script>
 
 <body>
@@ -77,7 +86,7 @@
                         <h2>Where to?</h2>
                             <div class="one-frm">
                                 <label>姓名</label>
-                                <input id="username" type="text" name="username"  placeholder="" required="">
+                                <input id="username" type="text" name="username" onblur="CheckUserName()"  placeholder="" required="">
                             </div>
                             <div class="one-frm">
                                 <label>密码</label>
