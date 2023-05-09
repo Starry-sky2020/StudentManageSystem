@@ -50,7 +50,6 @@
 
 
                 xhr.open("get","${pageContext.request.contextPath}/userlogin?username="+username+"&password="+password,true);
-                // xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=UTF-8");
                 xhr.send()
         }
     }
@@ -66,10 +65,7 @@
         <div class="wrapper">
             <div class="logo">
                 <h1><a class="brand-logo" href="index.html"><span>普通用户</span>登录</a></h1>
-                <!-- if logo is image enable this
-                    <a class="brand-logo" href="#index.html">
-                        <img src="image-path" alt="Your logo" title="Your logo" style="height:35px;" />
-                    </a> -->
+
             </div>
             <div class="workinghny-block-grid">
                 <div class="workinghny-left-img align-end">

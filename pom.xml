@@ -126,6 +126,13 @@
       <scope>compile</scope>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-jcl -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jcl</artifactId>
+      <version>6.0.5</version>
+    </dependency>
+
   </dependencies>
 
   <build>
