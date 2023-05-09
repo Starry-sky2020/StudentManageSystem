@@ -19,32 +19,41 @@
     <context:annotation-config></context:annotation-config>
     <!--扫描注解-->
     <context:component-scan base-package="com.njfu.edu"/>
-
+    <!--引入配置文件-->
     <context:property-placeholder location="classpath:jdbc.properties"/>
-
+    <!--配置数据源-->
     <bean id="dataSources" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="${jdbc.driver}"></property>
         <property name="jdbcUrl" value="${jdbc.url}"></property>
         <property name="user" value="${jdbc.username}"></property>
         <property name="password" value="${jdbc.password}"></property>
     </bean>
-
+    <!--添加事务-->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSources"></property>
     </bean>
-
     <!--开启事务驱动-->
     <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
-
+    <!--替换mybatis-config-->
     <bean class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
         <property name="dataSource" ref="dataSources"/>
         <property name="typeAliasesPackage" value="com.njfu.edu.pojo"/>
         <property name="mapperLocations" value="classpath:com/njfu/edu/mapper/*.xml"/>
     </bean>
-
+    <!--将sqlsession交给spring的ioc管理-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.njfu.edu.mapper"/>
     </bean>
 
+    <bean id="aopUtils" class="com.njfu.edu.utils.AopUtils"></bean>
+    <bean id="checkPersonService" class="com.njfu.edu.service.impl.CheckPersonServiceImpl"></bean>
+
+    
+    <aop:config>
+        <aop:pointcut id="pointcut" expression="execution(* com.njfu.edu.service.CheckPersonService.*(..))"/>
+        <aop:aspect ref="aopUtils">
+            <aop:around method="log" pointcut-ref="pointcut"></aop:around>
+        </aop:aspect>
+    </aop:config>
 </beans>

@@ -20,5 +20,5 @@ public interface CheckPersonService {
      */
     Boolean ManagerLoginView(Map<String,String> map) throws IOException;
 
-    public void test();
+    public void test(int i);
 }
