@@ -41,7 +41,7 @@
 
         xhr.open("POST","${pageContext.request.contextPath}/usersubmit",true);
         xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
-        xhr.send("username="+username+"&password="+password);
+        xhr.send("/"+username+"/"+password);
       } else alert("注册用户名或密码格式不合法，请重新输入")
     }
   }

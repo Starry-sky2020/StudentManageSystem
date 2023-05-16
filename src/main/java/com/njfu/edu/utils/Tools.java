@@ -1,6 +1,6 @@
 package com.njfu.edu.utils;
 
-import com.njfu.edu.servlet.CheckPersonServlet;
+import com.njfu.edu.controller.CheckPersonController;
 import com.njfu.edu.pojo.OperationLog;
 
 import java.sql.Timestamp;
@@ -50,12 +50,12 @@ public class Tools {
         operationLog.setUpdateTime(getCurrentSystemDate());
         operationLog.setInfo(info);
 
-        if (CheckPersonServlet.indentity){
+        if (CheckPersonController.indentity){
             operationLog.setIndetity("管理员");
-            operationLog.setManagerId(CheckPersonServlet.id);
+            operationLog.setManagerId(CheckPersonController.id);
         } else {
             operationLog.setIndetity("普通员工");
-            operationLog.setUserId(CheckPersonServlet.id);
+            operationLog.setUserId(CheckPersonController.id);
         }
         return operationLog;
     }

@@ -59,8 +59,7 @@
 
         xhr.open("POST","${pageContext.request.contextPath}/addstu",true)
         xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
-        xhr.send("stuName="+stuName+"&stuAge="+stuAge+"&stuSex="+stuSex
-                +"&stuSch="+stuSch+"&stuAdd="+stuAdd+"&stuClazz="+stuClazz);
+        xhr.send("/"+stuName+"/"+stuAge+"/"+stuSex+"/"+stuSch+"/"+stuAdd+"/"+stuClazz);
       }
   }
 

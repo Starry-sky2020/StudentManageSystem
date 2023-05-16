@@ -57,11 +57,11 @@
       let stuSex = document.getElementById("stuSex").value;
       let stuSch = document.getElementById("stuSch").value;
       let stuAdd = document.getElementById("stuAdd").value;
+      let stuInfo = document.getElementById("stuInfo").value;
 
       xhr.open("POST","${pageContext.request.contextPath}/updatestu",true)
       xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
-      xhr.send("stuId="+stuId+"&stuName="+stuName+"&stuAge="+stuAge+"&stuSex="+stuSex
-              +"&stuSch="+stuSch+"&stuAdd="+stuAdd);
+      xhr.send("/"+stuId+"/"+stuName+"/"+stuAge+"/"+stuSex+"/"+stuSch+"/"+stuAdd+"/"+stuInfo);
     }
   }
 

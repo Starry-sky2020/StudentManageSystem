@@ -7,7 +7,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page  language="java" pageEncoding="UTF-8" %>
 <head>
     <meta charset="utf-8">
     <title>DASHMIN - Bootstrap Admin Template</title>
@@ -47,12 +47,13 @@
                 }
             }
         }
-        xhr.open("GET","${pageContext.request.contextPath}/delstu?id="+id,true);
-        xhr.send();
+        xhr.open("POST","${pageContext.request.contextPath}/delstu",true);
+        xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
+        xhr.send("/"+id);
     }
 
     function updateStu(id){
-        window.location.href='${pageContext.request.contextPath}/selectstuid?id='+id;
+        window.location.href='${pageContext.request.contextPath}/selectstuid/'+id;
     }
 
 
@@ -65,7 +66,7 @@
                 }
             }
         }
-        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum+"&condition=1",true)
+        xhr.open("GET","${pageContext.request.contextPath}/stulist/"+this.pageNum+"/#"+"/#"+"/1",true)
         xhr.send();
     }
 
@@ -78,7 +79,7 @@
                 }
             }
         }
-        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum+"&condition=2",true)
+        xhr.open("GET","${pageContext.request.contextPath}/stulist/"+this.pageNum+"/#"+"/#"+"/2",true)
         xhr.send();
     }
 
@@ -91,7 +92,7 @@
                 }
             }
         }
-        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum+"&condition=3",true)
+        xhr.open("GET","${pageContext.request.contextPath}/stulist/"+this.pageNum+"/#"+"/#"+"/3",true)
         xhr.send();
     }
 
@@ -121,7 +122,7 @@
             }
         }
 
-        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum+"&collegeName="+collegeName+"&clazzName="+clazzName,true);
+        xhr.open("GET","${pageContext.request.contextPath}/stulist/"+this.pageNum+"/"+collegeName+"/"+clazzName+"/#",true);
         xhr.send();
     }
 
@@ -131,8 +132,8 @@
         ajaxStuList()
     }
 
-
-    window.onload = function ajaxStuList(){
+    window.onload=ajaxStuList();
+     function ajaxStuList(){
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function (){
             if (xhr.readyState == 4){
@@ -182,13 +183,14 @@
                             pageHelper += "<button>尾页</button>"
                         }
                     }
-                    ClazzName();CollegeName();
+                    ClazzName();
+
                     document.getElementById("tbody").innerHTML = res;
                     document.getElementById("pageHelper").innerHTML = pageHelper
                 }
             }
         }
-        xhr.open("GET","${pageContext.request.contextPath}/stulist?pageNum="+this.pageNum,true)
+        xhr.open("GET","${pageContext.request.contextPath}/stulist/"+this.pageNum+"/%23"+"/%23"+"/%23",true)
         xhr.send()
     }
 
@@ -212,7 +214,7 @@
             }
         }
 
-        xhr.open("GET","${pageContext.request.contextPath}/stulist",true);
+        xhr.open("GET","${pageContext.request.contextPath}/stulist"+"/#"+"/#"+"/#"+"/#",true);
         xhr.send();
     }
 
@@ -236,14 +238,9 @@
             }
         }
 
-        xhr.open("GET","${pageContext.request.contextPath}/stulist",true);
+        xhr.open("GET","${pageContext.request.contextPath}/stulist"+"/#"+"/#"+"/#"+"/#",true);
         xhr.send();
     }
-
-
-    // window.addEventListener('load',CollegeName,false);
-    // window.addEventListener('load',ClazzName,false);
-    // window.addEventListener('load',ajaxStuList,false);
 </script>
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
@@ -271,7 +268,7 @@
                 <div class="navbar-nav w-100">
                     <a href="${pageContext.request.contextPath}/list/manager-index.jsp" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>首页</a>
                     <c:if test="${identity == 0}">
-                        <a href="${pageContext.request.contextPath}/manager/staff" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
+                        <a href="${pageContext.request.contextPath}/list/manager-userList.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
                         <a href="${pageContext.request.contextPath}/list/manager-createManager.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加管理员</a>
                     </c:if>
                     <a href="${pageContext.request.contextPath}/list/manager-stuList.jsp" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>

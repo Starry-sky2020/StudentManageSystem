@@ -40,7 +40,7 @@
                 }
                 let username = document.getElementById("username").value;
                 let password = document.getElementById("password").value;
-                xhr.open("GET","${pageContext.request.contextPath}/managerlogin?username="+username+"&password="+password,true);
+                xhr.open("GET","${pageContext.request.contextPath}/managerlogin/"+username+"/"+password,true);
                 xhr.send();
             } else alert("输入的用户名或密码格式不合法，请重新输入")
         }
@@ -101,6 +101,7 @@
                             <p class="already">
                                 员工登录 <a href="userLogin.jsp">跳转</a>
                                 员工注册 <a href="user-submit.jsp">跳转</a>
+                                <a href="${pageContext.request.contextPath}/managerlogin?username=ysl">hello,world</a>
                             </p>
                     </div>
                 </div>

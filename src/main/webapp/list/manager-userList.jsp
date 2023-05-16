@@ -41,6 +41,7 @@
     function delUser(userId){
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function (){
+
             if (xhr.readyState == 4){
                 if (xhr.status >= 200 && xhr.status < 300){
                     ajaxUserList();
@@ -49,7 +50,7 @@
         }
         xhr.open("POST","${pageContext.request.contextPath}/manager/deluser",true);
         xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
-        xhr.send("user_id="+userId);
+        xhr.send("/"+userId);
     }
 
     window.addEventListener('load',ajaxUserList,false)
@@ -110,7 +111,7 @@
                         <a href="${pageContext.request.contextPath}/list/manager-userList.jsp" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>管理员工</a>
                         <a href="${pageContext.request.contextPath}/list/manager-createManager.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加管理员</a>
                     </c:if>
-                    <a href="${pageContext.request.contextPath}/stulist" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
+                    <a href="${pageContext.request.contextPath}/list/manager-stuList.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
                     <a href="${pageContext.request.contextPath}/list/manager-addStu.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加学生</a>
                 </div>
             </nav>
@@ -157,21 +158,6 @@
                                 </tr>
                             </thead>
                             <tbody id="tbody">
-<%--                                <c:forEach items="${users}" var="user">--%>
-<%--                                    <tr>--%>
-<%--                                        <td>${user.username}</td>--%>
-<%--                                        <c:if test="${user.sex == 0}">--%>
-<%--                                            <td>女</td>--%>
-<%--                                        </c:if>--%>
-<%--                                        <c:if test="${user.sex == 1}">--%>
-<%--                                            <td>男</td>--%>
-<%--                                        </c:if>--%>
-<%--                                        <td>${user.age}</td>--%>
-<%--                                        <td>${user.address}</td>--%>
-<%--                                        <td>${user.info}</td>--%>
-<%--                                        <td><button type="button" class="btn btn-danger m-2" onclick="delUser(${user.user_id})">删除</button></td>--%>
-<%--                                    </tr>--%>
-<%--                                </c:forEach>--%>
 
                             </tbody>
                         </table>

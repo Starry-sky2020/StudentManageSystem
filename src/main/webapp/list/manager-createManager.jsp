@@ -75,7 +75,7 @@
 
             xhr.open("POST","${pageContext.request.contextPath}/manafer/createmanager",true)
             xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;");
-            xhr.send("mName="+mName+"&mPassword="+mPassword+"&mRemark="+mRemark);
+            xhr.send("/"+mName+"/"+mPassword+"/"+mRemark);
           }
         }
     }

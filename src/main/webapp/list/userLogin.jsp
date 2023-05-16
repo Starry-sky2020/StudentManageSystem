@@ -40,7 +40,7 @@
                             }
                         }
                     }
-                    xhr.open("get","${pageContext.request.contextPath}/userlogin?username="+username+"&password="+password,true);
+                    xhr.open("get","${pageContext.request.contextPath}/userlogin/"+username+"/"+password,true);
                     xhr.send()
             } else {
                 alert("用户名或密码格式不正确，请重新输入")
