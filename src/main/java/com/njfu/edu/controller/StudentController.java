@@ -1,9 +1,12 @@
 package com.njfu.edu.controller;
 
+import com.alibaba.fastjson.serializer.NameFilter;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.njfu.edu.pojo.Ajax;
 import com.njfu.edu.pojo.Paging;
 import com.njfu.edu.pojo.Student;
+import com.njfu.edu.pojo.StudentClass;
 import com.njfu.edu.service.CollegeService;
 import com.njfu.edu.service.StudentClassService;
 import com.njfu.edu.service.StudentService;
@@ -19,7 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -82,7 +87,6 @@ public class StudentController {
         ajax.setListCollege(collegeService.queryAllCollege());
         ajax.setListClazz(classService.queryStudentClass());
         String jsonString = JSON.toJSONString(ajax);
-        System.out.println(jsonString);
 
         return jsonString;
     }
@@ -142,5 +146,37 @@ public class StudentController {
         student.setStudentClassId(Integer.valueOf(stuClazz));
 
         studentService.InsertStudentMessage(student);
+    }
+
+    @GetMapping(value = "/stu/data", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String dateView(){
+        List<Student> students = studentService.selectStuInfo();
+        List<StudentClass> studentClasses = classService.queryStudentClass();
+
+        List<Map> maps = new ArrayList<>();
+
+        for (int i = 0; i < studentClasses.size(); i++){
+            int cnt = 0;
+            for (int j = 0; j < students.size();j++){
+                if (students.get(j).getStudentClassId().equals(studentClasses.get(i).getId())){
+                    cnt++;
+                }
+            }
+            Map map = new HashMap();
+            map.put("name",studentClasses.get(i).getStudentclassName());
+            map.put("value",cnt);
+            maps.add(map);
+        }
+
+        //fastjson自身bug 将map转为json字符串时无分号解决方案
+        String jsonString = JSON.toJSONString(maps, new NameFilter() {
+            @Override
+            public String process(Object object, String name, Object value) {
+                return name;
+            }
+        });
+        System.out.println(jsonString);
+        return jsonString;
     }
 }

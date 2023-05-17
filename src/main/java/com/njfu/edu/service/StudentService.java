@@ -52,4 +52,6 @@ public interface StudentService {
      * @return
      */
     boolean changeStudentInfo(Student student) throws ParseException;
+
+    List<Student> selectStuInfo() ;
 }

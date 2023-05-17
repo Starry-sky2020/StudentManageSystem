@@ -78,6 +78,7 @@
         </c:if>
         <a href="${pageContext.request.contextPath}/list/manager-stuList.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>管理学生</a>
         <a href="${pageContext.request.contextPath}/list/manager-addStu.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>添加学生</a>
+        <a href="${pageContext.request.contextPath}/list/dataView.jsp" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>数据可视化</a>
       </div>
     </nav>
   </div>

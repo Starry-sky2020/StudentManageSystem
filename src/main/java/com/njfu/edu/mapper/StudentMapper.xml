@@ -82,7 +82,7 @@
         delete from lessontraining.student where student_id = #{id}
     </delete>
 
-    <select id="testselect" resultType="Student" useCache="true">
+    <select id="selectStuInfo" resultType="Student" useCache="true">
         select * from lessontraining.student;
     </select>
 

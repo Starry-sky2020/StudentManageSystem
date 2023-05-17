@@ -252,4 +252,8 @@ public class StudentServiceImpl implements StudentService {
 
         return true;
     }
+
+    public List<Student> selectStuInfo(){
+        return mapper.selectStuInfo();
+    }
 }

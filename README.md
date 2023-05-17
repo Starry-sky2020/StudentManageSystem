@@ -14,6 +14,10 @@
 服务器 Tomcat 10.0.22  
 JDK17   
 apache-maven-3.6.8 （用来包管理）      
-mysql8+jsp+servlet+mybatis+spring+ajax+springmvc  
+所有阶段涉及技术：  
+    mysql8+jsp+servlet+mybatis+spring+原生ajax+springmvc  
+    数据可视化：echart    
+现阶段技术:mysql8+jsp+mybatis+spring6+原生ajax+springmvc  
+    数据可是化：echart  
 
 有命令行界面变换到web页面（jsp）
